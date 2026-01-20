@@ -1,0 +1,11 @@
+name: Auto Docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  docs:
+    uses: Mokhatla-Sifiso/repo-docs-action/.github/workflows/generate-docs.yml@main
+
