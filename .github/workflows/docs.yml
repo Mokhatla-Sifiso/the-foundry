@@ -10,4 +10,7 @@ permissions:
 
 jobs:
   docs:
-    uses: Mokhatla-Sifiso/repo-docs-action/.github/workflows/generate-docs.yml@main
+    uses: Mokhatla-Sifiso/repo-docs-action/.github/workflows/generate-docs.yml@v1
+    with:
+      generate_readme: true
+      generate_dev_guide: true
