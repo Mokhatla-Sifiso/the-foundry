@@ -1,3 +1,3 @@
 # Developer Guide
 
-Auto-generated Developer Guide
+Auto-generated developer documentation.
