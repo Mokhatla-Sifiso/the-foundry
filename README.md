@@ -1,3 +1,0 @@
-# Repository
-
-Auto-generated README.
