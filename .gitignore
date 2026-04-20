@@ -1,4 +1,45 @@
 # =========================
+# Next.js Specific
+# =========================
+.next/
+out/
+.repl_history
+
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log
+
+# =========================
+# Environment Variables
+# =========================
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Testing
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Build Outputs
+# =========================
+dist/
+build/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
 # OS Generated Files
 # =========================
 .DS_Store
@@ -13,59 +54,15 @@ desktop.ini
 # =========================
 # IDEs and Editors
 # =========================
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
 *~
-
-# Vim
-.vimrc.local
-.session.vim
-
-# Emacs
-*~
-\#*\#
-
-# =========================
-# Build Outputs
-# =========================
-node_modules/
-/dist/
-/build/
-/out/
-*.exe
-*.dll
-*.so
-*.dylib
-
-# =========================
-# Logs and Databases
-# =========================
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log
-logs/
-*.sqlite
-*.db
-
-# =========================
-# Environment Files
-# =========================
-.env
-.env.local
-.env.production
-.env.development
-.env.test
-
-# =========================
-# Package Files
-# =========================
-package-lock.json
-yarn.lock
-pnpm-lock.yaml  # Keep this if using pnpm exclusively
 
 # =========================
 # Temporary Files
@@ -74,25 +71,3 @@ pnpm-lock.yaml  # Keep this if using pnpm exclusively
 .temp
 *.tmp
 *.temp
-
-# =========================
-# Coverage Reports
-# =========================
-coverage/
-.nyc_output/
-
-# =========================
-# Dependency Directories
-# =========================
-vendor/
-.jekyll-cache/
-.sass-cache/
-
-# =========================
-# System Files (Windows)
-# =========================
-$RECYCLE.BIN/
-hiberfil.sys
-pagefile.sys
-swapfile.sys
- 
