@@ -55,3 +55,12 @@ pnpm-lock.yaml  # Keep this if using pnpm exclusively
 coverage/
 .nyc_output/
 
+vendor/
+.jekyll-cache/
+.sass-cache/
+
+$RECYCLE.BIN/
+hiberfil.sys
+pagefile.sys
+swapfile.sys
+ 
