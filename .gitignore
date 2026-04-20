@@ -81,4 +81,18 @@ pnpm-lock.yaml  # Keep this if using pnpm exclusively
 coverage/
 .nyc_output/
 
-# =========================_
+# =========================
+# Dependency Directories
+# =========================
+vendor/
+.jekyll-cache/
+.sass-cache/
+
+# =========================
+# System Files (Windows)
+# =========================
+$RECYCLE.BIN/
+hiberfil.sys
+pagefile.sys
+swapfile.sys
+ 
