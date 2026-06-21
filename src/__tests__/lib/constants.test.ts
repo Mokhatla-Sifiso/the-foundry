@@ -16,6 +16,11 @@ describe("SITE", () => {
     expect(SITE.location).toBe("Pretoria, South Africa");
     expect(SITE.tagline).toBe("Turning ideas into digital realities.");
   });
+
+  it("points cvHref + portrait at the assets shipped under /public", () => {
+    expect(SITE.cvHref).toBe("/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf");
+    expect(SITE.portrait).toBe("/img/potrait.png");
+  });
 });
 
 describe("NAVLINKS", () => {
