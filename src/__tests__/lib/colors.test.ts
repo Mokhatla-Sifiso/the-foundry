@@ -1,57 +1,41 @@
-import { contrast, hexToRgb, luminance } from "@/lib/colors";
+import { _hx, _lum, _rgb, _rgba } from "@/lib/colors";
 
-describe("hexToRgb", () => {
+describe("_hx (hex → [r,g,b])", () => {
   it("parses 6-digit hex with leading #", () => {
-    expect(hexToRgb("#b2d5e5")).toEqual({ r: 0xb2, g: 0xd5, b: 0xe5 });
+    expect(_hx("#b2d5e5")).toEqual([0xb2, 0xd5, 0xe5]);
   });
 
   it("parses 6-digit hex without #", () => {
-    expect(hexToRgb("020202")).toEqual({ r: 2, g: 2, b: 2 });
+    expect(_hx("020202")).toEqual([2, 2, 2]);
   });
 
   it("expands 3-digit shorthand", () => {
-    expect(hexToRgb("#abc")).toEqual({ r: 0xaa, g: 0xbb, b: 0xcc });
-  });
-
-  it("tolerates surrounding whitespace and mixed case", () => {
-    expect(hexToRgb("  #FfAa00 ")).toEqual({ r: 0xff, g: 0xaa, b: 0x00 });
-  });
-
-  it("returns null for invalid input", () => {
-    expect(hexToRgb("")).toBeNull();
-    expect(hexToRgb("#xyz")).toBeNull();
-    expect(hexToRgb("#abcd")).toBeNull();
-    expect(hexToRgb("rgb(0,0,0)")).toBeNull();
+    expect(_hx("#abc")).toEqual([0xaa, 0xbb, 0xcc]);
   });
 });
 
-describe("luminance", () => {
-  it("returns 0 for pure black", () => {
-    expect(luminance({ r: 0, g: 0, b: 0 })).toBeCloseTo(0, 5);
+describe("_lum (relative luminance)", () => {
+  it("is 0 for pure black", () => {
+    expect(_lum([0, 0, 0])).toBe(0);
   });
 
-  it("returns 1 for pure white", () => {
-    expect(luminance({ r: 255, g: 255, b: 255 })).toBeCloseTo(1, 5);
+  it("is 1 for pure white", () => {
+    expect(_lum([255, 255, 255])).toBe(1);
   });
 
-  it("returns ~0.2126 for pure red per WCAG", () => {
-    expect(luminance({ r: 255, g: 0, b: 0 })).toBeCloseTo(0.2126, 4);
+  it("agrees with the 0.299/0.587/0.114 weights for primaries", () => {
+    expect(_lum([255, 0, 0])).toBeCloseTo(0.299, 4);
+    expect(_lum([0, 255, 0])).toBeCloseTo(0.587, 4);
+    expect(_lum([0, 0, 255])).toBeCloseTo(0.114, 4);
   });
 });
 
-describe("contrast", () => {
-  it("maxes out at 21:1 for black-on-white", () => {
-    const ratio = contrast({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 });
-    expect(ratio).toBeCloseTo(21, 0);
+describe("_rgb / _rgba (CSS string formatters)", () => {
+  it("_rgb wraps the triple", () => {
+    expect(_rgb([1, 2, 3])).toBe("rgb(1,2,3)");
   });
 
-  it("is symmetric (order of fg/bg doesn't matter)", () => {
-    const a = contrast({ r: 0, g: 0, b: 0 }, { r: 178, g: 213, b: 229 });
-    const b = contrast({ r: 178, g: 213, b: 229 }, { r: 0, g: 0, b: 0 });
-    expect(a).toBeCloseTo(b, 5);
-  });
-
-  it("returns 1 for identical colors", () => {
-    expect(contrast({ r: 50, g: 50, b: 50 }, { r: 50, g: 50, b: 50 })).toBeCloseTo(1, 5);
+  it("_rgba appends opacity", () => {
+    expect(_rgba([1, 2, 3], 0.5)).toBe("rgba(1,2,3,0.5)");
   });
 });

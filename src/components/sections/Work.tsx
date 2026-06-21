@@ -1,46 +1,52 @@
-import { Reveal } from "@/components/ui/Reveal";
-import { WORK } from "@/lib/constants";
-import { WorkCard } from "./WorkCard";
+"use client";
 
-/** Per-column reveal delay for the staggered grid entrance (seconds). */
-const STAGGER_DELAY_SECONDS = 0.1;
+import { motion } from "framer-motion";
+import { Reveal, EASE } from "@/components/primitives/Reveal";
+import { WORK } from "@/lib/constants";
 
 /**
- * 2-up project grid. Each card slides in with a small Y rise; even
- * columns get a 0s delay, odd columns get +0.1s for the staggered feel.
- * Server component — `<Reveal>` is the only interactive piece, and
- * the hover lift is pure Tailwind on `<WorkCard>` itself.
+ * Work — VERBATIM markup + copy from §7.6.
+ *
+ * 2-up grid, 4 cards. Left column delay 0, right column delay 0.08
+ * (`(i % 2) * 0.08`). Hover lift: `y: -6` over .4s with EASE.
+ *
+ * The image slot is a placeholder until /img/work-*.jpg assets land
+ * per §14 — then swap for `next/image` with the matching `slot` key.
  */
 export function Work(): React.ReactElement {
   return (
-    <section
-      id="work"
-      aria-labelledby="work-heading"
-      className="relative px-4 py-32 sm:px-8 sm:py-48"
-    >
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <div className="mb-16 flex items-end justify-between gap-4">
-            <h2
-              id="work-heading"
-              className="text-balance text-[clamp(32px,4.6vw,60px)] font-medium tracking-[-0.03em] text-fg"
-            >
-              Selected work
+    <section id="work" className="sec">
+      <div className="wrap">
+        <div className="work-head">
+          <Reveal>
+            <h2>
+              A track record of turning ideas into{" "}
+              <span style={{ color: "var(--candy)" }}>digital realities.</span>
             </h2>
-            <span className="hidden text-sm text-muted sm:inline">
-              {WORK.length.toString().padStart(2, "0")} projects
-            </span>
-          </div>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <p>
+              Selected projects across telecom, consulting, fintech, and GIS —
+              built and shipped end to end.
+            </p>
+          </Reveal>
+        </div>
 
-        <div className="grid gap-6 md:grid-cols-2 md:gap-8">
-          {WORK.map((work, index) => (
-            <Reveal
-              key={work.slug}
-              y={32}
-              delay={(index % 2) * STAGGER_DELAY_SECONDS}
-            >
-              <WorkCard work={work} />
+        <div className="work-grid">
+          {WORK.map((w, i) => (
+            <Reveal key={w.slot} delay={(i % 2) * 0.08}>
+              <motion.div
+                className="work-card"
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.4, ease: EASE }}
+              >
+                <div className="image-slot" aria-hidden="true" data-slot={w.slot} />
+                <div className="ov">
+                  <span className="tag">{w.tag}</span>
+                  <div className="nm">{w.nm}</div>
+                  <div className="og">{w.og}</div>
+                </div>
+              </motion.div>
             </Reveal>
           ))}
         </div>
