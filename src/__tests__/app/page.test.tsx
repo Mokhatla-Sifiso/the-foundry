@@ -1,62 +1,27 @@
 jest.mock("framer-motion");
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...rest} />
-  ),
-}));
 
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
-import { EXPERIENCE, SERVICES, SITE, STATEMENT, WORK } from "@/lib/constants";
+import { SITE } from "@/lib/constants";
 
-describe("HomePage", () => {
-  it("composes the Hero as the page's primary heading", () => {
-    render(<HomePage />);
-    expect(screen.getByRole("heading", { level: 1, name: SITE.name })).toBeInTheDocument();
+describe("HomePage composition", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    document.documentElement.removeAttribute("data-theme");
   });
 
-  it("includes the role and tagline meta", () => {
+  it("renders the Hero h1 with the spec headline", () => {
     render(<HomePage />);
-    expect(screen.getByText(SITE.role)).toBeInTheDocument();
-    expect(screen.getByText(SITE.tagline)).toBeInTheDocument();
+    const h1 = screen.getByRole("heading", { level: 1 });
+    expect(h1).toHaveTextContent(/Turning ideas into\s+digital realities\./i);
   });
 
-  it("includes the Statement section beneath Hero", () => {
+  it("renders the Statement, Contact, and Footer signatures", () => {
     render(<HomePage />);
-    expect(screen.getByText(STATEMENT.body)).toBeInTheDocument();
-    expect(screen.getByText(STATEMENT.eyebrow)).toBeInTheDocument();
-  });
-
-  it("includes the Services section with all SERVICES rendered", () => {
-    render(<HomePage />);
-    expect(screen.getByRole("heading", { level: 2, name: /services/i })).toBeInTheDocument();
-    for (const service of SERVICES) {
-      expect(
-        screen.getByRole("heading", { level: 3, name: new RegExp(service.titleLineOne, "i") }),
-      ).toBeInTheDocument();
-    }
-  });
-
-  it("includes the Work section with every WORK project title", () => {
-    render(<HomePage />);
-    expect(screen.getByRole("heading", { level: 2, name: /selected work/i })).toBeInTheDocument();
-    for (const project of WORK) {
-      expect(
-        screen.getByRole("heading", { level: 3, name: project.title }),
-      ).toBeInTheDocument();
-    }
-  });
-
-  it("includes the Experience section with every EXPERIENCE row's blurb", () => {
-    render(<HomePage />);
-    // Scope assertions to the Experience section because some role/company
-    // strings (e.g. "Co-founder & Engineer", "Oddity") also appear in Work.
-    const region = screen.getByRole("region", { name: /experience/i });
-    expect(within(region).getByRole("heading", { level: 2, name: /experience/i })).toBeInTheDocument();
-    for (const row of EXPERIENCE) {
-      expect(within(region).getByText(row.blurb)).toBeInTheDocument();
-    }
+    expect(screen.getByText(/I'm a full-stack engineer/)).toBeInTheDocument();
+    expect(screen.getByText(/Don't/)).toBeInTheDocument();
+    expect(screen.getByText(/Software Engineer · Full-Stack · Tech Lead/)).toHaveTextContent(
+      SITE.location,
+    );
   });
 });
