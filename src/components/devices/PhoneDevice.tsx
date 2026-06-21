@@ -6,10 +6,14 @@ type PhoneProps = Readonly<{ assistantName?: string }>;
  * Phone mockup — VERBATIM markup + content from §8.2. Notch, status
  * bar ("9:41" / "AI · live"), Daily PR review card with three bullets
  * and an Open review button.
+ *
+ * Returns only inner content. The `.phone` wrapper with its
+ * `position: absolute; top:-20px; right:-30px; width:180px; …` is
+ * supplied by `<Reveal className="phone">` in AISection per §8.2.
  */
 export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {}): React.ReactElement {
   return (
-    <div className="phone">
+    <>
       <div className="phone-notch" />
       <div className="phone-sb">
         <span>9:41</span>
@@ -36,6 +40,6 @@ export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {})
           <div className="ph-btn">Open review</div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
