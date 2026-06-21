@@ -53,6 +53,13 @@ html[data-theme="light"] {
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-line: rgba(255, 255, 255, 0.75);
   --card: #0a0e10;
+  /* Mid-grey card surface used by .svc-card — softer than --card so it
+   * reads as a separate "panel on a panel" against the icy page bg,
+   * matching the reference design. */
+  --card-soft: #2f3236;
+  --card-soft-fg: #f3f8fa;
+  --card-soft-pill: rgba(255, 255, 255, 0.10);
+  --card-soft-pill-line: rgba(255, 255, 255, 0.12);
   --card-fg: #f3f8fa;
   --card-2: #c3d0d6;
   --card-muted: #6d7b82;
@@ -76,6 +83,10 @@ html[data-theme="dark"] {
   --glass-bg: rgba(178, 213, 229, 0.06);
   --glass-line: rgba(178, 213, 229, 0.18);
   --card: #0c1316;
+  --card-soft: #1c2024;
+  --card-soft-fg: #f3f8fa;
+  --card-soft-pill: rgba(255, 255, 255, 0.08);
+  --card-soft-pill-line: rgba(255, 255, 255, 0.10);
   --card-fg: #f3f8fa;
   --card-2: #aebec6;
   --card-muted: #5d6b72;
@@ -430,71 +441,91 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
   gap: 26px;
   margin-top: 50px;
 }
+/*
+ * Services cards — styled to match the SOHub reference deck rather
+ * than the spec's §7.5 dark-onyx defaults: lighter mid-grey surface,
+ * generous padding, larger corner radius, no border, capsule-style
+ * pills with soft white tint, and the second title line de-emphasised
+ * via opacity rather than a muted color token.
+ *
+ * The .grow spacer is dropped from the JSX so content sits naturally
+ * under the title; min-height keeps the stack tall enough for sticky
+ * pinning to read.
+ */
 .svc-card {
   position: sticky;
-  border-radius: var(--r);
-  background: var(--card);
-  color: var(--card-fg);
-  border: 1px solid var(--card-line);
-  padding: clamp(28px, 4vw, 60px);
-  min-height: clamp(440px, 74vh, 620px);
+  border-radius: 40px;
+  background: var(--card-soft);
+  color: var(--card-soft-fg);
+  padding: clamp(40px, 6vw, 96px);
+  min-height: clamp(440px, 70vh, 600px);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -10px 40px -24px rgba(0, 0, 0, 0.6);
+  gap: clamp(28px, 4vw, 56px);
+  box-shadow: 0 30px 70px -50px rgba(20, 30, 40, 0.45);
   overflow: hidden;
 }
 .svc-card .num {
   position: absolute;
-  top: clamp(24px, 3.4vw, 52px);
-  right: clamp(24px, 3.4vw, 52px);
-  font-size: 14px;
+  top: clamp(28px, 3.4vw, 52px);
+  right: clamp(28px, 3.4vw, 52px);
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--candy);
-  letter-spacing: .1em;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: .14em;
+  text-transform: uppercase;
 }
 .svc-card h3 {
   font-weight: 700;
-  font-size: clamp(40px, 6.6vw, 104px);
-  line-height: .92;
+  font-size: clamp(48px, 7.2vw, 120px);
+  line-height: .94;
   letter-spacing: -.045em;
 }
-.svc-card h3 .w2 { display: block; color: var(--card-muted); }
-.svc-card .grow { flex: 1; }
+.svc-card h3 .w2 {
+  display: block;
+  color: var(--card-soft-fg);
+  opacity: 0.42;
+}
 .svc-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
-  margin: 30px 0 26px;
+  gap: 10px;
 }
 .svc-pills span {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
-  color: var(--card-fg);
-  background: var(--card-pill);
-  border: 1px solid var(--card-line);
-  padding: 9px 17px;
-  border-radius: 30px;
+  color: var(--card-soft-fg);
+  background: var(--card-soft-pill);
+  border: 1px solid var(--card-soft-pill-line);
+  padding: 11px 24px;
+  border-radius: 100px;
 }
 .svc-desc {
   display: flex;
-  gap: 16px;
+  gap: 18px;
   align-items: flex-start;
   max-width: 64ch;
+  margin-top: 14px;
 }
 .svc-desc .ast {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
   color: var(--candy);
   flex: none;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .svc-desc p {
-  color: var(--card-2);
-  font-size: clamp(16px, 1.5vw, 20px);
-  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.5;
 }
 @media (max-width: 600px) {
-  .svc-card { min-height: 0; }
+  .svc-card {
+    min-height: 0;
+    border-radius: 30px;
+    padding: clamp(32px, 7vw, 48px);
+  }
+  .svc-card h3 { font-size: clamp(40px, 11vw, 64px); }
 }
 
 /* ───────────────────────────────────────────────────────────────────────
@@ -617,27 +648,20 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 /* ───────────────────────────────────────────────────────────────────────
  * 13. AI SECTION  (§7.8)
  *
- * Coloring is driven by 5 CSS variables (`--ai-bg`, `--ai-fg`,
- * `--ai-mut`, `--ai-bdr`, `--ai-acc`) that default to the page palette
- * and get swapped to a contrasting "peak" set when the section's React
- * wrapper adds the `ai--peak` class. A long `transition` on each
- * consumer property smooths the swap visually.
+ * Direct color rules on `.ai` (page palette) and `.ai.ai--peak`
+ * (contrast palette). No CSS-variable indirection — Turbopack HMR was
+ * silently caching the variable-driven version mid-development.
  *
- * The class toggle is driven by an IntersectionObserver in AISection.tsx
- * — discrete trigger (in / out of view), CSS handles the easing. Earlier
- * versions interpolated continuously via `useScroll`, which felt "stuck
- * on dark" mid-scroll.
+ * The class is toggled by an IntersectionObserver in AISection.tsx
+ * once the section crosses an intersectionRatio threshold (Apple's
+ * pattern). CSS `transition` on each consumer property handles the
+ * eased crossfade.
  * ─────────────────────────────────────────────────────────────────── */
 
 .ai {
   overflow: hidden;
-  --ai-bg: transparent;
-  --ai-fg: var(--fg);
-  --ai-mut: var(--muted);
-  --ai-bdr: var(--line);
-  --ai-acc: var(--accent);
-  background-color: var(--ai-bg);
-  color: var(--ai-fg);
+  background-color: transparent;
+  color: var(--fg);
   transition:
     background-color .8s var(--ease),
     color .8s var(--ease);
@@ -645,25 +669,46 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 
 /* Light-theme peak: dark onyx slab with candy accent. */
 .ai.ai--peak {
-  --ai-bg: #020202;
-  --ai-fg: #eef5f8;
-  --ai-mut: rgba(238, 245, 248, 0.74);
-  --ai-bdr: rgba(238, 245, 248, 0.22);
-  --ai-acc: var(--candy);
+  background-color: #020202;
+  color: #eef5f8;
 }
+.ai.ai--peak .eyebrow,
+.ai.ai--peak .ai-lead,
+.ai.ai--peak .ai-item p {
+  color: rgba(238, 245, 248, 0.74);
+}
+.ai.ai--peak .ai-h .em,
+.ai.ai--peak .ai-item .ai-n {
+  color: var(--candy);
+}
+.ai.ai--peak .ai-item,
+.ai.ai--peak .ai-tools span {
+  border-color: rgba(238, 245, 248, 0.22);
+}
+
 /* Dark-theme peak: candy slab with onyx ink so contrast inverts. */
 html[data-theme="dark"] .ai.ai--peak {
-  --ai-bg: var(--candy);
-  --ai-fg: #06181f;
-  --ai-mut: rgba(6, 24, 31, 0.74);
-  --ai-bdr: rgba(6, 24, 31, 0.22);
-  --ai-acc: #06181f;
+  background-color: var(--candy);
+  color: #06181f;
+}
+html[data-theme="dark"] .ai.ai--peak .eyebrow,
+html[data-theme="dark"] .ai.ai--peak .ai-lead,
+html[data-theme="dark"] .ai.ai--peak .ai-item p {
+  color: rgba(6, 24, 31, 0.74);
+}
+html[data-theme="dark"] .ai.ai--peak .ai-h .em,
+html[data-theme="dark"] .ai.ai--peak .ai-item .ai-n {
+  color: #06181f;
+}
+html[data-theme="dark"] .ai.ai--peak .ai-item,
+html[data-theme="dark"] .ai.ai--peak .ai-tools span {
+  border-color: rgba(6, 24, 31, 0.22);
 }
 
 .ai .eyebrow,
 .ai .ai-lead,
 .ai .ai-item p {
-  color: var(--ai-mut);
+  color: var(--muted);
   transition: color .8s var(--ease);
 }
 .ai .ai-h {
@@ -676,7 +721,7 @@ html[data-theme="dark"] .ai.ai--peak {
   text-wrap: balance;
 }
 .ai .ai-h .em {
-  color: var(--ai-acc);
+  color: var(--accent);
   transition: color .8s var(--ease);
 }
 .ai-lead {
@@ -691,7 +736,7 @@ html[data-theme="dark"] .ai.ai--peak {
   gap: 20px;
 }
 .ai-item {
-  border: 1px solid var(--ai-bdr);
+  border: 1px solid var(--line);
   border-radius: 22px;
   padding: clamp(24px, 3vw, 40px);
   height: 100%;
@@ -701,7 +746,7 @@ html[data-theme="dark"] .ai.ai--peak {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .12em;
-  color: var(--ai-acc);
+  color: var(--accent);
   transition: color .8s var(--ease);
 }
 .ai-item h3 {
@@ -720,7 +765,7 @@ html[data-theme="dark"] .ai.ai--peak {
 .ai-tools span {
   font-size: 12.5px;
   font-weight: 500;
-  border: 1px solid var(--ai-bdr);
+  border: 1px solid var(--line);
   padding: 6px 13px;
   border-radius: 30px;
   transition: border-color .8s var(--ease);
