@@ -1,60 +1,30 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
-import { ThemePreference, type Theme } from "@/lib/theme-preference";
+import { useEffect, useState } from "react";
 
-const THEME_CHANGE_EVENT = "studio:themechange";
+export type Theme = "light" | "dark";
 
-type UseThemeReturn = Readonly<{
-  theme: Theme;
-  setTheme: (next: Theme) => void;
-  toggle: () => void;
-}>;
+export function useTheme(): { theme: Theme; toggle: () => void; setTheme: (t: Theme) => void } {
+  const [theme, setTheme] = useState<Theme>("light");
 
-export function useTheme(defaultTheme: Theme = "light"): UseThemeReturn {
-  const subscribe = useCallback(
-    (onChange: () => void): (() => void) => {
-      if (typeof window === "undefined") return () => {};
-
-      ThemePreference.apply(ThemePreference.read(defaultTheme));
-
-      const handler = (): void => {
-        ThemePreference.apply(ThemePreference.read(defaultTheme));
-        onChange();
-      };
-
-      window.addEventListener("storage", handler);
-      window.addEventListener(THEME_CHANGE_EVENT, handler);
-
-      return () => {
-        window.removeEventListener("storage", handler);
-        window.removeEventListener(THEME_CHANGE_EVENT, handler);
-      };
-    },
-    [defaultTheme],
-  );
-
-  const getSnapshot = useCallback(
-    (): Theme => ThemePreference.read(defaultTheme),
-    [defaultTheme],
-  );
-
-  const getServerSnapshot = useCallback((): Theme => defaultTheme, [defaultTheme]);
-
-  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  const setTheme = useCallback((next: Theme): void => {
-    ThemePreference.write(next);
-    ThemePreference.apply(next);
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+  useEffect(() => {
+    const stored = (typeof window !== "undefined" ? localStorage.getItem("studio-theme") : null) as Theme | null;
+    if (stored && stored !== "light") {
+      setTheme(stored);
     }
   }, []);
 
-  const toggle = useCallback((): void => {
-    const current = ThemePreference.read(defaultTheme);
-    setTheme(ThemePreference.toggle(current));
-  }, [defaultTheme, setTheme]);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      localStorage.setItem("studio-theme", theme);
+    } catch {
+      // private-mode Safari etc: silent.
+    }
+  }, [theme]);
 
-  return { theme, setTheme, toggle };
+  const toggle = (): void => setTheme((p) => (p === "dark" ? "light" : "dark"));
+
+  return { theme, toggle, setTheme };
 }
