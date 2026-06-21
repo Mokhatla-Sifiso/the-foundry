@@ -1,4 +1,11 @@
 jest.mock("framer-motion");
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} {...rest} />
+  ),
+}));
 
 import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
