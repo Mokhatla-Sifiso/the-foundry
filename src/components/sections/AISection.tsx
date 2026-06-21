@@ -1,106 +1,87 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, type MotionStyle } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
-import { useTheme } from "@/hooks/useTheme";
-import { _hx, _lum, _rgb, _rgba } from "@/lib/colors";
-import { AIITEMS, PEAK_COLOR } from "@/lib/constants";
+import { AIITEMS } from "@/lib/constants";
 
 type AISectionProps = Readonly<{
-  /** Override the peak background color (Tweaks panel hook, §12). */
-  peakColor?: string;
   /** Toggle phone visibility (Tweaks panel hook). */
   showPhone?: boolean;
   /** Toggle tablet visibility (Tweaks panel hook). */
   showDesktop?: boolean;
+  /** Fraction of the section's height that must be in view before the
+   *  peak palette kicks in. 0.25 means the section flips when ~a quarter
+   *  of it is visible — tuned to feel natural on a typical scroll. */
+  threshold?: number;
 }>;
 
 /**
- * AI section — scroll-driven background transition (§7.8 with one
- * deviation).
+ * AI section — discrete in-view trigger drives a palette swap.
  *
- * The 5 `useTransform` mappings (bg / fg / mut / bdr / acc) all use
- * the shape `[0, 0.5, 1] → [edge, peak, edge]` — the section colors
- * transition in as you scroll into view, peak at the middle, then
- * return to the page edge tone as you scroll past. The spec's
- * original `[edge, peak, peak]` latch was kept "stuck on peak" once
- * triggered, which read as awkward when scrolling continued forward
- * — replaced with this smooth in-and-out per user feedback.
+ * Earlier iterations interpolated colors continuously via `useScroll +
+ * useTransform` over the entire scroll range. That made the section's
+ * background drift with every scroll tick and felt "stuck on dark"
+ * once you crossed midway — the spec's original "latch" behaviour.
  *
- * In dark theme a near-black peak swaps to candy so it stays visible
- * against the onyx page background.
+ * The new model (per the Medium article the user pointed to): use an
+ * `IntersectionObserver` to detect when the section enters/leaves the
+ * viewport, toggle the `ai--peak` class on the element, and let CSS
+ * variables + a transition handle the visual swap. Discrete trigger,
+ * smooth visual via `transition: background-color/color/border-color
+ * .8s var(--ease)` defined in globals.css. No JS animation loop, no
+ * per-frame work.
  */
 export function AISection({
-  peakColor = PEAK_COLOR,
   showPhone = true,
   showDesktop = true,
+  threshold = 0.25,
 }: AISectionProps = {}): React.ReactElement {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const { theme } = useTheme();
-  const L = theme !== "dark";
+  const sectionRef = useRef<HTMLElement>(null);
+  const [peakActive, setPeakActive] = useState(false);
 
-  const edgeBg = L ? "#e9f1f5" : "#020202";
-  const edgeTx = L ? [6, 9, 11] : [238, 245, 248];
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
 
-  // Auto-swap a near-black peak to candy in dark theme so it stays visible.
-  let peak = peakColor || "#020202";
-  if (!L && _lum(_hx(peak)) < 0.12) peak = "#B2D5E5";
-  const peakRGB = _hx(peak);
-  const peakTx = _lum(peakRGB) < 0.55 ? [238, 245, 248] : [6, 24, 31];
-  const accEdge = L ? "#2a6f93" : "#B2D5E5";
-  const accPeak = _lum(peakRGB) < 0.55 ? "#B2D5E5" : "#06181f";
-
-  const stops = [0, 0.5, 1];
-  const bg = useTransform(scrollYProgress, stops, [edgeBg, peak, edgeBg]);
-  const fg = useTransform(
-    scrollYProgress,
-    stops,
-    [_rgb(edgeTx), _rgb(peakTx), _rgb(edgeTx)],
-  );
-  const mut = useTransform(
-    scrollYProgress,
-    stops,
-    [_rgba(edgeTx, 0.62), _rgba(peakTx, 0.74), _rgba(edgeTx, 0.62)],
-  );
-  const bdr = useTransform(
-    scrollYProgress,
-    stops,
-    [_rgba(edgeTx, 0.14), _rgba(peakTx, 0.22), _rgba(edgeTx, 0.14)],
-  );
-  const acc = useTransform(scrollYProgress, stops, [accEdge, accPeak, accEdge]);
-
-  const sectionStyle: MotionStyle = { backgroundColor: bg, color: fg };
-  const mutStyle: MotionStyle = { color: mut };
+    // `entry.isIntersecting` flips to `true` the moment any pixel of the
+    // section crosses into view — so the peak palette would activate
+    // way too early on a tall section. Apple's pattern: check the
+    // intersectionRatio against the requested threshold so the swap
+    // fires when a meaningful slice (default 25%) is actually visible.
+    //
+    // Multiple thresholds keep the callback firing at intermediate
+    // ratios too, so the visible state stays in sync as the section
+    // scrolls through (vs. only firing at exact crossings).
+    const observer = new IntersectionObserver(
+      ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
+      { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
 
   return (
-    <motion.section
+    <section
+      ref={sectionRef}
       id="ai"
-      ref={ref}
-      className="ai sec"
-      style={sectionStyle}
+      className={`ai sec${peakActive ? " ai--peak" : ""}`}
     >
       <div className="wrap">
-        <Reveal as="span" className="eyebrow" style={mutStyle as React.CSSProperties}>
+        <Reveal as="span" className="eyebrow">
           AI in the workflow
         </Reveal>
         <Reveal>
           <h2 className="ai-h">
-            AI is part of{" "}
-            <motion.span style={{ color: acc }}>how I build.</motion.span>
+            AI is part of <span className="em">how I build.</span>
           </h2>
         </Reveal>
         <Reveal delay={0.05}>
-          <motion.p className="ai-lead" style={mutStyle}>
+          <p className="ai-lead">
             I treat AI as everyday tooling, not a novelty — wired into the
             same review and observability loops I expect from production
             software.
-          </motion.p>
+          </p>
         </Reveal>
 
         <div className="ai-showcase">
@@ -140,24 +121,20 @@ export function AISection({
         <div className="ai-grid">
           {AIITEMS.map((item, i) => (
             <Reveal key={item.t} delay={(i % 2) * 0.06} style={{ height: "100%" }}>
-              <motion.div className="ai-item" style={{ borderColor: bdr }}>
-                <motion.div className="ai-n" style={{ color: acc }}>
-                  {String(i + 1).padStart(2, "0")}
-                </motion.div>
+              <div className="ai-item">
+                <div className="ai-n">{String(i + 1).padStart(2, "0")}</div>
                 <h3>{item.t}</h3>
-                <motion.p style={mutStyle}>{item.d}</motion.p>
+                <p>{item.d}</p>
                 <div className="ai-tools">
                   {item.tools.map((tool) => (
-                    <motion.span key={tool} style={{ borderColor: bdr }}>
-                      {tool}
-                    </motion.span>
+                    <span key={tool}>{tool}</span>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </Reveal>
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
