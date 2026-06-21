@@ -1,170 +1,114 @@
 export const SITE = {
   name: "Mzwakhe Mokhatla",
-  shortName: "Mzwakhe",
-  role: "Software Engineer & Co-founder",
-  tagline: "Microfrontend specialist building AI-centric products.",
   email: "mokhatla.mzwakhe@gmail.com",
-  location: "Johannesburg, South Africa",
-  portrait: "",
+  phone: "067 980 1166",
+  phoneHref: "tel:+27679801166",
+  location: "Pretoria, South Africa",
+  tagline: "Turning ideas into digital realities.",
+  cvHref: "/cv/Mzwakhe-Mokhatla-CV.pdf",
 } as const;
 
-export const STATEMENT = {
-  eyebrow: "Studio note",
-  body: "I help teams ship microfrontend platforms and AI-centric products. The work is code-first: readable, scalable, quietly correct: so the surface area your team has to think about stays small while what it ships gets larger.",
-} as const;
-
-export type NavLink = Readonly<{
-  label: string;
-  href: string;
-}>;
+export type NavLink = Readonly<{ n: string; t: string; href: string }>;
 
 export const NAVLINKS: ReadonlyArray<NavLink> = [
-  { label: "Work", href: "#work" },
-  { label: "Services", href: "#services" },
-  { label: "Experience", href: "#experience" },
-  { label: "AI", href: "#ai" },
-  { label: "Contact", href: "#contact" },
-  { label: "Recruiter access", href: "/recruiter" },
-] as const;
+  { n: "01", t: "Work", href: "#work" },
+  { n: "02", t: "Services", href: "#services" },
+  { n: "03", t: "AI Workflow", href: "#ai" },
+  { n: "04", t: "Experience", href: "#experience" },
+  { n: "05", t: "Contact", href: "#contact" },
+];
 
 export type Service = Readonly<{
-  titleLineOne: string;
-  titleLineTwo: string;
-  body: string;
-  capabilities: ReadonlyArray<string>;
+  w1: string;
+  w2: string;
+  pills: ReadonlyArray<string>;
+  d: string;
 }>;
 
 export const SERVICES: ReadonlyArray<Service> = [
   {
-    titleLineOne: "Microfrontend",
-    titleLineTwo: "Architecture",
-    body: "Federated module boundaries that let independent teams ship without stepping on each other. I've led the pattern across enterprise React surfaces serving millions of users.",
-    capabilities: [
-      "Module federation rollout",
-      "Cross-team contract design",
-      "Versioned shared shells",
-      "Observability per remote",
-    ],
+    w1: "Frontend",
+    w2: "Engineering",
+    pills: ["React", "TypeScript", "Next.js", "Microfrontends", "UI/UX"],
+    d: "I build the interfaces people count on at work: accessible, responsive, and fast. Reusable component systems and design-faithful UI, translated straight from Figma into production.",
   },
   {
-    titleLineOne: "AI-Centric",
-    titleLineTwo: "Product Engineering",
-    body: "Production LLM workflows behind real product surfaces: proxied calls, traced runs, evaluated outputs. Local models for the sensitive bits, hosted models for the rest.",
-    capabilities: [
-      "LiteLLM proxy + routing",
-      "Langfuse traces & evals",
-      "Agentic tool design",
-      "Offline-capable fallbacks",
-    ],
+    w1: "Full-Stack",
+    w2: "& Cloud",
+    pills: ["Node · NestJS", "Azure Functions", "REST APIs", "PostgreSQL", "Pulumi · IaC", "Docker"],
+    d: "The contracts underneath the screen: APIs, relational data, and Azure-native services: designed to scale and stay honest from the UI all the way down to the database.",
   },
   {
-    titleLineOne: "Full-Stack",
-    titleLineTwo: "Build & Ship",
-    body: "Next.js App Router on the frontend, NestJS or Django on the backend, Prisma + Postgres for state. Pulumi for infra, GitHub Actions for the pipeline.",
-    capabilities: [
-      "Next.js 16 App Router",
-      "NestJS + Prisma APIs",
-      "Pulumi IaC",
-      "OpenTelemetry tracing",
-    ],
+    w1: "Technical",
+    w2: "Leadership",
+    pills: ["Code review", "Mentorship", "Architecture", "Agile · Scrum", "Sprint delivery"],
+    d: "Acting Technical Lead on StudioSync: owning specs, component boundaries, and migrations while mentoring the team and holding engineering standards high across frontend and backend.",
   },
-] as const;
+  {
+    w1: "Platform",
+    w2: "& DevOps",
+    pills: ["Azure DevOps", "GitHub Actions", "Grafana", "CI/CD", "Observability"],
+    d: "Pipelines and observability that make shipping calm: infrastructure as code, automated delivery, and dashboards that surface what production is actually doing.",
+  },
+];
 
 export type Work = Readonly<{
-  slug: string;
-  title: string;
-  role: string;
-  year: string;
-  blurb: string;
-  href: string | null;
+  nm: string;
+  og: string;
+  tag: string;
+  slot: string;
 }>;
 
 export const WORK: ReadonlyArray<Work> = [
-  {
-    slug: "studiosync",
-    title: "StudioSync",
-    role: "Acting Technical Lead",
-    year: "2025 – present",
-    blurb:
-      "Internal creative-ops platform for MTN. Microfrontend shell with federated remotes per business unit.",
-    href: null,
-  },
-  {
-    slug: "bayobab",
-    title: "Bayobab",
-    role: "Software Product Engineer",
-    year: "2024 – present",
-    blurb:
-      "Wholesale connectivity portal. Owns the carrier-facing React surface and the BFF that talks to legacy ESBs.",
-    href: null,
-  },
-  {
-    slug: "oddity",
-    title: "Oddity",
-    role: "Co-founder & Engineer",
-    year: "2025 – present",
-    blurb:
-      "AI-centric studio building client products on top of a private LiteLLM + Langfuse stack.",
-    href: null,
-  },
-] as const;
+  { nm: "StudioSync", og: "MTN Group · Technical Lead", tag: "Platform", slot: "work-studiosync" },
+  { nm: "Bayobab Client Portal", og: "Accenture · MTN", tag: "Frontend", slot: "work-bayobab" },
+  { nm: "e-Teller", og: "Nybble · NMB Bank, Tanzania", tag: "Fintech", slot: "work-eteller" },
+  { nm: "GE Smallworld GIS", og: "IST · Spatial systems", tag: "GIS", slot: "work-gis" },
+];
 
-export type ExperienceRow = Readonly<{
-  period: string;
-  company: string;
+export type XpRow = Readonly<{
   role: string;
-  blurb: string;
+  org: string;
+  when: string;
+  now?: boolean;
 }>;
 
-export const EXPERIENCE: ReadonlyArray<ExperienceRow> = [
-  {
-    period: "2025 – present",
-    company: "MTN Group",
-    role: "Acting Technical Lead: StudioSync",
-    blurb:
-      "Owns the microfrontend platform's architecture and release cadence. Coaches three squads on contract-driven remote development.",
-  },
-  {
-    period: "2024 – present",
-    company: "Accenture",
-    role: "Software Product Engineer: Bayobab",
-    blurb:
-      "Builds the React + BFF stack behind MTN's wholesale carrier portal. Federated remotes, OpenAPI-first contracts.",
-  },
-  {
-    period: "2025 – present",
-    company: "Oddity",
-    role: "Co-founder & Engineer",
-    blurb:
-      "Co-leading product direction with Malete (architecture). Implements the build-and-ship side of every engagement.",
-  },
-] as const;
+export const XP: ReadonlyArray<XpRow> = [
+  { role: "Software Engineer · Tech Lead", org: "MTN Group: Roodepoort", when: "Mar 2024: Present", now: true },
+  { role: "Product & Platform Engineer", org: "Accenture: Waterfall", when: "Mar 2024: Present", now: true },
+  { role: "Frontend Engineer", org: "Nybble Technologies: Bryanston / Dar es Salaam", when: "Dec 2022: Jun 2023" },
+  { role: "Junior Software Developer", org: "IST: Pretoria", when: "Jan 2021: Dec 2022" },
+];
 
 export type AiItem = Readonly<{
-  device: "laptop" | "phone" | "watch" | "tablet";
-  label: string;
-  detail: string;
+  t: string;
+  d: string;
+  tools: ReadonlyArray<string>;
 }>;
 
-export const AI_ITEMS: ReadonlyArray<AiItem> = [
+export const AIITEMS: ReadonlyArray<AiItem> = [
   {
-    device: "laptop",
-    label: "Cost dashboard",
-    detail: "Per-model spend across LiteLLM, by tenant, by prompt class.",
+    t: "AI pair-programming",
+    d: "Cursor and Copilot handle scaffolding, refactors, and the tedious parts of a migration: so I stay in flow while the boilerplate writes itself.",
+    tools: ["Cursor", "Copilot"],
   },
   {
-    device: "phone",
-    label: "PR review bot",
-    detail: "Inline review comments from an agent with repo-aware context.",
+    t: "Rapid prototyping",
+    d: "I stand up UI prototypes and explore several directions in minutes with LLMs, then keep only what earns its place in the product.",
+    tools: ["LLM prompting", "Prototyping"],
   },
   {
-    device: "watch",
-    label: "Uptime ring",
-    detail: "Glance-able health for the inference stack and downstream APIs.",
+    t: "Tests & documentation",
+    d: "Generating unit and integration tests, surfacing edge cases, and drafting docs keeps the codebase understandable as it grows.",
+    tools: ["Test generation", "Docs"],
   },
   {
-    device: "tablet",
-    label: "Weekly report",
-    detail: "Auto-generated stakeholder digest with evals, incidents, asks.",
+    t: "Review & research",
+    d: "A second pass on pull requests, plus tracking new AI tooling and folding what genuinely works into the team's everyday practice.",
+    tools: ["PR review", "AI trends"],
   },
-] as const;
+];
+
+export const ASSISTANT_NAME = "Clerk";
+
+export const PEAK_COLOR = "#020202";
