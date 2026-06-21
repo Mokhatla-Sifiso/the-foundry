@@ -14,7 +14,12 @@ export const SITE = {
   phoneHref: "tel:+27679801166",
   location: "Pretoria, South Africa",
   tagline: "Turning ideas into digital realities.",
-  cvHref: "/cv/Mzwakhe-Mokhatla-CV.pdf",
+  cvHref: "/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf",
+  /**
+   * Path to the hero portrait. Current asset is at `/img/potrait.png`
+   * (filename retained as supplied — note the missing 'r').
+   */
+  portrait: "/img/potrait.png",
 } as const;
 
 export type NavLink = Readonly<{ n: string; t: string; href: string }>;
