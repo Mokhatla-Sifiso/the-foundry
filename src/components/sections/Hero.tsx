@@ -2,76 +2,64 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { SITE } from "@/lib/constants";
-import { parallaxRange } from "@/lib/parallax";
-import { HeroPortrait } from "./HeroPortrait";
-
-const REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
-
-const WORDMARK_PARALLAX_DISTANCE = 80;
-const PORTRAIT_PARALLAX_DISTANCE = 180;
-
-const wordmark: string = SITE.shortName.toUpperCase();
+import { EASE } from "@/components/primitives/Reveal";
 
 export function Hero(): React.ReactElement {
-  const sectionRef = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: ref,
     offset: ["start start", "end start"],
   });
-  const wordmarkY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    parallaxRange(WORDMARK_PARALLAX_DISTANCE),
-  );
-  const portraitY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    parallaxRange(PORTRAIT_PARALLAX_DISTANCE),
-  );
+  const yRender = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const yMark = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const cueFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <section
-      ref={sectionRef}
-      aria-labelledby="hero-heading"
-      className="relative isolate flex min-h-screen flex-col justify-end overflow-hidden px-4 pb-16 pt-40 sm:px-8 sm:pb-24"
-    >
-      <motion.h1
-        id="hero-heading"
-        aria-label={SITE.name}
-        style={{ y: wordmarkY }}
-        className="select-none text-balance text-[clamp(80px,27vw,460px)] font-extrabold leading-[0.85] tracking-[-0.06em] text-fg"
-      >
-        <span aria-hidden="true" className="block">
-          {wordmark.split("").map((char, index) => (
-            <motion.span
-              key={`${char}-${index}`}
-              initial={{ opacity: 0, y: 80 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.85,
-                delay: 0.15 + index * 0.05,
-                ease: REVEAL_EASE,
-              }}
-              className="inline-block"
-            >
-              {char}
-            </motion.span>
-          ))}
-        </span>
-      </motion.h1>
-
+    <section id="top" className="hero" ref={ref}>
       <motion.div
-        aria-hidden="true"
-        style={{ y: portraitY }}
-        className="pointer-events-none absolute right-[6%] top-[22%] aspect-[3/4] w-[42vw] max-w-[420px] overflow-hidden rounded-[var(--radius)] bg-card shadow-2xl sm:w-[32vw]"
+        className="hero-mark"
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.1, ease: EASE }}
+        style={{ y: yMark }}
       >
-        <HeroPortrait />
+        mzwakhe
       </motion.div>
 
-      <div className="relative z-10 mt-8 flex max-w-xl flex-col gap-1 text-fg-2">
-        <p className="text-base font-medium text-fg sm:text-lg">{SITE.role}</p>
-        <p className="text-sm sm:text-base">{SITE.tagline}</p>
+      <motion.div
+        className="hero-render"
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: EASE, delay: 0.25 }}
+        style={{ y: yRender }}
+      >
+        <div className="glowpad" />
+        <div className="image-slot" role="img" aria-label="Hero portrait placeholder" />
+      </motion.div>
+
+      <div className="wrap hero-foot">
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.5 }}
+        >
+          Turning ideas into <span className="em">digital realities.</span>
+        </motion.h1>
+
+        <motion.div
+          className="scroll-cue"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          style={{ opacity: cueFade }}
+        >
+          <motion.span
+            className="dot"
+            animate={{ scale: [1, 0.5, 1], opacity: [1, 0.4, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          Scroll
+        </motion.div>
       </div>
     </section>
   );
