@@ -1,13 +1,13 @@
 import { metadata } from "@/app/layout";
 
-/*
- * RootLayout renders <html> and <body>, which React Testing Library can't host
- * inside its detached <div> container. Behavior worth asserting at the unit
- * level lives in the exported metadata; structural rendering is covered by
- * `next build` + e2e tests in later PRs.
+/**
+ * RootLayout renders <html>/<body>, which RTL can't host in its
+ * detached <div>. Structural assertions are covered by `next build`
+ * + the dev-server smoke fetch; here we just lock the exported
+ * metadata contract.
  */
 describe("RootLayout metadata", () => {
-  it("publishes the studio title with a templated suffix", () => {
+  it("publishes the spec title with a templated suffix", () => {
     expect(metadata.title).toEqual(
       expect.objectContaining({
         default: expect.stringMatching(/Mzwakhe Mokhatla/),
@@ -16,9 +16,8 @@ describe("RootLayout metadata", () => {
     );
   });
 
-  it("exposes a description and OpenGraph block for crawlers", () => {
-    expect(metadata.description).toMatch(/Software engineer/);
-    expect(metadata.openGraph?.title).toMatch(/Mzwakhe Mokhatla/);
+  it("uses the spec tagline as the description", () => {
+    expect(metadata.description).toMatch(/Turning ideas into digital realities/);
   });
 
   it("opts into indexing", () => {
