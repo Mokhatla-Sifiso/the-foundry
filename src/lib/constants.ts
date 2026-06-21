@@ -5,6 +5,7 @@ export const SITE = {
   tagline: "Microfrontend specialist building AI-centric products.",
   email: "mokhatla.mzwakhe@gmail.com",
   location: "Johannesburg, South Africa",
+  portrait: "",
 } as const;
 
 export type NavLink = Readonly<{
