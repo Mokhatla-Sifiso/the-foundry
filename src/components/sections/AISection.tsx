@@ -24,8 +24,8 @@ export function AISection({
     if (!el || typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setPeakActive(entry.isIntersecting),
-      { threshold },
+      ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
+      { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },
     );
     observer.observe(el);
     return () => observer.disconnect();
