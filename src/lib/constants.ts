@@ -17,6 +17,12 @@ export const SITE = {
   tagline: "Microfrontend specialist building AI-centric products.",
   email: "mokhatla.mzwakhe@gmail.com",
   location: "Johannesburg, South Africa",
+  /**
+   * Path to the hero portrait under `/public`. Empty string renders a
+   * gradient placeholder — drop a real image (e.g. `/portrait.jpg`) and
+   * update this field to swap it in. One edit, no component changes.
+   */
+  portrait: "",
 } as const;
 
 // ──────────────────────────────────────────────────────────────────────────
