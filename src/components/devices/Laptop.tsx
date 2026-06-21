@@ -9,10 +9,16 @@ type LaptopProps = Readonly<{ assistantName?: string }>;
  * VERBATIM), and an Insights column whose bullets quote the assistant
  * by name (default "Clerk", overridable via `assistantName` to support
  * the Tweaks panel from §12).
+ *
+ * Returns only the inner content (lid + base). The `.laptop` wrapper
+ * with its `position: relative; width: min(720px, 100%); margin: 0
+ * auto; filter: drop-shadow(...)` is supplied by `<Reveal className=
+ * "laptop">` in AISection per §8.1 — wrapping it here too would
+ * double-position the device.
  */
 export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): React.ReactElement {
   return (
-    <div className="laptop">
+    <>
       <div className="laptop-lid">
         <div className="laptop-scr">
           <aside className="ldash-side">
@@ -99,6 +105,6 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
       <div className="laptop-base">
         <div className="laptop-notch" />
       </div>
-    </div>
+    </>
   );
 }
