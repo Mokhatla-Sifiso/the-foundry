@@ -1,73 +1,45 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
-import { ThemePreference, type Theme } from "@/lib/theme-preference";
+import { useEffect, useState } from "react";
 
 /**
- * Window event the toggle dispatches so other `useTheme` consumers on the
- * same page (a header toggle and a footer toggle, for example) re-render
- * in lockstep without a global store.
+ * Theme hook — VERBATIM from §5.1 of the build spec. The simple
+ * useState + useEffect pattern is intentional: the no-flash inline
+ * script in <head> applies `data-theme` before paint, so this hook
+ * only needs to keep React state in sync with localStorage and DOM
+ * after hydration.
+ *
+ * Key: `studio-theme`. Default: `"light"`.
  */
-const THEME_CHANGE_EVENT = "studio:themechange";
+export type Theme = "light" | "dark";
 
-type UseThemeReturn = Readonly<{
-  theme: Theme;
-  setTheme: (next: Theme) => void;
-  toggle: () => void;
-}>;
+export function useTheme(): { theme: Theme; toggle: () => void; setTheme: (t: Theme) => void } {
+  const [theme, setTheme] = useState<Theme>("light");
 
-/**
- * Subscribes to localStorage state via `useSyncExternalStore` — the React 19
- * idiomatic way to read external state without the `useState` + `useEffect`
- * hydration dance. The DOM `data-theme` attribute is brought into sync on
- * first subscription (one-shot apply) and on every change event.
- */
-export function useTheme(defaultTheme: Theme = "light"): UseThemeReturn {
-  const subscribe = useCallback(
-    (onChange: () => void): (() => void) => {
-      if (typeof window === "undefined") return () => {};
-
-      // First subscription on the client — bring the DOM in sync with the
-      // value localStorage holds (may differ from what SSR rendered).
-      ThemePreference.apply(ThemePreference.read(defaultTheme));
-
-      const handler = (): void => {
-        ThemePreference.apply(ThemePreference.read(defaultTheme));
-        onChange();
-      };
-
-      window.addEventListener("storage", handler);
-      window.addEventListener(THEME_CHANGE_EVENT, handler);
-
-      return () => {
-        window.removeEventListener("storage", handler);
-        window.removeEventListener(THEME_CHANGE_EVENT, handler);
-      };
-    },
-    [defaultTheme],
-  );
-
-  const getSnapshot = useCallback(
-    (): Theme => ThemePreference.read(defaultTheme),
-    [defaultTheme],
-  );
-
-  const getServerSnapshot = useCallback((): Theme => defaultTheme, [defaultTheme]);
-
-  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  const setTheme = useCallback((next: Theme): void => {
-    ThemePreference.write(next);
-    ThemePreference.apply(next);
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+  useEffect(() => {
+    // Hydration-sync with localStorage. The ThemeScript in <head> already
+    // applied the correct `data-theme` before paint, so the brief mismatch
+    // between SSR ("light") and resolved value is invisible to the user.
+    // The new `react-hooks/set-state-in-effect` rule flags this pattern,
+    // but the spec (§5.1) explicitly mandates it for `studio-theme` sync.
+    const stored = (typeof window !== "undefined" ? localStorage.getItem("studio-theme") : null) as Theme | null;
+    if (stored && stored !== "light") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTheme(stored);
     }
   }, []);
 
-  const toggle = useCallback((): void => {
-    const current = ThemePreference.read(defaultTheme);
-    setTheme(ThemePreference.toggle(current));
-  }, [defaultTheme, setTheme]);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      localStorage.setItem("studio-theme", theme);
+    } catch {
+      // private-mode Safari etc — silent.
+    }
+  }, [theme]);
 
-  return { theme, setTheme, toggle };
+  const toggle = (): void => setTheme((p) => (p === "dark" ? "light" : "dark"));
+
+  return { theme, toggle, setTheme };
 }
