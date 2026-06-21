@@ -1,57 +1,60 @@
-import { Reveal } from "@/components/ui/Reveal";
+import { Reveal } from "@/components/primitives/Reveal";
 import { SERVICES } from "@/lib/constants";
-import { ServiceCard } from "./ServiceCard";
-
-/** Top offset (px) for the first sticky card — clears the pill nav. */
-const TOP_BASE_PX = 88;
-/** Each subsequent card sticks this many px lower than the previous. */
-const TOP_STEP_PX = 18;
 
 /**
- * Stacking dark cards built on plain CSS `position: sticky`. Each card
- * sticks at progressively lower positions; solid card backgrounds mean
- * a later card visually covers the previous one as the user scrolls.
+ * Services — VERBATIM markup + copy + sticky-stack from §7.5.
  *
- * Server component — no JS needed for sticky. Card content reveal is
- * delegated to `<Reveal>`; the cards themselves render through
- * `<ServiceCard>` so the article-level styling and the content
- * structure can evolve independently.
+ * Per-card inline style:
+ *   `top: calc(86px + i*18px); zIndex: i + 1`
+ * Solid card backgrounds (`--card`) mean each card covers the previous
+ * one as the user scrolls — the pinned stacking effect.
  */
+const TOTAL = SERVICES.length;
+
 export function Services(): React.ReactElement {
   return (
-    <section
-      id="services"
-      aria-labelledby="services-heading"
-      className="relative px-4 pb-32 pt-16 sm:px-8 sm:pb-48 sm:pt-24"
-    >
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <div className="mb-16 flex items-end justify-between gap-4">
-            <h2
-              id="services-heading"
-              className="text-balance text-[clamp(32px,4.6vw,60px)] font-medium tracking-[-0.03em] text-fg"
-            >
-              Services
-            </h2>
-            <span className="hidden text-sm text-muted sm:inline">
-              {SERVICES.length.toString().padStart(2, "0")} disciplines
-            </span>
-          </div>
+    <section id="services" className="sec">
+      <div className="wrap">
+        <Reveal as="span" className="eyebrow">
+          Services
+        </Reveal>
+        <Reveal delay={0.05} className="statement">
+          <p>
+            <span className="mut">What I do —</span> front-end-focused,{" "}
+            <span className="em">full-stack capable.</span>
+          </p>
         </Reveal>
 
-        <div className="relative flex flex-col gap-6">
-          {SERVICES.map((service, index) => (
+        <div className="stack">
+          {SERVICES.map((s, i) => (
             <article
-              key={service.titleLineOne}
-              data-testid={`service-card-${index}`}
-              className="sticky overflow-hidden rounded-[var(--radius)] bg-card p-8 shadow-2xl md:p-12 lg:p-16"
-              style={{
-                top: `${TOP_BASE_PX + index * TOP_STEP_PX}px`,
-                zIndex: index + 1,
-              }}
+              key={s.w1}
+              className="svc-card"
+              style={{ top: `calc(86px + ${i * 18}px)`, zIndex: i + 1 }}
             >
-              <Reveal y={24}>
-                <ServiceCard service={service} index={index} />
+              <span className="num">
+                {String(i + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+              </span>
+
+              <Reveal>
+                <h3>
+                  {s.w1}
+                  <span className="w2">{s.w2}</span>
+                </h3>
+              </Reveal>
+
+              <div className="grow" />
+
+              <Reveal delay={0.06}>
+                <div className="svc-pills">
+                  {s.pills.map((p) => (
+                    <span key={p}>{p}</span>
+                  ))}
+                </div>
+                <div className="svc-desc">
+                  <span className="ast" aria-hidden="true">✳</span>
+                  <p>{s.d}</p>
+                </div>
               </Reveal>
             </article>
           ))}
