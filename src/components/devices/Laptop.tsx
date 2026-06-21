@@ -4,7 +4,7 @@ type LaptopProps = Readonly<{ assistantName?: string }>;
 
 export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): React.ReactElement {
   return (
-    <div className="laptop">
+    <>
       <div className="laptop-lid">
         <div className="laptop-scr">
           <aside className="ldash-side">
@@ -91,6 +91,6 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
       <div className="laptop-base">
         <div className="laptop-notch" />
       </div>
-    </div>
+    </>
   );
 }
