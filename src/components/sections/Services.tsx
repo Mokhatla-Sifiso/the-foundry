@@ -1,6 +1,8 @@
 import { Reveal } from "@/components/primitives/Reveal";
 import { SERVICES } from "@/lib/constants";
 
+const STACK_TOP_BASE_PX = 86;
+const STACK_TOP_STEP_PX = 36;
 const TOTAL = SERVICES.length;
 
 export function Services(): React.ReactElement {
@@ -22,7 +24,10 @@ export function Services(): React.ReactElement {
             <article
               key={s.w1}
               className="svc-card"
-              style={{ top: `calc(86px + ${i * 18}px)`, zIndex: i + 1 }}
+              style={{
+                top: `calc(${STACK_TOP_BASE_PX}px + ${i * STACK_TOP_STEP_PX}px)`,
+                zIndex: i + 1,
+              }}
             >
               <span className="num">
                 {String(i + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
