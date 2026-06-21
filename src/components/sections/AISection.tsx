@@ -18,12 +18,16 @@ type AISectionProps = Readonly<{
 }>;
 
 /**
- * AI section — VERBATIM scroll-latch logic from §7.8.
+ * AI section — scroll-driven background transition (§7.8 with one
+ * deviation).
  *
- * The 5 useTransform mappings (bg/fg/mut/bdr/acc) all use the same
- * `[0, 0.5, 1] → [edge, peak, peak]` shape so the section visually
- * "latches" at peak: once you've scrolled halfway through it the
- * colors stay at peak until you scroll back up.
+ * The 5 `useTransform` mappings (bg / fg / mut / bdr / acc) all use
+ * the shape `[0, 0.5, 1] → [edge, peak, edge]` — the section colors
+ * transition in as you scroll into view, peak at the middle, then
+ * return to the page edge tone as you scroll past. The spec's
+ * original `[edge, peak, peak]` latch was kept "stuck on peak" once
+ * triggered, which read as awkward when scrolling continued forward
+ * — replaced with this smooth in-and-out per user feedback.
  *
  * In dark theme a near-black peak swaps to candy so it stays visible
  * against the onyx page background.
@@ -53,23 +57,23 @@ export function AISection({
   const accPeak = _lum(peakRGB) < 0.55 ? "#B2D5E5" : "#06181f";
 
   const stops = [0, 0.5, 1];
-  const bg = useTransform(scrollYProgress, stops, [edgeBg, peak, peak]);
+  const bg = useTransform(scrollYProgress, stops, [edgeBg, peak, edgeBg]);
   const fg = useTransform(
     scrollYProgress,
     stops,
-    [_rgb(edgeTx), _rgb(peakTx), _rgb(peakTx)],
+    [_rgb(edgeTx), _rgb(peakTx), _rgb(edgeTx)],
   );
   const mut = useTransform(
     scrollYProgress,
     stops,
-    [_rgba(edgeTx, 0.62), _rgba(peakTx, 0.74), _rgba(peakTx, 0.74)],
+    [_rgba(edgeTx, 0.62), _rgba(peakTx, 0.74), _rgba(edgeTx, 0.62)],
   );
   const bdr = useTransform(
     scrollYProgress,
     stops,
-    [_rgba(edgeTx, 0.14), _rgba(peakTx, 0.22), _rgba(peakTx, 0.22)],
+    [_rgba(edgeTx, 0.14), _rgba(peakTx, 0.22), _rgba(edgeTx, 0.14)],
   );
-  const acc = useTransform(scrollYProgress, stops, [accEdge, accPeak, accPeak]);
+  const acc = useTransform(scrollYProgress, stops, [accEdge, accPeak, accEdge]);
 
   const sectionStyle: MotionStyle = { backgroundColor: bg, color: fg };
   const mutStyle: MotionStyle = { color: mut };
