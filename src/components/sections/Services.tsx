@@ -40,8 +40,6 @@ export function Services(): React.ReactElement {
                 </h3>
               </Reveal>
 
-              <div className="grow" />
-
               <Reveal delay={0.06}>
                 <div className="svc-pills">
                   {s.pills.map((p) => (
