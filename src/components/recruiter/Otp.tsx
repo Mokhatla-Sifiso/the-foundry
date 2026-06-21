@@ -1,0 +1,152 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
+import { Arrow } from "@/components/primitives/icons";
+import { Dots } from "./Dots";
+
+const OTP_LENGTH = 6;
+
+type OtpProps = Readonly<{
+  email: string;
+  /** The generated demo code — shown in the Demo note + matched on verify. */
+  code: string;
+  /** Verify handler — receives the joined 6-digit string. */
+  onVerify: (entered: string) => void;
+  /** Caller-controlled error message (e.g. "That code doesn't match. Try again."). */
+  error?: string;
+  /** Regenerate the code (Demo "Resend" link). */
+  onResend: () => void;
+}>;
+
+/**
+ * OTP screen — VERBATIM behaviour from §10.6.
+ *
+ *   - 6 single-char inputs, first auto-focused on mount.
+ *   - Each keystroke strips non-digits; pasting distributes up to 6
+ *     chars across boxes and focuses the last filled one.
+ *   - Backspace on an empty box moves focus to the previous one.
+ *   - Verify button disabled until all 6 boxes are filled.
+ *   - Caller surfaces an `error` string when verification fails; the
+ *     inputs render with `.invalid`-style red borders via aria-invalid.
+ *
+ * The demo note box (only correct in the prototype) shows the code in
+ * plain text so reviewers can type it back in — replaced by a real
+ * email send in production per §13.
+ */
+export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React.ReactElement {
+  const [digits, setDigits] = useState<string[]>(() => Array(OTP_LENGTH).fill(""));
+  const refs = useRef<Array<HTMLInputElement | null>>([]);
+
+  useEffect(() => {
+    refs.current[0]?.focus();
+  }, []);
+
+  const setAt = (i: number, value: string): void => {
+    setDigits((prev) => {
+      const next = [...prev];
+      next[i] = value;
+      return next;
+    });
+  };
+
+  const handleChange = (i: number, e: ChangeEvent<HTMLInputElement>): void => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw.length === 0) {
+      setAt(i, "");
+      return;
+    }
+    if (raw.length === 1) {
+      setAt(i, raw);
+      const nextIndex = Math.min(i + 1, OTP_LENGTH - 1);
+      refs.current[nextIndex]?.focus();
+      return;
+    }
+    // Paste path — distribute across boxes from i.
+    setDigits((prev) => {
+      const next = [...prev];
+      for (let k = 0; k < OTP_LENGTH - i && k < raw.length; k += 1) {
+        next[i + k] = raw[k];
+      }
+      return next;
+    });
+    const last = Math.min(i + raw.length, OTP_LENGTH) - 1;
+    refs.current[Math.max(last, 0)]?.focus();
+  };
+
+  const handleKeyDown = (i: number, e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Backspace" && digits[i] === "" && i > 0) {
+      refs.current[i - 1]?.focus();
+    }
+  };
+
+  const joined = digits.join("");
+  const allFilled = joined.length === OTP_LENGTH;
+  const handleVerify = (): void => onVerify(joined);
+
+  return (
+    <>
+      <Dots step={1} />
+      <h1 className="t">Check your inbox</h1>
+      <p className="sub">
+        Enter the 6-digit code sent to <b>{email}</b> to confirm it&apos;s
+        yours.
+      </p>
+
+      <div className="otp" aria-label="Verification code">
+        {digits.map((d, i) => (
+          <input
+            key={i}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            inputMode="numeric"
+            maxLength={OTP_LENGTH}
+            value={d}
+            onChange={(e) => handleChange(i, e)}
+            onKeyDown={(e) => handleKeyDown(i, e)}
+            aria-label={`Digit ${i + 1} of ${OTP_LENGTH}`}
+            aria-invalid={Boolean(error)}
+          />
+        ))}
+      </div>
+
+      {error ? (
+        <div className="err" style={{ color: "var(--warn)", fontSize: 13, marginTop: 4 }}>
+          {error}
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        className="btn btn-primary"
+        disabled={!allFilled}
+        onClick={handleVerify}
+        style={{ marginTop: 18 }}
+      >
+        Verify email
+        <Arrow />
+      </button>
+
+      <div className="note">
+        <span className="b">Demo</span>
+        <div>
+          No mail server in this prototype, so your code is{" "}
+          <code>{code}</code>. In production this is emailed to your work
+          address and expires in 10 minutes.{" "}
+          <a
+            role="button"
+            tabIndex={0}
+            onClick={onResend}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") onResend();
+            }}
+            style={{ color: "var(--candy)", fontWeight: 700 }}
+          >
+            Resend
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}
