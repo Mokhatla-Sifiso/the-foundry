@@ -26,6 +26,14 @@ export const SITE = {
 } as const;
 
 // ──────────────────────────────────────────────────────────────────────────
+// Studio statement (large-text section under Hero)
+
+export const STATEMENT = {
+  eyebrow: "Studio note",
+  body: "I help teams ship microfrontend platforms and AI-centric products. The work is code-first — readable, scalable, quietly correct — so the surface area your team has to think about stays small while what it ships gets larger.",
+} as const;
+
+// ──────────────────────────────────────────────────────────────────────────
 // Navigation
 
 export type NavLink = Readonly<{
