@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Onest } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
+import { Loader } from "@/components/layout/Loader";
+import { NavBar } from "@/components/layout/NavBar";
+import { ThemeBootstrapScript } from "@/components/layout/ThemeBootstrapScript";
+import { Progress } from "@/components/ui/Progress";
 import "./globals.css";
 
 const onest = Onest({
@@ -31,7 +36,16 @@ type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
 export default function RootLayout({ children }: RootLayoutProps): React.ReactElement {
   return (
     <html lang="en" data-theme="light" className={onest.variable}>
-      <body className="min-h-screen bg-bg text-fg antialiased">{children}</body>
+      <head>
+        <ThemeBootstrapScript />
+      </head>
+      <body className="min-h-screen bg-bg text-fg antialiased">
+        <Loader />
+        <Progress />
+        <NavBar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
