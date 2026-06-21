@@ -4,7 +4,7 @@ type PhoneProps = Readonly<{ assistantName?: string }>;
 
 export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {}): React.ReactElement {
   return (
-    <div className="phone">
+    <>
       <div className="phone-notch" />
       <div className="phone-sb">
         <span>9:41</span>
@@ -31,6 +31,6 @@ export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {})
           <div className="ph-btn">Open review</div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
