@@ -1,46 +1,46 @@
-import { Reveal } from "@/components/ui/Reveal";
-import { EXPERIENCE } from "@/lib/constants";
-import { ExperienceRow } from "./ExperienceRow";
+import { Reveal } from "@/components/primitives/Reveal";
+import { XP } from "@/lib/constants";
 
 /**
- * Timeline section — chronological rows pulled straight from `EXPERIENCE`.
- * Renders nothing past the section heading when the constant is empty
- * so the layout doesn't show a hollow "Experience" header with an
- * empty list beneath.
+ * Experience — VERBATIM markup + copy from §7.7.
+ *
+ * Heading uses inline style per spec; row stagger is `i * 0.04` so
+ * each row enters slightly after the previous one.
  */
 export function Experience(): React.ReactElement {
   return (
-    <section
-      id="experience"
-      aria-labelledby="experience-heading"
-      className="relative px-4 py-32 sm:px-8 sm:py-48"
-    >
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <div className="mb-12 flex items-end justify-between gap-4">
-            <h2
-              id="experience-heading"
-              className="text-balance text-[clamp(32px,4.6vw,60px)] font-medium tracking-[-0.03em] text-fg"
-            >
-              Experience
-            </h2>
-            <span className="hidden text-sm text-muted sm:inline">
-              {EXPERIENCE.length.toString().padStart(2, "0")} positions
-            </span>
-          </div>
+    <section id="experience" className="sec">
+      <div className="wrap">
+        <Reveal as="span" className="eyebrow">
+          Experience
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2
+            style={{
+              fontWeight: 700,
+              fontSize: "clamp(30px, 4.6vw, 60px)",
+              letterSpacing: "-.035em",
+              lineHeight: 1,
+              marginBottom: 44,
+              maxWidth: "18ch",
+            }}
+          >
+            Five years building <span style={{ color: "var(--candy)" }}>at scale.</span>
+          </h2>
         </Reveal>
 
-        {EXPERIENCE.length === 0 ? (
-          <p className="text-fg-2">More to come.</p>
-        ) : (
-          <div role="list" className="border-t border-line">
-            {EXPERIENCE.map((row, index) => (
-              <Reveal key={`${row.company}-${row.period}`} y={20} delay={index * 0.05}>
-                <ExperienceRow row={row} />
-              </Reveal>
-            ))}
-          </div>
-        )}
+        <div className="xp-list">
+          {XP.map((row, i) => (
+            <Reveal key={`${row.role}-${i}`} className="xp-row" delay={i * 0.04}>
+              <div className="role">{row.role}</div>
+              <div className="org">{row.org}</div>
+              <div className="when">
+                {row.now ? <span className="now">● </span> : null}
+                {row.when}
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
