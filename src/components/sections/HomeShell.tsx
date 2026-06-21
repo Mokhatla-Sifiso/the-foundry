@@ -9,7 +9,7 @@ export function HomeShell(): React.ReactElement {
   return (
     <section
       aria-label="Site under construction"
-      className="flex flex-1 items-center justify-center px-8 py-32 text-center"
+      className="flex flex-1 items-center justify-center px-8 pb-16 pt-40 text-center sm:pt-48"
     >
       <div className="flex flex-col items-center gap-4">
         <span className="text-sm font-medium uppercase tracking-[0.2em] text-muted">
