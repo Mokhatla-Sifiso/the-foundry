@@ -74,3 +74,31 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ────────────────────────────────────────────────────────────────────
+ * Loader — overlay rendered server-side so first paint shows the mark
+ * before React hydrates. `LoaderDismiss` adds `.hide` on mount which
+ * fades the overlay out before removing it from the DOM.
+ * ──────────────────────────────────────────────────────────────────── */
+.studio-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.6s var(--ease);
+}
+
+.studio-loader.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.studio-loader__mark {
+  font-size: clamp(64px, 12vw, 160px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+}
