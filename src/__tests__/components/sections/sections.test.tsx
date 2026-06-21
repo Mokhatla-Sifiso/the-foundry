@@ -1,4 +1,11 @@
 jest.mock("framer-motion");
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} {...rest} />
+  ),
+}));
 
 import { render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
@@ -26,6 +33,13 @@ describe("Hero", () => {
   it("ids the section as #top so the brand href can scroll-link back", () => {
     const { container } = render(<Hero />);
     expect(container.querySelector("section#top")).not.toBeNull();
+  });
+
+  it("renders the portrait next/image with the SITE.portrait src + descriptive alt", () => {
+    render(<Hero />);
+    const img = screen.getByAltText(`Portrait of ${SITE.name}`) as HTMLImageElement;
+    expect(img).toBeInTheDocument();
+    expect(img.getAttribute("src")).toBe(SITE.portrait);
   });
 });
 

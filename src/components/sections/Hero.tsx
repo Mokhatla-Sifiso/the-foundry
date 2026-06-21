@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { EASE } from "@/components/primitives/Reveal";
+import { SITE } from "@/lib/constants";
 
 /**
  * Hero — VERBATIM markup, copy, animations from §7.3.
@@ -45,8 +47,14 @@ export function Hero(): React.ReactElement {
         style={{ y: yRender }}
       >
         <div className="glowpad" />
-        {/* Placeholder slot — drop in `next/image` when /img/hero-portrait.* lands (§14). */}
-        <div className="image-slot" role="img" aria-label="Hero portrait placeholder" />
+        <Image
+          src={SITE.portrait}
+          alt={`Portrait of ${SITE.name}`}
+          fill
+          priority
+          sizes="(min-width: 1280px) 520px, (min-width: 768px) 34vw, 64vw"
+          style={{ objectFit: "cover", borderRadius: 26 }}
+        />
       </motion.div>
 
       <div className="wrap hero-foot">
