@@ -38,23 +38,23 @@ export function AISection({
   const accPeak = _lum(peakRGB) < 0.55 ? "#B2D5E5" : "#06181f";
 
   const stops = [0, 0.5, 1];
-  const bg = useTransform(scrollYProgress, stops, [edgeBg, peak, peak]);
+  const bg = useTransform(scrollYProgress, stops, [edgeBg, peak, edgeBg]);
   const fg = useTransform(
     scrollYProgress,
     stops,
-    [_rgb(edgeTx), _rgb(peakTx), _rgb(peakTx)],
+    [_rgb(edgeTx), _rgb(peakTx), _rgb(edgeTx)],
   );
   const mut = useTransform(
     scrollYProgress,
     stops,
-    [_rgba(edgeTx, 0.62), _rgba(peakTx, 0.74), _rgba(peakTx, 0.74)],
+    [_rgba(edgeTx, 0.62), _rgba(peakTx, 0.74), _rgba(edgeTx, 0.62)],
   );
   const bdr = useTransform(
     scrollYProgress,
     stops,
-    [_rgba(edgeTx, 0.14), _rgba(peakTx, 0.22), _rgba(peakTx, 0.22)],
+    [_rgba(edgeTx, 0.14), _rgba(peakTx, 0.22), _rgba(edgeTx, 0.14)],
   );
-  const acc = useTransform(scrollYProgress, stops, [accEdge, accPeak, accPeak]);
+  const acc = useTransform(scrollYProgress, stops, [accEdge, accPeak, accEdge]);
 
   const sectionStyle: MotionStyle = { backgroundColor: bg, color: fg };
   const mutStyle: MotionStyle = { color: mut };
