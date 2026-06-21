@@ -4,7 +4,7 @@ type TabletProps = Readonly<{ assistantName?: string }>;
 
 export function TabletDevice({ assistantName = ASSISTANT_NAME }: TabletProps = {}): React.ReactElement {
   return (
-    <div className="tablet">
+    <>
       <div className="tablet-scr">
         <div className="tab-head">
           Weekly Report
@@ -28,6 +28,6 @@ export function TabletDevice({ assistantName = ASSISTANT_NAME }: TabletProps = {
           {assistantName} weekly digest
         </div>
       </div>
-    </div>
+    </>
   );
 }
