@@ -26,7 +26,7 @@ describe("Approved", () => {
     expect(screen.getByText(ACCOUNT.email)).toBeInTheDocument();
 
     const dl = screen.getByRole("link", { name: /Download CV \(PDF\)/i });
-    expect(dl).toHaveAttribute("href", "/cv/Mzwakhe-Mokhatla-CV.pdf");
+    expect(dl).toHaveAttribute("href", "/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf");
     expect(dl).toHaveAttribute("download");
   });
 
