@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — kept in sync with the Studio.html prototype.
+ * Section 2 of the Next.js Recreation Guide is the source of truth for names and values.
+ * Tailwind 4 picks up the @theme inline block and exposes the mapped vars as utilities.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --onyx: #020202;
+  --candy: #b2d5e5;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius: 30px;
+}
+
+:root,
+[data-theme="light"] {
+  --bg: #e9f1f5;
+  --fg: #06090b;
+  --fg-2: #45555c;
+  --muted: #7c8a91;
+  --line: rgba(2, 8, 12, 0.1);
+  --accent: var(--candy);
+  --btn: #07090a;
+  --btn-fg: #eef5f8;
+  --card: #0a0e10;
+  --card-fg: #f3f8fa;
+  --card-muted: #6d7b82;
+  --glow: rgba(178, 213, 229, 0.7);
+}
+
+[data-theme="dark"] {
+  --bg: #020202;
+  --fg: #eef5f8;
+  --fg-2: #b5c2c8;
+  --muted: #7c8a91;
+  --line: rgba(238, 245, 248, 0.12);
+  --accent: var(--candy);
+  --btn: var(--candy);
+  --btn-fg: #06181f;
+  --card: #0c1316;
+  --card-fg: #f3f8fa;
+  --card-muted: #8b969c;
+  --glow: rgba(178, 213, 229, 0.55);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-btn: var(--btn);
+  --color-btn-fg: var(--btn-fg);
+  --color-card: var(--card);
+  --color-card-fg: var(--card-fg);
+  --color-card-muted: var(--card-muted);
+  --color-onyx: var(--onyx);
+  --color-candy: var(--candy);
+
+  --font-sans: var(--font-onest);
+
+  --radius-pill: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-onest), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
