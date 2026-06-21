@@ -676,7 +676,15 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 
 .ai-showcase {
   position: relative;
-  margin: 10px 0 56px;
+  /*
+   * Cap at the laptop's max-width (720px) + room for the device
+   * spill on each side (~80px). Without this cap the showcase
+   * stretches to the .wrap's 1320px ceiling and the negatively-
+   * positioned phone / watch / tablet end up far from the centered
+   * laptop instead of hugging it.
+   */
+  max-width: 880px;
+  margin: 10px auto 56px;
   min-height: 520px;
   padding: 30px 0;
 }

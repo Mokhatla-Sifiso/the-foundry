@@ -69,7 +69,8 @@ describe("Services", () => {
     cards.forEach((card, i) => {
       const style = (card as HTMLElement).getAttribute("style") ?? "";
       // jsdom evaluates `calc(86px + N*px)` and emits `calc(<sum>px)`.
-      const sum = 86 + i * 18;
+      // Step bumped from 18px to 36px per user feedback (less "slam").
+      const sum = 86 + i * 36;
       expect(style).toMatch(new RegExp(`top:\\s*calc\\(${sum}px\\)`));
       expect(style).toContain(`z-index: ${i + 1}`);
     });
