@@ -616,10 +616,57 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 
 /* ───────────────────────────────────────────────────────────────────────
  * 13. AI SECTION  (§7.8)
+ *
+ * Coloring is driven by 5 CSS variables (`--ai-bg`, `--ai-fg`,
+ * `--ai-mut`, `--ai-bdr`, `--ai-acc`) that default to the page palette
+ * and get swapped to a contrasting "peak" set when the section's React
+ * wrapper adds the `ai--peak` class. A long `transition` on each
+ * consumer property smooths the swap visually.
+ *
+ * The class toggle is driven by an IntersectionObserver in AISection.tsx
+ * — discrete trigger (in / out of view), CSS handles the easing. Earlier
+ * versions interpolated continuously via `useScroll`, which felt "stuck
+ * on dark" mid-scroll.
  * ─────────────────────────────────────────────────────────────────── */
 
-.ai { overflow: hidden; }
-.ai-h {
+.ai {
+  overflow: hidden;
+  --ai-bg: transparent;
+  --ai-fg: var(--fg);
+  --ai-mut: var(--muted);
+  --ai-bdr: var(--line);
+  --ai-acc: var(--accent);
+  background-color: var(--ai-bg);
+  color: var(--ai-fg);
+  transition:
+    background-color .8s var(--ease),
+    color .8s var(--ease);
+}
+
+/* Light-theme peak: dark onyx slab with candy accent. */
+.ai.ai--peak {
+  --ai-bg: #020202;
+  --ai-fg: #eef5f8;
+  --ai-mut: rgba(238, 245, 248, 0.74);
+  --ai-bdr: rgba(238, 245, 248, 0.22);
+  --ai-acc: var(--candy);
+}
+/* Dark-theme peak: candy slab with onyx ink so contrast inverts. */
+html[data-theme="dark"] .ai.ai--peak {
+  --ai-bg: var(--candy);
+  --ai-fg: #06181f;
+  --ai-mut: rgba(6, 24, 31, 0.74);
+  --ai-bdr: rgba(6, 24, 31, 0.22);
+  --ai-acc: #06181f;
+}
+
+.ai .eyebrow,
+.ai .ai-lead,
+.ai .ai-item p {
+  color: var(--ai-mut);
+  transition: color .8s var(--ease);
+}
+.ai .ai-h {
   font-weight: 700;
   font-size: clamp(34px, 6vw, 84px);
   letter-spacing: -.04em;
@@ -627,6 +674,10 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
   max-width: 16ch;
   margin-bottom: 22px;
   text-wrap: balance;
+}
+.ai .ai-h .em {
+  color: var(--ai-acc);
+  transition: color .8s var(--ease);
 }
 .ai-lead {
   font-size: clamp(17px, 1.8vw, 22px);
@@ -640,15 +691,18 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
   gap: 20px;
 }
 .ai-item {
-  border: 1px solid;
+  border: 1px solid var(--ai-bdr);
   border-radius: 22px;
   padding: clamp(24px, 3vw, 40px);
   height: 100%;
+  transition: border-color .8s var(--ease);
 }
 .ai-item .ai-n {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .12em;
+  color: var(--ai-acc);
+  transition: color .8s var(--ease);
 }
 .ai-item h3 {
   font-weight: 700;
@@ -666,9 +720,10 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 .ai-tools span {
   font-size: 12.5px;
   font-weight: 500;
-  border: 1px solid;
+  border: 1px solid var(--ai-bdr);
   padding: 6px 13px;
   border-radius: 30px;
+  transition: border-color .8s var(--ease);
 }
 @media (max-width: 720px) {
   .ai-grid { grid-template-columns: 1fr; }
