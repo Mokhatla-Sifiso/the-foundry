@@ -39,23 +39,25 @@ export function Hero(): React.ReactElement {
         mzwakhe
       </motion.div>
 
-      <motion.div
-        className="hero-render"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: EASE, delay: 0.25 }}
-        style={{ y: yRender }}
-      >
-        <div className="glowpad" />
-        <Image
-          src={SITE.portrait}
-          alt={`Portrait of ${SITE.name}`}
-          fill
-          priority
-          sizes="(min-width: 1280px) 620px, (min-width: 768px) 40vw, 64vw"
-          style={{ objectFit: 'cover', borderRadius: 26 }}
-        />
-      </motion.div>
+      <div className="hero-render-wrap">
+        <motion.div
+          className="hero-render"
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: EASE, delay: 0.25 }}
+          style={{ y: yRender }}
+        >
+          <div className="glowpad" />
+          <Image
+            src={SITE.portrait}
+            alt={`Portrait of ${SITE.name}`}
+            fill
+            priority
+            sizes="(min-width: 1280px) 620px, (min-width: 768px) 40vw, 64vw"
+            style={{ objectFit: 'cover', borderRadius: 26 }}
+          />
+        </motion.div>
+      </div>
 
       <div className="wrap hero-foot">
         <motion.h1
