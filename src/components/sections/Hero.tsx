@@ -23,7 +23,7 @@ export function Hero(): React.ReactElement {
     target: ref,
     offset: ['start start', 'end start'],
   });
-  const yRender = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const yRender = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const yMark = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const cueFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 

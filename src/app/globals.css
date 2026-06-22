@@ -405,10 +405,12 @@ html[data-theme='dark'] .pill-dark .ic {
 
 .hero {
   position: relative;
+  z-index: 1;
   min-height: 100svh;
   display: flex;
   align-items: center;
-  overflow: clip;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 .hero-mark {
   position: absolute;
@@ -429,7 +431,7 @@ html[data-theme='dark'] .pill-dark .ic {
 .hero-render-wrap {
   position: absolute;
   z-index: 2;
-  top: 0%;
+  top: 28%;
   left: 52%;
   height: clamp(720px, 108svh, 1260px);
   aspect-ratio: 3 / 4;
