@@ -90,4 +90,5 @@ export const useSpring = <T,>(value: T) => value;
 export const useTransform = <T,>(_input: unknown, _from: unknown, to: T[]) => to[0];
 export const useMotionValue = <T,>(value: T) => passthroughMotionValue(value);
 export const useInView = () => true;
+export const useReducedMotion = () => false;
 export const useAnimation = () => ({ start: () => Promise.resolve(), stop: () => {} });
