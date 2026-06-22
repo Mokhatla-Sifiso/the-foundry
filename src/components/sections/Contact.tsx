@@ -2,10 +2,6 @@ import { Cal, Chat } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { SITE } from "@/lib/constants";
 
-/**
- * Contact — VERBATIM markup + copy from §7.9. "Don't be shy." headline,
- * two action buttons (mailto + /recruiter), 3-column meta grid.
- */
 export function Contact(): React.ReactElement {
   return (
     <section id="contact" className="contact sec">

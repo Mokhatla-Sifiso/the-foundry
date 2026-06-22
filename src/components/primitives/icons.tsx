@@ -1,9 +1,3 @@
-/**
- * Inline SVG icons — VERBATIM path data from §2 of the build spec.
- * All viewBox "0 0 24 24", stroke="currentColor", fill="none" unless
- * noted. Do not modify path strings — they are the prototype's exact
- * shapes and a re-export from a library would not match pixel-for-pixel.
- */
 
 type IconProps = Readonly<{ className?: string }>;
 
@@ -75,11 +69,6 @@ export function Moon({ className }: IconProps): React.ReactElement {
     </svg>
   );
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * Recruiter-only icons (object `I` in the prototype). All viewBox 0 0 24 24,
- * stroke="currentColor".
- * ─────────────────────────────────────────────────────────────────── */
 
 export function IconLock({ className }: IconProps): React.ReactElement {
   return (

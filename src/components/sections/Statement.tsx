@@ -1,8 +1,5 @@
 import { Reveal } from "@/components/primitives/Reveal";
 
-/**
- * Statement section — VERBATIM copy + structure from §7.4.
- */
 export function Statement(): React.ReactElement {
   return (
     <section id="about" className="sec">

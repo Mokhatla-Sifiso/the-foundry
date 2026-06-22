@@ -3,11 +3,6 @@
 import { Arrow, Chat, Up } from "@/components/primitives/icons";
 import { SITE } from "@/lib/constants";
 
-/**
- * Footer — VERBATIM markup + copy from §7.10. Big wordmark + sub,
- * links row, GoUp button. Client component because the GoUp handler
- * uses `window.scrollTo`.
- */
 export function Footer(): React.ReactElement {
   const goUp = (): void => {
     window.scrollTo({ top: 0, behavior: "smooth" });

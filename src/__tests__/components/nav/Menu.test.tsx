@@ -26,7 +26,7 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute("href", "/recruiter");
     expect(screen.getByRole("link", { name: SITE.email })).toHaveAttribute("href", `mailto:${SITE.email}`);
     expect(screen.getByRole("link", { name: SITE.phone })).toHaveAttribute("href", SITE.phoneHref);
-    // Theme toggle text reflects the *target* state (Dark mode when currently light).
+    
     expect(screen.getByText(/Dark mode/i)).toBeInTheDocument();
   });
 

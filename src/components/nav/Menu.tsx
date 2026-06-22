@@ -9,19 +9,6 @@ import { NAVLINKS, SITE } from "@/lib/constants";
 
 type MenuProps = Readonly<{ open: boolean; onClose: () => void }>;
 
-/**
- * Full-screen menu overlay — VERBATIM markup + animations from §7.2.
- *
- *   - Container wipes down from the top via `clipPath`:
- *     `inset(0 0 100% 0) → inset(0 0 0% 0)` over .6s (exit reverses).
- *   - While open, `<body>` overflow is set to "hidden" to suppress
- *     background scroll.
- *   - Each NAVLINK item staggers in with delay `0.12 + i*0.06` seconds.
- *   - Clicking a link or the close button (or pressing Escape) closes.
- *
- * Footer row: Download CV → `/recruiter`, mailto, tel, and a theme
- * toggle text link that reads "Light mode" when dark and vice versa.
- */
 export function Menu({ open, onClose }: MenuProps): React.ReactElement {
   const { theme, toggle } = useTheme();
 

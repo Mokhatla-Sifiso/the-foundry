@@ -4,17 +4,6 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { lenisBus } from "@/lib/lenis-bus";
 
-/**
- * Lenis smooth-scroll provider — wraps the page so wheel/touch input
- * eases via an internal RAF loop instead of the browser's native step.
- *
- * Kept as a pure side-effect component (no extra DOM wrapper) so it
- * doesn't disturb sticky positioning, scroll containers, or the
- * existing CSS layout. Renders `children` straight through.
- *
- * Honours `prefers-reduced-motion`: when the user opts out, we never
- * boot Lenis at all, so native scroll behaviour is preserved.
- */
 type SmoothScrollProps = Readonly<{ children: React.ReactNode }>;
 
 export function SmoothScroll({ children }: SmoothScrollProps): React.ReactElement {

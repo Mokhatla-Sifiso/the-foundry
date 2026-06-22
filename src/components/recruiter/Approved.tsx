@@ -12,13 +12,6 @@ type ApprovedProps = Readonly<{
   onSignOut: () => void;
 }>;
 
-/**
- * Approved screen — VERBATIM markup from §10.8. Animated seal,
- * personalised headline ("Thanks, {firstName}."), `.who` card with
- * the recruiter's details + a "Verified recruiter" badge, the
- * download button (links to SITE.cvHref with `download`), and a
- * sign-out text link beneath.
- */
 export function Approved({ account, onSignOut }: ApprovedProps): React.ReactElement {
   const firstName = account.name.split(" ")[0];
   const fileName = SITE.cvHref.split("/").pop() ?? "Mzwakhe-Mokhatla-CV.pdf";

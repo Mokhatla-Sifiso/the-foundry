@@ -8,13 +8,6 @@ type GateProps = Readonly<{
   onHaveAccess: () => void;
 }>;
 
-/**
- * Gate screen — VERBATIM copy + layout from §10.4. The recruiter
- * flow's landing card: eyebrow with the small lock circle, the
- * "Download my CV — for verified recruiters." headline, a sub
- * paragraph, two side-by-side buttons (primary + ghost), and the
- * Howto disclosure beneath.
- */
 export function Gate({ onRequestAccess, onHaveAccess }: GateProps): React.ReactElement {
   return (
     <>

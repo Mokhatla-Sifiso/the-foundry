@@ -11,14 +11,6 @@ type SignInProps = Readonly<{
   onNewHere: () => void;
 }>;
 
-/**
- * SignIn screen — VERBATIM copy + logic from §10.9. Single Work email
- * field; on submit:
- *   - invalid email → "Enter a valid email address."
- *   - email not in `loadAccounts()` → "No access found for that email.
- *     Request access instead."
- *   - else → call `onCode(email)` (caller transitions to otp-signin).
- */
 export function SignIn({ onBack, onCode, onNewHere }: SignInProps): React.ReactElement {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | undefined>();

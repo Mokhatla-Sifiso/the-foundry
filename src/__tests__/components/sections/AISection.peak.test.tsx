@@ -3,20 +3,6 @@ jest.mock("framer-motion");
 import { act, render } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
 
-/**
- * Regression test for the AI section's in-view bg trigger.
- *
- * Earlier iterations had two bugs:
- *   1. `entry.isIntersecting` fired peak the moment any pixel crossed
- *      into view (rather than waiting for the requested ratio).
- *   2. CSS-variable indirection caused Turbopack HMR to silently
- *      cache the previous palette.
- *
- * This test stubs IntersectionObserver so we can drive ratios
- * directly and assert that `.ai--peak` only attaches when the visible
- * fraction reaches the threshold.
- */
-
 type ObserverCallback = (entries: IntersectionObserverEntry[]) => void;
 type FakeObserver = { callback: ObserverCallback; targets: Element[] };
 
@@ -84,7 +70,7 @@ describe("AISection in-view bg trigger", () => {
     const section = container.querySelector("#ai") as HTMLElement;
     expect(section.className).not.toMatch(/ai--peak/);
 
-    // 10% visible — below the 25% threshold.
+    
     act(() => fireRatio(0.1));
     expect(section.className).not.toMatch(/ai--peak/);
   });

@@ -9,31 +9,12 @@ const OTP_LENGTH = 6;
 
 type OtpProps = Readonly<{
   email: string;
-  /** The generated demo code — shown in the Demo note + matched on verify. */
-  code: string;
-  /** Verify handler — receives the joined 6-digit string. */
-  onVerify: (entered: string) => void;
-  /** Caller-controlled error message (e.g. "That code doesn't match. Try again."). */
-  error?: string;
-  /** Regenerate the code (Demo "Resend" link). */
-  onResend: () => void;
+    code: string;
+    onVerify: (entered: string) => void;
+    error?: string;
+    onResend: () => void;
 }>;
 
-/**
- * OTP screen — VERBATIM behaviour from §10.6.
- *
- *   - 6 single-char inputs, first auto-focused on mount.
- *   - Each keystroke strips non-digits; pasting distributes up to 6
- *     chars across boxes and focuses the last filled one.
- *   - Backspace on an empty box moves focus to the previous one.
- *   - Verify button disabled until all 6 boxes are filled.
- *   - Caller surfaces an `error` string when verification fails; the
- *     inputs render with `.invalid`-style red borders via aria-invalid.
- *
- * The demo note box (only correct in the prototype) shows the code in
- * plain text so reviewers can type it back in — replaced by a real
- * email send in production per §13.
- */
 export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React.ReactElement {
   const [digits, setDigits] = useState<string[]>(() => Array(OTP_LENGTH).fill(""));
   const refs = useRef<Array<HTMLInputElement | null>>([]);
@@ -62,7 +43,7 @@ export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React
       refs.current[nextIndex]?.focus();
       return;
     }
-    // Paste path — distribute across boxes from i.
+    
     setDigits((prev) => {
       const next = [...prev];
       for (let k = 0; k < OTP_LENGTH - i && k < raw.length; k += 1) {

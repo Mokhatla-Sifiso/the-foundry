@@ -1,7 +1,3 @@
-/**
- * Verification disclosure — VERBATIM copy from §10.11. Closed by
- * default; opens to reveal the four-step explainer.
- */
 export function Howto(): React.ReactElement {
   return (
     <details className="howto">

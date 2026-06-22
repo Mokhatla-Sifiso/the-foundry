@@ -4,11 +4,6 @@ import Link from "next/link";
 import { IconBack, Moon, Sun } from "@/components/primitives/icons";
 import { useTheme } from "@/hooks/useTheme";
 
-/**
- * Recruiter top bar — VERBATIM markup from §10.12. `mzwakhe.` brand
- * linking back to /, the round theme button (Moon when light, Sun
- * when dark), and the `← Back to site` link.
- */
 export function TopBar(): React.ReactElement {
   const { theme, toggle } = useTheme();
   return (
