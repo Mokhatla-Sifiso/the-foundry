@@ -61,8 +61,6 @@ describe("Services", () => {
 
     cards.forEach((card, i) => {
       const style = (card as HTMLElement).getAttribute("style") ?? "";
-      const sum = 80 + i * 100;
-      expect(style).toMatch(new RegExp(`top:\\s*calc\\(${sum}px\\)`));
       expect(style).toContain(`z-index: ${i + 1}`);
     });
   });

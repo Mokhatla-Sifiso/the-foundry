@@ -1,8 +1,7 @@
 import { Reveal } from "@/components/primitives/Reveal";
+import { StackScaleEffect } from "@/components/primitives/StackScaleEffect";
 import { SERVICES } from "@/lib/constants";
 
-const STACK_TOP_BASE_PX = 80;
-const STACK_TOP_STEP_PX = 100;
 const TOTAL = SERVICES.length;
 
 export function Services(): React.ReactElement {
@@ -20,13 +19,13 @@ export function Services(): React.ReactElement {
         </Reveal>
       </div>
 
+      <StackScaleEffect />
       <div className="stack">
         {SERVICES.map((s, i) => (
           <article
             key={s.w1}
-            className={`svc-card svc-card--${i % 2 === 0 ? "even" : "odd"}`}
+            className={`svc-card svc-card--${i}`}
             style={{
-              top: `calc(${STACK_TOP_BASE_PX}px + ${i * STACK_TOP_STEP_PX}px)`,
               zIndex: i + 1,
               ...(i > 0 ? { marginTop: "12vh" } : {}),
             }}

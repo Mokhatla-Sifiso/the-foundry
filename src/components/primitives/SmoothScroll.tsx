@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { lenisBus } from "@/lib/lenis-bus";
 
 type SmoothScrollProps = Readonly<{ children: React.ReactNode }>;
 
@@ -19,6 +20,7 @@ export function SmoothScroll({ children }: SmoothScrollProps): React.ReactElemen
     let rafId = 0;
     const raf = (time: number): void => {
       lenis.raf(time);
+      lenisBus.emit((lenis as unknown as { scroll: number }).scroll ?? window.scrollY);
       rafId = window.requestAnimationFrame(raf);
     };
     rafId = window.requestAnimationFrame(raf);
