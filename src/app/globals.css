@@ -426,15 +426,19 @@ html[data-theme='dark'] .pill-dark .ic {
   pointer-events: none;
   user-select: none;
 }
-.hero-render {
+.hero-render-wrap {
   position: absolute;
   z-index: 2;
-  top: 42%;
-  left: 50%;
-  transform: translate(-50%, -52%);
-  height: clamp(620px, 96svh, 1040px);
+  top: 0%;
+  left: 52%;
+  height: clamp(720px, 108svh, 1260px);
   aspect-ratio: 3 / 4;
   width: auto;
+}
+.hero-render {
+  position: relative;
+  height: 100%;
+  width: 100%;
 }
 .hero-render .glowpad {
   position: absolute;
@@ -493,10 +497,10 @@ html[data-theme='dark'] .pill-dark .ic {
     flex-direction: column;
     align-items: flex-start;
   }
-  .hero-render {
+  .hero-render-wrap {
     height: clamp(300px, 62svh, 520px);
     width: auto;
-    transform: translate(-50%, -52%);
+    top: 8%;
   }
 }
 
