@@ -429,10 +429,10 @@ html[data-theme='dark'] .pill-dark .ic {
 .hero-render {
   position: absolute;
   z-index: 2;
-  top: 50%;
+  top: 42%;
   left: 50%;
-  transform: translate(-50%, -46%);
-  height: clamp(520px, 84svh, 900px);
+  transform: translate(-50%, -52%);
+  height: clamp(620px, 96svh, 1040px);
   aspect-ratio: 3 / 4;
   width: auto;
 }
