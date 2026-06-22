@@ -507,9 +507,9 @@ html[data-theme="dark"] .services-section {
 .svc-card .svc-h {
   font-family: inherit;
   font-weight: 700;
-  font-size: clamp(64px, 9vw, 168px);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  font-size: clamp(40px, 5.5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 .svc-card .svc-h-l1,
 .svc-card .svc-h-l2 { display: block; }
