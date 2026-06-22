@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useRef } from "react";
-import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { EASE } from "@/components/primitives/Reveal";
-import { SITE } from "@/lib/constants";
+import { EASE } from '@/components/primitives/Reveal';
+import { SITE } from '@/lib/constants';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
+import { useRef } from 'react';
 
 /**
  * Hero — VERBATIM markup, copy, animations from §7.3.
@@ -21,7 +21,7 @@ export function Hero(): React.ReactElement {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ['start start', 'end start'],
   });
   const yRender = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const yMark = useTransform(scrollYProgress, [0, 1], [0, 80]);
@@ -52,8 +52,8 @@ export function Hero(): React.ReactElement {
           alt={`Portrait of ${SITE.name}`}
           fill
           priority
-          sizes="(min-width: 1280px) 520px, (min-width: 768px) 34vw, 64vw"
-          style={{ objectFit: "cover", borderRadius: 26 }}
+          sizes="(min-width: 1280px) 620px, (min-width: 768px) 40vw, 64vw"
+          style={{ objectFit: 'cover', borderRadius: 26 }}
         />
       </motion.div>
 
@@ -76,7 +76,7 @@ export function Hero(): React.ReactElement {
           <motion.span
             className="dot"
             animate={{ scale: [1, 0.5, 1], opacity: [1, 0.4, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
           />
           Scroll
         </motion.div>
