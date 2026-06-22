@@ -432,100 +432,148 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 .statement .em { color: var(--candy); }
 
 /* ───────────────────────────────────────────────────────────────────────
- * 10. SERVICES (sticky stacking)  (§7.5)
+ * 10. SERVICES (sticky stacking-cards)  (§7.5)
+ *
+ * Full-bleed dark cards that pin to the top and stack on top of each
+ * other as the user scrolls. Each `<section>` is taller than the
+ * viewport, the card inside uses `position: sticky` with a per-index
+ * `top` offset so successive cards stop a little lower than the
+ * previous one — a thin sliver of the prior card peeks above.
+ *
+ * The dark card surfaces alternate by index (even = #0A0E14, odd =
+ * #1C2128). Heading uses a tight grotesque stack with the second
+ * line dropped to muted gray for the stacked-word look. Reduced
+ * motion is respected at the React layer.
  * ─────────────────────────────────────────────────────────────────── */
 
+.services-section {
+  background: #eef1f4;
+  padding-bottom: clamp(60px, 8vh, 120px);
+}
+html[data-theme="dark"] .services-section {
+  background: transparent;
+}
+.services-head { margin-bottom: 48px; }
+.services-head .statement-line {
+  font-weight: 600;
+  font-size: clamp(24px, 3.6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  max-width: 22ch;
+  text-wrap: balance;
+  opacity: 0.6;
+}
+.services-head .statement-line .mut { color: var(--muted); }
+.services-head .statement-line .em { color: var(--candy); }
+
 .stack {
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
-  margin-top: 50px;
+  padding: 0 clamp(16px, 4vw, 64px);
+  margin-top: 32px;
 }
-/*
- * Services cards — styled to match the SOHub reference deck rather
- * than the spec's §7.5 dark-onyx defaults: lighter mid-grey surface,
- * generous padding, larger corner radius, no border, capsule-style
- * pills with soft white tint, and the second title line de-emphasised
- * via opacity rather than a muted color token.
- *
- * The .grow spacer is dropped from the JSX so content sits naturally
- * under the title; min-height keeps the stack tall enough for sticky
- * pinning to read.
- */
+.stack-spacer { height: 80vh; }
+
 .svc-card {
-  position: sticky;
-  border-radius: 40px;
-  background: var(--card-soft);
-  color: var(--card-soft-fg);
-  padding: clamp(40px, 6vw, 96px);
-  min-height: clamp(440px, 70vh, 600px);
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(28px, 4vw, 56px);
-  box-shadow: 0 30px 70px -50px rgba(20, 30, 40, 0.45);
+  gap: clamp(52px, 7vw, 80px);
+  border-radius: 40px;
+  padding: 32px clamp(44px, 5.5vw, 80px) clamp(56px, 7vw, 88px);
+  min-height: clamp(520px, 76vh, 680px);
+  color: #ffffff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-shadow: 0 -32px 80px rgba(0, 0, 0, 0.45);
   overflow: hidden;
+  will-change: transform;
 }
+
+/* Progressive depth: back cards lightest, front card darkest */
+.svc-card--0 { background: #444A53; }
+.svc-card--1 { background: #242B35; }
+.svc-card--2 { background: #161D27; }
+.svc-card--3 { background: #050B16; }
+
 .svc-card .num {
   position: absolute;
-  top: clamp(28px, 3.4vw, 52px);
-  right: clamp(28px, 3.4vw, 52px);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: .14em;
+  top: 24px;
+  right: clamp(24px, 3vw, 40px);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
-.svc-card h3 {
+
+.svc-card .svc-h {
+  font-family: inherit;
   font-weight: 700;
-  font-size: clamp(48px, 7.2vw, 120px);
-  line-height: .94;
-  letter-spacing: -.045em;
+  font-size: clamp(72px, 9.5vw, 130px);
+  line-height: 0.93;
+  letter-spacing: -0.035em;
 }
-.svc-card h3 .w2 {
-  display: block;
-  color: var(--card-soft-fg);
-  opacity: 0.42;
-}
-.svc-pills {
+.svc-card .svc-h-l1,
+.svc-card .svc-h-l2 { display: block; }
+
+/* Visual weight decays per layer: back cards barely legible, front card dominant */
+.svc-card--0 .svc-h-l1 { color: rgba(255, 255, 255, 0.35); }
+.svc-card--1 .svc-h-l1 { color: rgba(255, 255, 255, 0.55); }
+.svc-card--2 .svc-h-l1 { color: rgba(255, 255, 255, 0.75); }
+.svc-card--3 .svc-h-l1 { color: rgba(255, 255, 255, 0.95); }
+.svc-card--0 .svc-h-l2 { color: rgba(255, 255, 255, 0.10); }
+.svc-card--1 .svc-h-l2 { color: rgba(255, 255, 255, 0.15); }
+.svc-card--2 .svc-h-l2 { color: rgba(255, 255, 255, 0.20); }
+.svc-card--3 .svc-h-l2 { color: rgba(255, 255, 255, 0.28); }
+
+.svc-card .svc-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
-.svc-pills span {
-  font-size: 13.5px;
+.svc-card .svc-pills span {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
   font-weight: 500;
-  color: var(--card-soft-fg);
-  background: var(--card-soft-pill);
-  border: 1px solid var(--card-soft-pill-line);
-  padding: 11px 24px;
-  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
-.svc-desc {
+
+.svc-card .svc-desc {
   display: flex;
-  gap: 18px;
   align-items: flex-start;
-  max-width: 64ch;
-  margin-top: 14px;
+  gap: 14px;
+  margin-top: clamp(20px, 2.5vw, 32px);
+  max-width: none;
 }
-.svc-desc .ast {
-  font-size: 22px;
-  line-height: 1;
-  color: var(--candy);
+.svc-card .svc-desc .ast {
   flex: none;
-  margin-top: 4px;
+  display: inline-flex;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 3px;
+  font-size: 14px;
 }
-.svc-desc p {
-  color: rgba(255, 255, 255, 0.78);
-  font-size: clamp(16px, 1.5vw, 19px);
-  line-height: 1.5;
+.svc-card .svc-desc p {
+  font-weight: 400;
+  font-size: clamp(14px, 1.4vw, 17px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+  text-wrap: pretty;
 }
-@media (max-width: 600px) {
+
+@media (max-width: 720px) {
   .svc-card {
-    min-height: 0;
-    border-radius: 30px;
-    padding: clamp(32px, 7vw, 48px);
+    border-radius: 28px;
+    padding: 20px 28px 44px;
+    gap: 36px;
+    min-height: clamp(380px, 62vh, 500px);
   }
-  .svc-card h3 { font-size: clamp(40px, 11vw, 64px); }
+  .svc-card .svc-pills span { padding: 5px 12px; font-size: 10px; }
+  .svc-card .svc-desc p { font-size: 14px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────
