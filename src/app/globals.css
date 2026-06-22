@@ -447,125 +447,133 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
  * ─────────────────────────────────────────────────────────────────── */
 
 .services-section {
-  /* Cool light-gray page surface behind the dark cards. */
   background: #eef1f4;
-  padding-bottom: clamp(40px, 6vh, 80px);
+  padding-bottom: clamp(60px, 8vh, 120px);
 }
 html[data-theme="dark"] .services-section {
   background: transparent;
 }
-.services-head { margin-bottom: 40px; }
+.services-head { margin-bottom: 48px; }
 .services-head .statement-line {
   font-weight: 600;
-  font-size: clamp(30px, 5.2vw, 72px);
-  line-height: 1.04;
-  letter-spacing: -.035em;
-  max-width: 20ch;
+  font-size: clamp(24px, 3.6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  max-width: 22ch;
   text-wrap: balance;
+  opacity: 0.6;
 }
 .services-head .statement-line .mut { color: var(--muted); }
 .services-head .statement-line .em { color: var(--candy); }
 
 .stack {
-  padding: 0 clamp(20px, 5vw, 80px);
-  margin-top: 40px;
+  padding: 0 clamp(16px, 4vw, 64px);
+  margin-top: 32px;
 }
-
-/* Reading room so the last card stays on screen while all prior cards
- * remain pinned above it. 70vh is enough without over-extending scroll. */
-.stack-spacer { height: 70vh; }
+.stack-spacer { height: 80vh; }
 
 .svc-card {
-  position: sticky;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(24px, 3.5vw, 44px);
-  border-radius: 44px;
-  /* Reduced top padding so the heading peeks above the next card's edge */
-  padding: 24px clamp(32px, 4.5vw, 64px) clamp(32px, 4.5vw, 64px);
-  min-height: clamp(380px, 58vh, 520px);
+  gap: clamp(52px, 7vw, 80px);
+  border-radius: 40px;
+  padding: 32px clamp(44px, 5.5vw, 80px) clamp(56px, 7vw, 88px);
+  min-height: clamp(520px, 76vh, 680px);
   color: #ffffff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 -32px 80px rgba(0, 0, 0, 0.45);
   overflow: hidden;
+  will-change: transform;
 }
 
-.svc-card--even { background: #0a0e14; }
-.svc-card--odd  { background: #1c2128; }
+/* Progressive depth: back cards lightest, front card darkest */
+.svc-card--0 { background: #444A53; }
+.svc-card--1 { background: #242B35; }
+.svc-card--2 { background: #161D27; }
+.svc-card--3 { background: #050B16; }
 
 .svc-card .num {
   position: absolute;
-  top: 20px;
+  top: 24px;
   right: clamp(24px, 3vw, 40px);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: .14em;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 
 .svc-card .svc-h {
   font-family: inherit;
   font-weight: 700;
-  font-size: clamp(40px, 5.5vw, 72px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-size: clamp(72px, 9.5vw, 130px);
+  line-height: 0.93;
+  letter-spacing: -0.035em;
 }
 .svc-card .svc-h-l1,
 .svc-card .svc-h-l2 { display: block; }
-.svc-card .svc-h-l1 { color: #ffffff; }
-.svc-card .svc-h-l2 { color: #8b9099; }
+
+/* Visual weight decays per layer: back cards barely legible, front card dominant */
+.svc-card--0 .svc-h-l1 { color: rgba(255, 255, 255, 0.35); }
+.svc-card--1 .svc-h-l1 { color: rgba(255, 255, 255, 0.55); }
+.svc-card--2 .svc-h-l1 { color: rgba(255, 255, 255, 0.75); }
+.svc-card--3 .svc-h-l1 { color: rgba(255, 255, 255, 0.95); }
+.svc-card--0 .svc-h-l2 { color: rgba(255, 255, 255, 0.10); }
+.svc-card--1 .svc-h-l2 { color: rgba(255, 255, 255, 0.15); }
+.svc-card--2 .svc-h-l2 { color: rgba(255, 255, 255, 0.20); }
+.svc-card--3 .svc-h-l2 { color: rgba(255, 255, 255, 0.28); }
 
 .svc-card .svc-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: clamp(28px, 4vw, 56px);
+  gap: 8px;
 }
 .svc-card .svc-pills span {
   display: inline-flex;
   align-items: center;
-  padding: 14px 28px;
+  padding: 5px 14px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
   font-weight: 500;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .svc-card .svc-desc {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
-  margin-top: clamp(24px, 3vw, 48px);
-  max-width: 62ch;
+  gap: 14px;
+  margin-top: clamp(20px, 2.5vw, 32px);
+  max-width: none;
 }
 .svc-card .svc-desc .ast {
   flex: none;
   display: inline-flex;
-  color: #ffffff;
-  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 3px;
+  font-size: 14px;
 }
 .svc-card .svc-desc p {
-  font-weight: 500;
-  font-size: clamp(22px, 2.2vw, 34px);
-  line-height: 1.35;
-  color: #ffffff;
+  font-weight: 400;
+  font-size: clamp(14px, 1.4vw, 17px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
   text-wrap: pretty;
 }
 
 @media (max-width: 720px) {
   .svc-card {
     border-radius: 28px;
-    padding: 20px 24px 32px;
-    gap: 24px;
-    min-height: clamp(320px, 56vh, 440px);
+    padding: 20px 28px 44px;
+    gap: 36px;
+    min-height: clamp(380px, 62vh, 500px);
   }
-  .svc-card .svc-pills { gap: 8px; margin-top: 20px; }
-  .svc-card .svc-pills span { padding: 9px 18px; font-size: 13px; }
-  .svc-card .svc-desc p { font-size: clamp(17px, 4.2vw, 22px); }
+  .svc-card .svc-pills span { padding: 5px 12px; font-size: 10px; }
+  .svc-card .svc-desc p { font-size: 14px; }
 }
 
 /* ───────────────────────────────────────────────────────────────────────
