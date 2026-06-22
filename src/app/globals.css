@@ -432,100 +432,140 @@ html[data-theme="dark"] .pill-dark .ic { background: rgba(6, 24, 31, 0.22); }
 .statement .em { color: var(--candy); }
 
 /* ───────────────────────────────────────────────────────────────────────
- * 10. SERVICES (sticky stacking)  (§7.5)
+ * 10. SERVICES (sticky stacking-cards)  (§7.5)
+ *
+ * Full-bleed dark cards that pin to the top and stack on top of each
+ * other as the user scrolls. Each `<section>` is taller than the
+ * viewport, the card inside uses `position: sticky` with a per-index
+ * `top` offset so successive cards stop a little lower than the
+ * previous one — a thin sliver of the prior card peeks above.
+ *
+ * The dark card surfaces alternate by index (even = #0A0E14, odd =
+ * #1C2128). Heading uses a tight grotesque stack with the second
+ * line dropped to muted gray for the stacked-word look. Reduced
+ * motion is respected at the React layer.
  * ─────────────────────────────────────────────────────────────────── */
 
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
-  margin-top: 50px;
+.services-section {
+  /* Cool light-gray page surface behind the dark cards. */
+  background: #eef1f4;
+  padding-bottom: clamp(40px, 6vh, 80px);
 }
-/*
- * Services cards — styled to match the SOHub reference deck rather
- * than the spec's §7.5 dark-onyx defaults: lighter mid-grey surface,
- * generous padding, larger corner radius, no border, capsule-style
- * pills with soft white tint, and the second title line de-emphasised
- * via opacity rather than a muted color token.
- *
- * The .grow spacer is dropped from the JSX so content sits naturally
- * under the title; min-height keeps the stack tall enough for sticky
- * pinning to read.
- */
+html[data-theme="dark"] .services-section {
+  background: transparent;
+}
+.services-head { margin-bottom: 40px; }
+.services-head .statement-line {
+  font-weight: 600;
+  font-size: clamp(30px, 5.2vw, 72px);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+.services-head .statement-line .mut { color: var(--muted); }
+.services-head .statement-line .em { color: var(--candy); }
+
+.stack {
+  padding: 0 clamp(20px, 5vw, 80px);
+  margin-top: 40px;
+}
+
+/* Reading room so the last card stays on screen while all prior cards
+ * remain pinned above it. 70vh is enough without over-extending scroll. */
+.stack-spacer { height: 70vh; }
+
 .svc-card {
   position: sticky;
-  border-radius: 40px;
-  background: var(--card-soft);
-  color: var(--card-soft-fg);
-  padding: clamp(40px, 6vw, 96px);
-  min-height: clamp(440px, 70vh, 600px);
   display: flex;
   flex-direction: column;
-  gap: clamp(28px, 4vw, 56px);
-  box-shadow: 0 30px 70px -50px rgba(20, 30, 40, 0.45);
+  gap: clamp(24px, 3.5vw, 44px);
+  border-radius: 44px;
+  /* Reduced top padding so the heading peeks above the next card's edge */
+  padding: 24px clamp(32px, 4.5vw, 64px) clamp(32px, 4.5vw, 64px);
+  min-height: clamp(380px, 58vh, 520px);
+  color: #ffffff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
+
+.svc-card--even { background: #0a0e14; }
+.svc-card--odd  { background: #1c2128; }
+
 .svc-card .num {
   position: absolute;
-  top: clamp(28px, 3.4vw, 52px);
-  right: clamp(28px, 3.4vw, 52px);
+  top: 20px;
+  right: clamp(24px, 3vw, 40px);
   font-size: 12.5px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: .14em;
   text-transform: uppercase;
 }
-.svc-card h3 {
+
+.svc-card .svc-h {
+  font-family: inherit;
   font-weight: 700;
-  font-size: clamp(48px, 7.2vw, 120px);
-  line-height: .94;
-  letter-spacing: -.045em;
+  font-size: clamp(64px, 9vw, 168px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
 }
-.svc-card h3 .w2 {
-  display: block;
-  color: var(--card-soft-fg);
-  opacity: 0.42;
-}
-.svc-pills {
+.svc-card .svc-h-l1,
+.svc-card .svc-h-l2 { display: block; }
+.svc-card .svc-h-l1 { color: #ffffff; }
+.svc-card .svc-h-l2 { color: #8b9099; }
+
+.svc-card .svc-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
+  margin-top: clamp(28px, 4vw, 56px);
 }
-.svc-pills span {
-  font-size: 13.5px;
+.svc-card .svc-pills span {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 18px;
   font-weight: 500;
-  color: var(--card-soft-fg);
-  background: var(--card-soft-pill);
-  border: 1px solid var(--card-soft-pill-line);
-  padding: 11px 24px;
-  border-radius: 100px;
+  color: #ffffff;
+  white-space: nowrap;
 }
-.svc-desc {
+
+.svc-card .svc-desc {
   display: flex;
-  gap: 18px;
   align-items: flex-start;
-  max-width: 64ch;
-  margin-top: 14px;
+  gap: 18px;
+  margin-top: clamp(24px, 3vw, 48px);
+  max-width: 62ch;
 }
-.svc-desc .ast {
-  font-size: 22px;
-  line-height: 1;
-  color: var(--candy);
+.svc-card .svc-desc .ast {
   flex: none;
-  margin-top: 4px;
+  display: inline-flex;
+  color: #ffffff;
+  margin-top: 6px;
 }
-.svc-desc p {
-  color: rgba(255, 255, 255, 0.78);
-  font-size: clamp(16px, 1.5vw, 19px);
-  line-height: 1.5;
+.svc-card .svc-desc p {
+  font-weight: 500;
+  font-size: clamp(22px, 2.2vw, 34px);
+  line-height: 1.35;
+  color: #ffffff;
+  text-wrap: pretty;
 }
-@media (max-width: 600px) {
+
+@media (max-width: 720px) {
   .svc-card {
-    min-height: 0;
-    border-radius: 30px;
-    padding: clamp(32px, 7vw, 48px);
+    border-radius: 28px;
+    padding: 20px 24px 32px;
+    gap: 24px;
+    min-height: clamp(320px, 56vh, 440px);
   }
-  .svc-card h3 { font-size: clamp(40px, 11vw, 64px); }
+  .svc-card .svc-pills { gap: 8px; margin-top: 20px; }
+  .svc-card .svc-pills span { padding: 9px 18px; font-size: 13px; }
+  .svc-card .svc-desc p { font-size: clamp(17px, 4.2vw, 22px); }
 }
 
 /* ───────────────────────────────────────────────────────────────────────
