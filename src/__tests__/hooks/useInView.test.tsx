@@ -13,6 +13,10 @@ describe("useInView", () => {
   afterEach(() => jest.useRealTimers());
 
   it("flips to seen=true via the 1500ms fallback when no scroll fires", () => {
+    
+    
+    
+    
     const original = HTMLElement.prototype.getBoundingClientRect;
     HTMLElement.prototype.getBoundingClientRect = function (): DOMRect {
       return {
@@ -39,6 +43,8 @@ describe("useInView", () => {
   });
 
   it("is seen immediately when the element rect is already in view", () => {
+    
+    
     const original = HTMLElement.prototype.getBoundingClientRect;
     HTMLElement.prototype.getBoundingClientRect = function (): DOMRect {
       return {

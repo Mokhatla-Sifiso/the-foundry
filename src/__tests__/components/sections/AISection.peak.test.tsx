@@ -70,6 +70,7 @@ describe("AISection in-view bg trigger", () => {
     const section = container.querySelector("#ai") as HTMLElement;
     expect(section.className).not.toMatch(/ai--peak/);
 
+    
     act(() => fireRatio(0.1));
     expect(section.className).not.toMatch(/ai--peak/);
   });

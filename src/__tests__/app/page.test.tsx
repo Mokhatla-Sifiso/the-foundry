@@ -2,6 +2,7 @@ jest.mock("framer-motion");
 jest.mock("next/image", () => ({
   __esModule: true,
   default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
+    
     <img src={src} alt={alt} {...rest} />
   ),
 }));

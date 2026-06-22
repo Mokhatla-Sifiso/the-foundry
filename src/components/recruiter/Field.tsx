@@ -7,8 +7,8 @@ type FieldProps = Readonly<{
   type?: "text" | "email" | "url";
   value: string;
   onChange: (next: string) => void;
-  icon: ReactElement;
-  error?: string;
+    icon: ReactElement;
+    error?: string;
   autoComplete?: string;
   autoFocus?: boolean;
 }>;

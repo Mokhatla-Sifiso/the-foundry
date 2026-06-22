@@ -6,9 +6,9 @@ import { Reveal } from "@/components/primitives/Reveal";
 import { AIITEMS } from "@/lib/constants";
 
 type AISectionProps = Readonly<{
-  showPhone?: boolean;
-  showDesktop?: boolean;
-  threshold?: number;
+    showPhone?: boolean;
+    showDesktop?: boolean;
+    threshold?: number;
 }>;
 
 export function AISection({
@@ -23,6 +23,15 @@ export function AISection({
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
     const observer = new IntersectionObserver(
       ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
       { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },

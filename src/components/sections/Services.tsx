@@ -54,6 +54,7 @@ export function Services(): React.ReactElement {
             </Reveal>
           </article>
         ))}
+        
         <div className="stack-spacer" aria-hidden="true" />
       </div>
     </section>

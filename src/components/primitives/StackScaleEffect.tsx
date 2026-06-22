@@ -13,14 +13,19 @@ export function StackScaleEffect(): null {
     const stack = document.querySelector<HTMLElement>(".stack");
     if (!cards.length || !stack) return;
 
+    
     const naturalY = cards.map(c => c.getBoundingClientRect().top + window.scrollY);
     const cardH = cards.map(c => c.getBoundingClientRect().height);
     const thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
+    
+    
     const stackBottom = stack.getBoundingClientRect().bottom + window.scrollY;
 
     function apply(scroll: number): void {
       cards.forEach((card, i) => {
+        
         const rawY = Math.max(0, scroll - thresholds[i]);
+        
         const maxY = stackBottom - naturalY[i] - cardH[i];
         const translateY = Math.min(rawY, maxY);
 

@@ -26,6 +26,7 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute("href", "/recruiter");
     expect(screen.getByRole("link", { name: SITE.email })).toHaveAttribute("href", `mailto:${SITE.email}`);
     expect(screen.getByRole("link", { name: SITE.phone })).toHaveAttribute("href", SITE.phoneHref);
+    
     expect(screen.getByText(/Dark mode/i)).toBeInTheDocument();
   });
 

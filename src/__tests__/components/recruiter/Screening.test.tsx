@@ -15,21 +15,25 @@ describe("Screening (§10.7 sequence)", () => {
     const checks = (): NodeListOf<Element> => container.querySelectorAll(".checks .c");
     expect(checks()[0].className).not.toMatch(/ok/);
 
+    
     await act(async () => {
       jest.advanceTimersByTime(550);
     });
     expect(checks()[0].className).toMatch(/ok/);
 
+    
     await act(async () => {
       jest.advanceTimersByTime(650);
     });
     expect(checks()[1].className).toMatch(/ok/);
 
+    
     await act(async () => {
       await Promise.resolve();
     });
     expect(checks()[2].className).toMatch(/ok/);
 
+    
     await act(async () => {
       jest.advanceTimersByTime(700);
     });
@@ -41,17 +45,21 @@ describe("Screening (§10.7 sequence)", () => {
     const onDone = jest.fn();
     render(<Screening email="jordan@acme.co" screen={screen} onDone={onDone} />);
 
+    
     await act(async () => {
       jest.advanceTimersByTime(550);
     });
+    
     await act(async () => {
       jest.advanceTimersByTime(650);
     });
+    
     await act(async () => {
       await Promise.resolve();
       await Promise.resolve();
       await Promise.resolve();
     });
+    
     await act(async () => {
       jest.advanceTimersByTime(700);
     });

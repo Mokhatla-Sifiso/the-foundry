@@ -13,6 +13,7 @@ describe("useTheme", () => {
     window.localStorage.setItem(KEY, "dark");
     const { result } = renderHook(() => useTheme());
 
+    
     expect(result.current.theme).toBe("dark");
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });

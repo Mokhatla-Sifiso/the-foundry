@@ -9,10 +9,10 @@ const OTP_LENGTH = 6;
 
 type OtpProps = Readonly<{
   email: string;
-  code: string;
-  onVerify: (entered: string) => void;
-  error?: string;
-  onResend: () => void;
+    code: string;
+    onVerify: (entered: string) => void;
+    error?: string;
+    onResend: () => void;
 }>;
 
 export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React.ReactElement {
@@ -43,6 +43,7 @@ export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React
       refs.current[nextIndex]?.focus();
       return;
     }
+    
     setDigits((prev) => {
       const next = [...prev];
       for (let k = 0; k < OTP_LENGTH - i && k < raw.length; k += 1) {

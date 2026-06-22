@@ -25,7 +25,7 @@ type Step = "gate" | "signup" | "signin" | "otp" | "screening" | "approved";
 type FlowData = Partial<SignUpData> & {
   verifiedAt?: number;
   screen?: ScreenResult;
-  _mode?: "signin";
+    _mode?: "signin";
 };
 
 const screenVariants = {
@@ -42,6 +42,8 @@ export default function RecruiterPage(): React.ReactElement {
   const [code, setCode] = useState<string>(() => genCode());
   const [otpError, setOtpError] = useState<string | undefined>();
 
+  
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
     const session = window.localStorage.getItem(LS_SESSION);
@@ -49,11 +51,17 @@ export default function RecruiterPage(): React.ReactElement {
     const accounts = loadAccounts();
     const account = accounts[session.toLowerCase()];
     if (account) {
+      
+      
+      
+      
+      
       setData(account);
       setStep("approved");
     }
   }, []);
 
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (step !== "approved") return;
@@ -96,7 +104,7 @@ export default function RecruiterPage(): React.ReactElement {
     (email: string): void => {
       const accounts = loadAccounts();
       const account = accounts[email.toLowerCase()];
-      if (!account) return;
+      if (!account) return; 
       setData(account);
       go("otp-signin");
     },
@@ -120,6 +128,8 @@ export default function RecruiterPage(): React.ReactElement {
   );
 
   const screen = useCallback(async (): Promise<ScreenResult> => {
+    
+    
     return { decision: "approve", reason: "Verified via work email and domain." };
   }, []);
 
@@ -161,6 +171,9 @@ export default function RecruiterPage(): React.ReactElement {
       company: data.company ?? "",
       role: data.role ?? "",
       url: data.url ?? "",
+      
+      
+      
       verifiedAt: data.verifiedAt ?? 0,
       screen: data.screen,
     };

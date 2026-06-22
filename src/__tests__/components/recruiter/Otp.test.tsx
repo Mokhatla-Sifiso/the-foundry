@@ -35,6 +35,8 @@ describe("Otp", () => {
     const verify = screen.getByRole("button", { name: /Verify email/i });
     expect((verify as HTMLButtonElement).disabled).toBe(true);
 
+    
+    
     const all = inputs();
     for (let i = 0; i < 6; i += 1) {
       all[i].focus();
@@ -111,3 +113,5 @@ describe("Otp", () => {
     expect(onResend).toHaveBeenCalledTimes(1);
   });
 });
+undefined
+undefined

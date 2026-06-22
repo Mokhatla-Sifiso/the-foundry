@@ -8,8 +8,14 @@ export function useTheme(): { theme: Theme; toggle: () => void; setTheme: (t: Th
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
+    
+    
+    
+    
+    
     const stored = (typeof window !== "undefined" ? localStorage.getItem("studio-theme") : null) as Theme | null;
     if (stored && stored !== "light") {
+      
       setTheme(stored);
     }
   }, []);
@@ -20,7 +26,7 @@ export function useTheme(): { theme: Theme; toggle: () => void; setTheme: (t: Th
     try {
       localStorage.setItem("studio-theme", theme);
     } catch {
-      // private-mode Safari etc: silent.
+      
     }
   }, [theme]);
 

@@ -8,11 +8,11 @@ export const EASE = [0.22, 1, 0.36, 1] as const;
 
 type RevealProps = Readonly<{
   children: ReactNode;
-  y?: number;
-  delay?: number;
+    y?: number;
+    delay?: number;
   className?: string;
   style?: CSSProperties;
-  as?: ElementType;
+    as?: ElementType;
 }>;
 
 export function Reveal({

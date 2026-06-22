@@ -10,8 +10,8 @@ const wait = (ms: number): Promise<void> =>
 
 type ScreeningProps = Readonly<{
   email: string;
-  screen: () => Promise<ScreenResult>;
-  onDone: (result: ScreenResult) => void;
+    screen: () => Promise<ScreenResult>;
+    onDone: (result: ScreenResult) => void;
 }>;
 
 export function Screening({ email, screen, onDone }: ScreeningProps): React.ReactElement {

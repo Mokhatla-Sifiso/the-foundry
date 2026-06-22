@@ -1,6 +1,6 @@
 type DotsProps = Readonly<{
-  step: number;
-  total?: number;
+    step: number;
+    total?: number;
 }>;
 
 export function Dots({ step, total = 4 }: DotsProps): React.ReactElement {
