@@ -1,14 +1,13 @@
 import { Reveal } from "@/components/primitives/Reveal";
+import { StackScaleEffect } from "@/components/primitives/StackScaleEffect";
 import { SERVICES } from "@/lib/constants";
 
-const STACK_TOP_BASE_PX = 86;
-const STACK_TOP_STEP_PX = 36;
 const TOTAL = SERVICES.length;
 
 export function Services(): React.ReactElement {
   return (
-    <section id="services" className="sec">
-      <div className="wrap">
+    <section id="services" className="sec services-section">
+      <div className="wrap services-head">
         <Reveal as="span" className="eyebrow">
           Services
         </Reveal>
@@ -18,42 +17,44 @@ export function Services(): React.ReactElement {
             <span className="em">full-stack capable.</span>
           </p>
         </Reveal>
+      </div>
 
-        <div className="stack">
-          {SERVICES.map((s, i) => (
-            <article
-              key={s.w1}
-              className="svc-card"
-              style={{
-                top: `calc(${STACK_TOP_BASE_PX}px + ${i * STACK_TOP_STEP_PX}px)`,
-                zIndex: i + 1,
-              }}
-            >
-              <span className="num">
-                {String(i + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
-              </span>
+      <StackScaleEffect />
+      <div className="stack">
+        {SERVICES.map((s, i) => (
+          <article
+            key={s.w1}
+            className={`svc-card svc-card--${i}`}
+            style={{
+              zIndex: i + 1,
+              ...(i > 0 ? { marginTop: "12vh" } : {}),
+            }}
+          >
+            <span className="num">
+              {String(i + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+            </span>
 
-              <Reveal>
-                <h3>
-                  {s.w1}
-                  <span className="w2">{s.w2}</span>
-                </h3>
-              </Reveal>
+            <Reveal>
+              <h3 className="svc-h">
+                <span className="svc-h-l1">{s.w1}</span>
+                <span className="svc-h-l2">{s.w2}</span>
+              </h3>
+            </Reveal>
 
-              <Reveal delay={0.06}>
-                <div className="svc-pills">
-                  {s.pills.map((p) => (
-                    <span key={p}>{p}</span>
-                  ))}
-                </div>
-                <div className="svc-desc">
-                  <span className="ast" aria-hidden="true">✳</span>
-                  <p>{s.d}</p>
-                </div>
-              </Reveal>
-            </article>
-          ))}
-        </div>
+            <Reveal delay={0.06}>
+              <div className="svc-pills">
+                {s.pills.map((p) => (
+                  <span key={p}>{p}</span>
+                ))}
+              </div>
+              <div className="svc-desc">
+                <span className="ast" aria-hidden="true">✳</span>
+                <p>{s.d}</p>
+              </div>
+            </Reveal>
+          </article>
+        ))}
+        <div className="stack-spacer" aria-hidden="true" />
       </div>
     </section>
   );
