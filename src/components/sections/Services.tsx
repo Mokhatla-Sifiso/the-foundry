@@ -54,7 +54,7 @@ export function Services(): React.ReactElement {
             </Reveal>
           </article>
         ))}
-        {/* Spacer gives the last card reading room while all prior cards stay pinned */}
+        
         <div className="stack-spacer" aria-hidden="true" />
       </div>
     </section>

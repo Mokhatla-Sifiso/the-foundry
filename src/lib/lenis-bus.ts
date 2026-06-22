@@ -1,6 +1,4 @@
-// Lightweight event bus so StackScaleEffect can consume Lenis's float
-// scroll value directly from the Lenis RAF loop, avoiding the integer
-// rounding of window.scrollY that causes the sticky-lock snap.
+
 
 type Cb = (scroll: number) => void;
 const subs: Cb[] = [];

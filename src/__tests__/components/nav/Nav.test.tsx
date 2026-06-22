@@ -37,3 +37,5 @@ describe("Nav", () => {
     expect(screen.getByRole("button", { name: /toggle theme/i })).toBeInTheDocument();
   });
 });
+undefined
+undefined

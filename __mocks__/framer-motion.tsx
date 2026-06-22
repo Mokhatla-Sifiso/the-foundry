@@ -1,13 +1,5 @@
 import React from "react";
 
-/*
- * Manual mock auto-discovered by Jest when a suite calls
- * `jest.mock("framer-motion")`. Strips framer-only props from `motion.<tag>`
- * components so jsdom doesn't choke on unknown DOM attributes, and replaces
- * the scroll/spring hooks with passthrough stubs. Suites that care about
- * actual animation behaviour should use a per-suite factory mock instead.
- */
-
 const ANIMATION_PROPS = new Set([
   "initial",
   "animate",

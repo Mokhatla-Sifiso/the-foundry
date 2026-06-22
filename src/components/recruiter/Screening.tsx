@@ -10,25 +10,10 @@ const wait = (ms: number): Promise<void> =>
 
 type ScreeningProps = Readonly<{
   email: string;
-  /** Async screening call. Failures fall back to an approve result. */
-  screen: () => Promise<ScreenResult>;
-  /** Fires once the sequence completes — caller transitions to Approved. */
-  onDone: (result: ScreenResult) => void;
+    screen: () => Promise<ScreenResult>;
+    onDone: (result: ScreenResult) => void;
 }>;
 
-/**
- * Screening screen — VERBATIM animated check sequence from §10.7.
- *
- *   1. wait 550ms → email check tick.
- *   2. wait 650ms → domain check tick.
- *   3. await screen()  → screen check tick + result captured.
- *   4. wait 700ms → onDone(result).
- *
- * Each check row swaps to `.ok` (green icon + dark fg) as it
- * completes. If `screen()` rejects the helper falls back to
- * `{ decision: "approve", reason: "Verified via work email and
- * domain." }` so the user can always reach Approved.
- */
 export function Screening({ email, screen, onDone }: ScreeningProps): React.ReactElement {
   const [emailOk, setEmailOk] = useState(false);
   const [domainOk, setDomainOk] = useState(false);

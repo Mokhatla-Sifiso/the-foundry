@@ -6,17 +6,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { useRef } from 'react';
 
-/**
- * Hero — VERBATIM markup, copy, animations from §7.3.
- *
- * Three parallax tracks driven by `useScroll` on the hero ref with
- * offset `['start start', 'end start']`:
- *   - `.hero-render` (portrait): y maps 0..1 → 0..-120 (drifts up).
- *   - `.hero-mark` (background wordmark): y maps 0..1 → 0..80.
- *   - `.scroll-cue` opacity: 1..0 over progress 0..0.7.
- *
- * Entrance animations match the §15 master reference exactly.
- */
 export function Hero(): React.ReactElement {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({

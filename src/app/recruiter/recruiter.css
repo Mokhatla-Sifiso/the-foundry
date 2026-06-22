@@ -1,11 +1,4 @@
-/* ───────────────────────────────────────────────────────────────────────
- * recruiter.css — VERBATIM from §11.
- *
- * The recruiter route has its own theme tokens (notably: white card on
- * light theme, plus --ok / --warn / --field), so this stylesheet
- * redefines them under html[data-theme="…"] selectors. Imported only
- * from src/app/recruiter/page.tsx — never the main site.
- * ─────────────────────────────────────────────────────────────────── */
+
 
 :root {
   --candy: #b2d5e5;
@@ -71,7 +64,6 @@ body {
 ::selection { background: var(--candy); color: #06181f; }
 input { font-family: inherit; }
 
-/* ───────────────────────── Top bar ───────────────────────── */
 .topbar { position: fixed; inset: 16px 0 auto 0; z-index: 20; }
 .topbar-in {
   width: min(960px, 100% - 40px);
@@ -117,7 +109,6 @@ input { font-family: inherit; }
 }
 .backlink:hover { transform: translateY(-1px); }
 
-/* ───────────────────────── Stage + card ───────────────────────── */
 .stage {
   min-height: 100vh;
   display: grid;
@@ -146,7 +137,6 @@ input { font-family: inherit; }
 }
 html[data-theme="light"] .card .glow { opacity: .8; }
 
-/* ───────────────────────── Headings + eyebrow ───────────────────────── */
 .eyebrow {
   font-size: 12px;
   font-weight: 600;
@@ -186,7 +176,6 @@ p.sub {
   max-width: 44ch;
 }
 
-/* ───────────────────────── Dots progress ───────────────────────── */
 .dots { display: flex; gap: 7px; margin-bottom: 26px; }
 .dots i {
   height: 4px;
@@ -198,7 +187,6 @@ p.sub {
 .dots i.on { background: var(--candy); }
 .dots i.done { background: var(--ok); }
 
-/* ───────────────────────── Form + fields ───────────────────────── */
 form { display: grid; gap: 16px; }
 .row2 {
   display: grid;
@@ -251,7 +239,6 @@ form { display: grid; gap: 16px; }
 .field.invalid .err { display: block; }
 .field.invalid .inp { border-color: var(--warn); }
 
-/* ───────────────────────── Buttons ───────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -289,7 +276,6 @@ form { display: grid; gap: 16px; }
 }
 html[data-theme="light"] .alt a { color: #2a6f93; }
 
-/* ───────────────────────── Notes + OTP ───────────────────────── */
 .note {
   display: flex;
   gap: 12px;
@@ -331,7 +317,6 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 40%, transparent);
 }
 
-/* ───────────────────────── Screening + approved ───────────────────────── */
 .center { text-align: center; padding: 16px 0; }
 .spinner {
   width: 56px;
@@ -443,7 +428,6 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   text-underline-offset: 3px;
 }
 
-/* ───────────────────────── Howto disclosure ───────────────────────── */
 .howto {
   margin-top: 26px;
   border-top: 1px solid var(--line);

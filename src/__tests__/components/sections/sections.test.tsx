@@ -2,7 +2,7 @@ jest.mock("framer-motion");
 jest.mock("next/image", () => ({
   __esModule: true,
   default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
+    
     <img src={src} alt={alt} {...rest} />
   ),
 }));
@@ -17,8 +17,6 @@ import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
 import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
-
-/* ─────────────────────────────────────────────────────────────────── */
 
 describe("Hero", () => {
   it("renders the spec's lowercase wordmark + h1 + Scroll cue", () => {
@@ -42,8 +40,6 @@ describe("Hero", () => {
     expect(img.getAttribute("src")).toBe(SITE.portrait);
   });
 });
-
-/* ─────────────────────────────────────────────────────────────────── */
 
 describe("Statement", () => {
   it("renders the spec copy with the production-ready + software spans", () => {
@@ -179,8 +175,6 @@ describe("Contact", () => {
   });
 });
 
-/* ─────────────────────────────────────────────────────────────────── */
-
 describe("Footer", () => {
   it("renders the spec wordmark + sub line + 3 links + GoUp", () => {
     render(<Footer />);
@@ -193,9 +187,6 @@ describe("Footer", () => {
   });
 });
 
-/* ─────────────────────────────────────────────────────────────────── */
-
-// Lightweight constants × NAVLINKS shape sanity to lock the 5-link nav contract.
 describe("NAVLINKS shape (re-asserted at section level)", () => {
   it("has exactly 5 entries and the order matches what Menu renders", () => {
     expect(NAVLINKS.length).toBe(5);

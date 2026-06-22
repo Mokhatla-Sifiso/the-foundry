@@ -31,14 +31,6 @@ type SignUpProps = Readonly<{
   onAlreadyVerified: () => void;
 }>;
 
-/**
- * SignUp screen — VERBATIM copy + validation from §10.5.
- *
- * 5 fields (name / email / company / role / url) with company + role
- * sharing a `.row2`. On submit, validates per the spec rules and
- * either renders inline errors or fires `onSubmit` with the trimmed
- * values. `Dots step={0}`.
- */
 export function SignUp({
   initial,
   onBack,

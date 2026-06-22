@@ -1,8 +1,3 @@
-/**
- * Recruiter-flow helpers — VERBATIM from §10.1 of the build spec.
- * The localStorage keys and the FREE-domain set are part of the
- * contract; don't rename or add domains without spec update.
- */
 
 export const LS_ACCOUNTS = "recruiter-accounts-v1";
 export const LS_SESSION = "recruiter-session-v1";
@@ -39,7 +34,6 @@ export const domainOf = (e: string): string =>
 
 export const isFree = (e: string): boolean => FREE.has(domainOf(e));
 
-/** 6-digit numeric OTP. */
 export const genCode = (): string =>
   String(Math.floor(100000 + Math.random() * 900000));
 

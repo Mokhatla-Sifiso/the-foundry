@@ -25,8 +25,7 @@ type Step = "gate" | "signup" | "signin" | "otp" | "screening" | "approved";
 type FlowData = Partial<SignUpData> & {
   verifiedAt?: number;
   screen?: ScreenResult;
-  /** Internal-only: tracks whether the otp step is for signup or signin. */
-  _mode?: "signin";
+    _mode?: "signin";
 };
 
 const screenVariants = {
@@ -37,27 +36,14 @@ const screenVariants = {
 
 const screenTransition = { duration: 0.45, ease: EASE };
 
-/**
- * /recruiter — VERBATIM state machine from §10.3.
- *
- * Steps: gate → signup → otp → screening → approved (+ signin → otp →
- * approved path). All transitions go through `go(step)` which handles
- * the OTP regeneration + mode tagging side effects.
- *
- * On mount, auto-resumes to `approved` if `LS_SESSION` holds an email
- * whose account map entry still exists.
- *
- * Screens swap inside `AnimatePresence mode="wait"` with the spec's
- * enter/center/exit variants (opacity + y).
- */
 export default function RecruiterPage(): React.ReactElement {
   const [step, setStep] = useState<Step>("gate");
   const [data, setData] = useState<FlowData>({});
   const [code, setCode] = useState<string>(() => genCode());
   const [otpError, setOtpError] = useState<string | undefined>();
 
-  // Auto-resume on mount: if LS_SESSION has a known account, jump
-  // straight to Approved.
+  
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
     const session = window.localStorage.getItem(LS_SESSION);
@@ -65,17 +51,17 @@ export default function RecruiterPage(): React.ReactElement {
     const accounts = loadAccounts();
     const account = accounts[session.toLowerCase()];
     if (account) {
-      // Spec §10.3 auto-resume: when a session cookie + matching account
-      // exist on mount, jump straight to Approved. The new
-      // `react-hooks/set-state-in-effect` rule flags this hydration sync,
-      // but it's the spec-mandated shape.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      
+      
+      
+      
+      
       setData(account);
       setStep("approved");
     }
   }, []);
 
-  // Persist session whenever we hit approved with an email on file.
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (step !== "approved") return;
@@ -118,7 +104,7 @@ export default function RecruiterPage(): React.ReactElement {
     (email: string): void => {
       const accounts = loadAccounts();
       const account = accounts[email.toLowerCase()];
-      if (!account) return; // SignIn already guarded; defensive.
+      if (!account) return; 
       setData(account);
       go("otp-signin");
     },
@@ -142,8 +128,8 @@ export default function RecruiterPage(): React.ReactElement {
   );
 
   const screen = useCallback(async (): Promise<ScreenResult> => {
-    // Front-end prototype: no backend. Always approve with a friendly
-    // reason. Production wires this to /api/screen per §10.10.
+    
+    
     return { decision: "approve", reason: "Verified via work email and domain." };
   }, []);
 
@@ -185,9 +171,9 @@ export default function RecruiterPage(): React.ReactElement {
       company: data.company ?? "",
       role: data.role ?? "",
       url: data.url ?? "",
-      // `verifiedAt` is set at write time in `handleScreeningDone` and
-      // preserved by auto-resume; 0 is the inert fallback for older
-      // accounts that pre-date that field.
+      
+      
+      
       verifiedAt: data.verifiedAt ?? 0,
       screen: data.screen,
     };

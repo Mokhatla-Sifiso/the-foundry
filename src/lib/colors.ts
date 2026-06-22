@@ -1,8 +1,3 @@
-/**
- * Color helpers — VERBATIM from §7.8.1 of the build spec. Used by the
- * AI section's scroll-latched background to interpolate between edge
- * and peak colors at run time.
- */
 
 export const _hx = (h: string): number[] => {
   h = h.replace("#", "");

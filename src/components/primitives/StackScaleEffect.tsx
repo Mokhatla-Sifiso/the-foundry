@@ -13,19 +13,19 @@ export function StackScaleEffect(): null {
     const stack = document.querySelector<HTMLElement>(".stack");
     if (!cards.length || !stack) return;
 
-    // Measure once at mount — never read layout in the hot path
+    
     const naturalY = cards.map(c => c.getBoundingClientRect().top + window.scrollY);
     const cardH = cards.map(c => c.getBoundingClientRect().height);
     const thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
-    // Stack container bottom — cards must release when this exits the viewport,
-    // exactly like CSS sticky releases when its containing block's bottom is reached.
+    
+    
     const stackBottom = stack.getBoundingClientRect().bottom + window.scrollY;
 
     function apply(scroll: number): void {
       cards.forEach((card, i) => {
-        // Sticky-in: start pinning once scroll crosses the threshold
+        
         const rawY = Math.max(0, scroll - thresholds[i]);
-        // Sticky-out: release and scroll away once stack container exits viewport
+        
         const maxY = stackBottom - naturalY[i] - cardH[i];
         const translateY = Math.min(rawY, maxY);
 

@@ -2,17 +2,6 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 
-/**
- * In-view detector — VERBATIM from §6 of the build spec. The spec
- * deliberately avoids IntersectionObserver (it failed in some embedded
- * preview contexts in the prototype) and uses scroll/resize + a rect
- * check with a 1500ms fallback so content is guaranteed to reveal
- * even if no scroll event fires.
- *
- * @param margin Fraction of the viewport height the element top must
- *               pass before it's considered "seen" (default 0.16 →
- *               fires when top crosses 84% of viewport height).
- */
 export function useInView<T extends HTMLElement = HTMLElement>(
   margin = 0.16,
 ): readonly [RefObject<T | null>, boolean] {

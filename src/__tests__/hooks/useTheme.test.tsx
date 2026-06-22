@@ -13,7 +13,7 @@ describe("useTheme", () => {
     window.localStorage.setItem(KEY, "dark");
     const { result } = renderHook(() => useTheme());
 
-    // After mount effect: theme reads from storage, attribute applied.
+    
     expect(result.current.theme).toBe("dark");
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });

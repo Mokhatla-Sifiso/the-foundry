@@ -1,12 +1,6 @@
 import { Reveal } from "@/components/primitives/Reveal";
 import { XP } from "@/lib/constants";
 
-/**
- * Experience — VERBATIM markup + copy from §7.7.
- *
- * Heading uses inline style per spec; row stagger is `i * 0.04` so
- * each row enters slightly after the previous one.
- */
 export function Experience(): React.ReactElement {
   return (
     <section id="experience" className="sec">

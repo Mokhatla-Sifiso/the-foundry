@@ -1,11 +1,6 @@
 import type { Config } from "jest";
 import nextJest from "next/jest.js";
 
-/*
- * `next/jest` sets up SWC transforms, auto-mocks `next/font`, stylesheets, and image imports,
- * and threads `next.config.ts` flags through so SWC behaves the same way it does at build time.
- * Anything we add here is layered on top of that baseline.
- */
 const createJestConfig = nextJest({ dir: "./" });
 
 const config: Config = {
