@@ -20,7 +20,7 @@ describe("SignUp validation (§10.5)", () => {
     expect(screen.getByText("Company website or LinkedIn helps verify you.")).toBeInTheDocument();
   });
 
-  it("rejects free-mail addresses with the spec message", async () => {
+  it("does not block free-mail addresses client-side (server enforces the rule with admin bypass)", async () => {
     const onSubmit = jest.fn();
     const user = userEvent.setup();
     render(
@@ -35,10 +35,7 @@ describe("SignUp validation (§10.5)", () => {
 
     await user.click(screen.getByRole("button", { name: /Send verification code/i }));
 
-    expect(onSubmit).not.toHaveBeenCalled();
-    expect(
-      screen.getByText(/personal inboxes \(gmail, outlook…\) can't be verified/i),
-    ).toBeInTheDocument();
+    expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 
   it("submits trimmed values when every field is valid", async () => {
