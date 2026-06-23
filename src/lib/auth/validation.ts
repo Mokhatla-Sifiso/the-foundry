@@ -13,9 +13,14 @@ export type SignupPayload = Readonly<{
   company: string;
   role: string;
   url: string;
+  acceptedTerms: true;
+  acceptedPrivacy: true;
 }>;
 
-export type ValidationError = Readonly<{ field: keyof SignupPayload; message: string }>;
+export type ValidationError = Readonly<{
+  field: keyof SignupPayload | "consent";
+  message: string;
+}>;
 
 export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
@@ -44,6 +49,8 @@ export function validateSignup(
   const company = typeof input.company === "string" ? input.company.trim() : "";
   const role = typeof input.role === "string" ? input.role.trim() : "";
   const url = typeof input.url === "string" ? input.url.trim() : "";
+  const acceptedTerms = input.acceptedTerms === true;
+  const acceptedPrivacy = input.acceptedPrivacy === true;
 
   if (!EMAIL_RE.test(email)) {
     return { ok: false, error: { field: "email", message: "Enter a valid email address." } };
@@ -62,6 +69,26 @@ export function validateSignup(
   if (company.length < 2) return { ok: false, error: { field: "company", message: "Which company are you with?" } };
   if (role.length < 2) return { ok: false, error: { field: "role", message: "What role are you hiring for?" } };
   if (url.length < 4) return { ok: false, error: { field: "url", message: "Company website or LinkedIn helps verify you." } };
+  if (!acceptedTerms || !acceptedPrivacy) {
+    return {
+      ok: false,
+      error: {
+        field: "consent",
+        message: "You must accept the Recruiter Terms and Privacy Policy to continue.",
+      },
+    };
+  }
 
-  return { ok: true, value: { email: normalizeEmail(email), name, company, role, url } };
+  return {
+    ok: true,
+    value: {
+      email: normalizeEmail(email),
+      name,
+      company,
+      role,
+      url,
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    },
+  };
 }

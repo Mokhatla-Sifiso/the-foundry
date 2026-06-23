@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Arrow, Chat, Up } from "@/components/primitives/icons";
 import { SITE } from "@/lib/constants";
+import { useConsent } from "@/components/privacy/ConsentProvider";
 
 /**
  * Footer — VERBATIM markup + copy from §7.10. Big wordmark + sub,
@@ -9,6 +11,7 @@ import { SITE } from "@/lib/constants";
  * uses `window.scrollTo`.
  */
 export function Footer(): React.ReactElement {
+  const { reopen } = useConsent();
   const goUp = (): void => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -55,6 +58,15 @@ export function Footer(): React.ReactElement {
               <span className="ic">
                 <Up />
               </span>
+            </button>
+          </div>
+
+          <div className="foot-legal">
+            <Link href="/legal/privacy">Privacy</Link>
+            <Link href="/legal/cookies">Cookies</Link>
+            <Link href="/legal/terms">Terms</Link>
+            <button type="button" className="foot-legal-btn" onClick={reopen}>
+              Cookie preferences
             </button>
           </div>
         </div>
