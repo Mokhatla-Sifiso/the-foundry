@@ -9,13 +9,8 @@ const OTP_LENGTH = 6;
 
 type OtpProps = Readonly<{
   email: string;
-  /** The generated demo code — shown in the Demo note + matched on verify. */
-  code: string;
-  /** Verify handler — receives the joined 6-digit string. */
   onVerify: (entered: string) => void;
-  /** Caller-controlled error message (e.g. "That code doesn't match. Try again."). */
   error?: string;
-  /** Regenerate the code (Demo "Resend" link). */
   onResend: () => void;
 }>;
 
@@ -34,7 +29,7 @@ type OtpProps = Readonly<{
  * plain text so reviewers can type it back in — replaced by a real
  * email send in production per §13.
  */
-export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React.ReactElement {
+export function Otp({ email, onVerify, error, onResend }: OtpProps): React.ReactElement {
   const [digits, setDigits] = useState<string[]>(() => Array(OTP_LENGTH).fill(""));
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -129,11 +124,10 @@ export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React
       </button>
 
       <div className="note">
-        <span className="b">Demo</span>
+        <span className="b">Heads up</span>
         <div>
-          No mail server in this prototype, so your code is{" "}
-          <code>{code}</code>. In production this is emailed to your work
-          address and expires in 10 minutes.{" "}
+          The code lands in your inbox within a few seconds and expires in 5
+          minutes. Didn&apos;t get it?{" "}
           <a
             role="button"
             tabIndex={0}

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Arrow, IconBack, IconMail } from "@/components/primitives/icons";
-import { emailRe, loadAccounts } from "@/lib/recruiter";
 import { Field } from "./Field";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SignInProps = Readonly<{
   onBack: () => void;
@@ -26,13 +27,8 @@ export function SignIn({ onBack, onCode, onNewHere }: SignInProps): React.ReactE
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const value = email.trim();
-    if (!emailRe.test(value)) {
+    if (!EMAIL_RE.test(value)) {
       setError("Enter a valid email address.");
-      return;
-    }
-    const accounts = loadAccounts();
-    if (!accounts[value.toLowerCase()]) {
-      setError("No access found for that email. Request access instead.");
       return;
     }
     setError(undefined);

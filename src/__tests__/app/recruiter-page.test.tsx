@@ -1,53 +1,66 @@
 jest.mock("framer-motion");
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import RecruiterPage from "@/app/recruiter/page";
-import { LS_ACCOUNTS, LS_SESSION } from "@/lib/recruiter";
 
-describe("RecruiterPage auto-resume (§10.3)", () => {
-  beforeEach(() => {
-    window.localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
+const originalFetch = global.fetch;
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    text: async () => JSON.stringify(body),
+  } as unknown as Response;
+}
+
+function mockSession(account: unknown): void {
+  global.fetch = jest.fn(async (input: RequestInfo | URL) => {
+    const url = typeof input === "string" ? input : input.toString();
+    if (url.includes("/api/recruiter/session")) return jsonResponse({ account });
+    return jsonResponse({});
+  }) as unknown as typeof global.fetch;
+}
+
+describe("RecruiterPage auto-resume", () => {
+  afterEach(() => {
+    global.fetch = originalFetch;
   });
 
-  it("starts at the Gate when no session is stored", () => {
+  it("starts at the Gate when /api/recruiter/session returns no account", async () => {
+    mockSession(null);
     render(<RecruiterPage />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /Download my CV/i,
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Download my CV/i),
     );
   });
 
-  it("jumps straight to Approved when LS_SESSION points at a stored account", () => {
-    window.localStorage.setItem(
-      LS_ACCOUNTS,
-      JSON.stringify({
-        "jordan@acme.co": {
-          name: "Jordan Pillay",
-          email: "jordan@acme.co",
-          company: "Acme",
-          role: "Frontend",
-          url: "acme.co",
-          verifiedAt: 1,
-        },
-      }),
-    );
-    window.localStorage.setItem(LS_SESSION, "jordan@acme.co");
+  it("jumps to Approved when /api/recruiter/session returns an account", async () => {
+    mockSession({
+      name: "Jordan Pillay",
+      email: "jordan@acme.co",
+      company: "Acme",
+      role: "Frontend",
+      url: "acme.co",
+      verifiedAt: 1,
+      isAdmin: false,
+      screen: { decision: "approve", reason: "Verified." },
+    });
 
     render(<RecruiterPage />);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "You're verified.",
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("You're verified."),
     );
     expect(screen.getByText(/Thanks, Jordan\./)).toBeInTheDocument();
   });
 
-  it("ignores a stale session whose email no longer has an account", () => {
-    window.localStorage.setItem(LS_SESSION, "ghost@acme.co");
+  it("falls back to the Gate when the session endpoint errors", async () => {
+    global.fetch = jest.fn(async () => jsonResponse({ message: "boom" }, 500)) as unknown as typeof global.fetch;
 
     render(<RecruiterPage />);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /Download my CV/i,
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Download my CV/i),
     );
   });
 });
