@@ -3,6 +3,8 @@ import { Onest } from "next/font/google";
 import { Loader } from "@/components/Loader";
 import { ThemeScript } from "@/components/ThemeScript";
 import { Toaster } from "@/components/primitives/Toaster";
+import { ConsentProvider } from "@/components/privacy/ConsentProvider";
+import { ConsentBanner } from "@/components/privacy/ConsentBanner";
 import "./globals.css";
 
 const onest = Onest({
@@ -54,7 +56,10 @@ export default function RootLayout({ children }: RootLayoutProps): React.ReactEl
           <div className="ld-sub">Loading experience</div>
         </div>
         <Loader />
-        {children}
+        <ConsentProvider>
+          {children}
+          <ConsentBanner />
+        </ConsentProvider>
         <Toaster />
       </body>
     </html>

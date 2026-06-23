@@ -1,0 +1,103 @@
+/**
+ * Cookie & storage inventory. Single source of truth — the consent banner
+ * and Cookie Policy page both render from this list, so the published policy
+ * can never drift from what the app actually sets.
+ *
+ * Add a new entry here whenever you introduce a cookie or localStorage key.
+ */
+
+export type CookieCategory = "necessary" | "functional" | "analytics";
+
+export type CookieEntry = Readonly<{
+  /** The cookie name or storage key. */
+  name: string;
+  /** Where it lives. */
+  storage: "cookie" | "localStorage";
+  /** Which consent category it falls under. */
+  category: CookieCategory;
+  /** Who sets it. */
+  party: "first" | "third";
+  /** Plain-language purpose shown in the Cookie Policy table. */
+  purpose: string;
+  /** Human-readable duration shown in the policy. */
+  duration: string;
+}>;
+
+/**
+ * Order matters — the policy table renders rows in this order.
+ */
+export const COOKIE_INVENTORY: readonly CookieEntry[] = [
+  {
+    name: "better-auth.session_token",
+    storage: "cookie",
+    category: "necessary",
+    party: "first",
+    purpose:
+      "Identifies your authenticated session after sign-in so you don't have to verify your email on every request.",
+    duration: "14 days",
+  },
+  {
+    name: "better-auth.session_data",
+    storage: "cookie",
+    category: "necessary",
+    party: "first",
+    purpose:
+      "Short-lived cache of your session so pages can render without an extra database lookup.",
+    duration: "5 minutes",
+  },
+  {
+    name: "consent",
+    storage: "cookie",
+    category: "necessary",
+    party: "first",
+    purpose:
+      "Records your cookie preferences so we don't ask you again on every visit.",
+    duration: "12 months",
+  },
+  {
+    name: "studio-theme",
+    storage: "localStorage",
+    category: "functional",
+    party: "first",
+    purpose: "Remembers whether you chose light or dark mode.",
+    duration: "Until you clear browser storage",
+  },
+] as const;
+
+export const CATEGORY_META: Readonly<
+  Record<
+    CookieCategory,
+    Readonly<{ label: string; description: string; alwaysOn: boolean }>
+  >
+> = {
+  necessary: {
+    label: "Strictly necessary",
+    description:
+      "Required to authenticate you and remember your consent choices. Without these, the recruiter access flow cannot function.",
+    alwaysOn: true,
+  },
+  functional: {
+    label: "Functional",
+    description:
+      "Remembers preferences like your theme so the site stays personal across visits.",
+    alwaysOn: false,
+  },
+  analytics: {
+    label: "Analytics",
+    description:
+      "Helps me understand which parts of the site are useful. We don't currently set any analytics cookies, but turning this off will keep it that way if we add them.",
+    alwaysOn: false,
+  },
+};
+
+export const CATEGORY_ORDER: readonly CookieCategory[] = [
+  "necessary",
+  "functional",
+  "analytics",
+] as const;
+
+export function inventoryByCategory(
+  category: CookieCategory,
+): readonly CookieEntry[] {
+  return COOKIE_INVENTORY.filter((c) => c.category === category);
+}

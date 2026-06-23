@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { fetchAccount } from "@/lib/auth/profile";
 import { validateSignup } from "@/lib/auth/validation";
+import { logConsent } from "@/lib/privacy/log";
+import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 
 const OTP_RE = /^\d{6}$/;
 
@@ -54,10 +56,18 @@ export async function POST(request: Request): Promise<Response> {
       return NextResponse.json({ message: "That code doesn't match. Try again." }, { status: 401 });
     }
 
+    const now = new Date();
     await db.$transaction([
       db.user.update({
         where: { id: session.user.id },
-        data: { name: value.name, emailVerified: true },
+        data: {
+          name: value.name,
+          emailVerified: true,
+          acceptedTermsAt: now,
+          acceptedPrivacyAt: now,
+          acceptedTermsVer: TERMS_VERSION,
+          acceptedPrivacyVer: PRIVACY_POLICY_VERSION,
+        },
       }),
       db.recruiterProfile.upsert({
         where: { userId: session.user.id },
@@ -72,6 +82,19 @@ export async function POST(request: Request): Promise<Response> {
           role: value.role,
           url: value.url,
         },
+      }),
+    ]);
+
+    await Promise.all([
+      logConsent({
+        userId: session.user.id,
+        action: "accept_terms",
+        payload: { version: TERMS_VERSION },
+      }),
+      logConsent({
+        userId: session.user.id,
+        action: "accept_privacy",
+        payload: { version: PRIVACY_POLICY_VERSION },
       }),
     ]);
 
