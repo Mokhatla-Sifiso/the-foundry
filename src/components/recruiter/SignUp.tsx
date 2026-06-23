@@ -10,7 +10,7 @@ import {
   IconMail,
   IconUser,
 } from "@/components/primitives/icons";
-import { emailRe, isFree } from "@/lib/recruiter";
+import { emailRe } from "@/lib/recruiter";
 import { Dots } from "./Dots";
 import { Field } from "./Field";
 
@@ -61,9 +61,6 @@ export function SignUp({
 
     if (!emailRe.test(trim(email))) {
       next.email = "Enter a valid email address.";
-    } else if (isFree(trim(email))) {
-      next.email =
-        "Please use your work email — personal inboxes (gmail, outlook…) can't be verified.";
     }
 
     if (trim(company).length < 2) next.company = "Which company are you with?";

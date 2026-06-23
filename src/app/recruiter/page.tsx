@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { EASE } from "@/components/primitives/Reveal";
 import { Approved } from "@/components/recruiter/Approved";
 import { Gate } from "@/components/recruiter/Gate";
@@ -10,188 +11,197 @@ import { Screening } from "@/components/recruiter/Screening";
 import { SignIn } from "@/components/recruiter/SignIn";
 import { SignUp, type SignUpData } from "@/components/recruiter/SignUp";
 import { TopBar } from "@/components/recruiter/TopBar";
-import {
-  genCode,
-  loadAccounts,
-  LS_SESSION,
-  saveAccounts,
-  type RecruiterAccount,
-  type ScreenResult,
-} from "@/lib/recruiter";
+import { apiFetch } from "@/lib/api";
 import "./recruiter.css";
 
 type Step = "gate" | "signup" | "signin" | "otp" | "screening" | "approved";
 
-type FlowData = Partial<SignUpData> & {
-  verifiedAt?: number;
-  screen?: ScreenResult;
-  /** Internal-only: tracks whether the otp step is for signup or signin. */
-  _mode?: "signin";
-};
+type Account = Readonly<{
+  name: string;
+  email: string;
+  company: string;
+  role: string;
+  url: string;
+  verifiedAt: number;
+  isAdmin: boolean;
+  screen: { decision: "pending" | "approve" | "reject"; reason: string } | null;
+}>;
+
+type Mode = "signup" | "signin";
 
 const screenVariants = {
   enter: { opacity: 0, y: 18 },
   center: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -14 },
 };
-
 const screenTransition = { duration: 0.45, ease: EASE };
 
-/**
- * /recruiter — VERBATIM state machine from §10.3.
- *
- * Steps: gate → signup → otp → screening → approved (+ signin → otp →
- * approved path). All transitions go through `go(step)` which handles
- * the OTP regeneration + mode tagging side effects.
- *
- * On mount, auto-resumes to `approved` if `LS_SESSION` holds an email
- * whose account map entry still exists.
- *
- * Screens swap inside `AnimatePresence mode="wait"` with the spec's
- * enter/center/exit variants (opacity + y).
- */
 export default function RecruiterPage(): React.ReactElement {
   const [step, setStep] = useState<Step>("gate");
-  const [data, setData] = useState<FlowData>({});
-  const [code, setCode] = useState<string>(() => genCode());
+  const [mode, setMode] = useState<Mode>("signup");
+  const [signupDraft, setSignupDraft] = useState<SignUpData | null>(null);
+  const [signinEmail, setSigninEmail] = useState<string>("");
+  const [account, setAccount] = useState<Account | null>(null);
   const [otpError, setOtpError] = useState<string | undefined>();
+  const [resumed, setResumed] = useState(false);
 
-  // Auto-resume on mount: if LS_SESSION has a known account, jump
-  // straight to Approved.
+  // Resume on mount — if the BetterAuth session cookie is still valid,
+  // jump straight to Approved with the freshest account snapshot.
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const session = window.localStorage.getItem(LS_SESSION);
-    if (!session) return;
-    const accounts = loadAccounts();
-    const account = accounts[session.toLowerCase()];
-    if (account) {
-      // Spec §10.3 auto-resume: when a session cookie + matching account
-      // exist on mount, jump straight to Approved. The new
-      // `react-hooks/set-state-in-effect` rule flags this hydration sync,
-      // but it's the spec-mandated shape.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setData(account);
-      setStep("approved");
-    }
+    let cancelled = false;
+    void (async () => {
+      const res = await apiFetch<{ account: Account | null }>("/api/recruiter/session", {
+        method: "GET",
+        silent: true,
+      });
+      if (cancelled) return;
+      if (res.ok && res.data?.account) {
+        setAccount(res.data.account);
+        setStep("approved");
+      }
+      setResumed(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Persist session whenever we hit approved with an email on file.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (step !== "approved") return;
-    if (!data.email) return;
-    window.localStorage.setItem(LS_SESSION, data.email.toLowerCase());
-  }, [step, data.email]);
-
-  const go = useCallback((next: Step | "otp-signin"): void => {
+  const handleSignUpSubmit = useCallback(async (form: SignUpData): Promise<void> => {
+    setSignupDraft(form);
+    setMode("signup");
     setOtpError(undefined);
-    if (next === "otp-signin") {
-      setCode(genCode());
-      setData((d) => ({ ...d, _mode: "signin" }));
-      setStep("otp");
-      return;
-    }
-    if (next === "otp") {
-      setCode(genCode());
-      setStep("otp");
-      return;
-    }
-    if (next === "signup" || next === "signin" || next === "gate") {
-      setData((d) => ({ ...d, _mode: undefined }));
-      setStep(next);
-      return;
-    }
-    setStep(next);
+    const res = await apiFetch<{ ok: true }>("/api/recruiter/signup/start", {
+      method: "POST",
+      body: JSON.stringify(form),
+    });
+    if (!res.ok) return;
+    toast.success(`Code sent to ${form.email}`);
+    setStep("otp");
   }, []);
 
-  const mode: "signup" | "signin" = data._mode === "signin" ? "signin" : "signup";
-
-  const handleSignUpSubmit = useCallback(
-    (form: SignUpData): void => {
-      setData((d) => ({ ...d, ...form }));
-      go("otp");
-    },
-    [go],
-  );
-
-  const handleSignInCode = useCallback(
-    (email: string): void => {
-      const accounts = loadAccounts();
-      const account = accounts[email.toLowerCase()];
-      if (!account) return; // SignIn already guarded; defensive.
-      setData(account);
-      go("otp-signin");
-    },
-    [go],
-  );
+  const handleSignInSubmit = useCallback(async (email: string): Promise<void> => {
+    setSigninEmail(email);
+    setMode("signin");
+    setOtpError(undefined);
+    const res = await apiFetch<{ ok: true }>("/api/recruiter/signin/start", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+    if (!res.ok) return;
+    toast.success(`Code sent to ${email}`);
+    setStep("otp");
+  }, []);
 
   const handleOtpVerify = useCallback(
-    (entered: string): void => {
-      if (entered !== code) {
-        setOtpError("That code doesn't match. Try again.");
+    async (entered: string): Promise<void> => {
+      setOtpError(undefined);
+      if (mode === "signup") {
+        if (!signupDraft) {
+          toast.error("Session expired. Please request access again.");
+          setStep("signup");
+          return;
+        }
+        const res = await apiFetch<{ account: Account }>("/api/recruiter/signup/verify", {
+          method: "POST",
+          body: JSON.stringify({ ...signupDraft, otp: entered }),
+          silent: true,
+        });
+        if (!res.ok) {
+          setOtpError(res.error);
+          return;
+        }
+        setAccount(res.data.account);
+        setStep("screening");
         return;
       }
-      setOtpError(undefined);
-      if (mode === "signin") {
-        go("approved");
-      } else {
-        setStep("screening");
+
+      // signin
+      const res = await apiFetch<{ account: Account }>("/api/recruiter/signin/verify", {
+        method: "POST",
+        body: JSON.stringify({ email: signinEmail, otp: entered }),
+        silent: true,
+      });
+      if (!res.ok) {
+        setOtpError(res.error);
+        return;
       }
+      setAccount(res.data.account);
+      setStep("approved");
     },
-    [code, mode, go],
+    [mode, signupDraft, signinEmail],
   );
 
-  const screen = useCallback(async (): Promise<ScreenResult> => {
-    // Front-end prototype: no backend. Always approve with a friendly
-    // reason. Production wires this to /api/screen per §10.10.
-    return { decision: "approve", reason: "Verified via work email and domain." };
+  const handleResend = useCallback(async (): Promise<void> => {
+    if (mode === "signup" && signupDraft) {
+      const res = await apiFetch<{ ok: true }>("/api/recruiter/signup/start", {
+        method: "POST",
+        body: JSON.stringify(signupDraft),
+      });
+      if (res.ok) toast.success("New code sent.");
+    } else if (mode === "signin" && signinEmail) {
+      const res = await apiFetch<{ ok: true }>("/api/recruiter/signin/start", {
+        method: "POST",
+        body: JSON.stringify({ email: signinEmail }),
+      });
+      if (res.ok) toast.success("New code sent.");
+    }
+  }, [mode, signupDraft, signinEmail]);
+
+  const runScreening = useCallback(async (): Promise<{
+    decision: "approve" | "review";
+    reason: string;
+  }> => {
+    const res = await apiFetch<{ account: Account }>("/api/recruiter/screen", {
+      method: "POST",
+    });
+    if (!res.ok || !res.data.account.screen) {
+      return { decision: "approve", reason: "Verified via work email and domain." };
+    }
+    setAccount(res.data.account);
+    const { decision, reason } = res.data.account.screen;
+    return { decision: decision === "reject" ? "review" : "approve", reason };
   }, []);
 
-  const handleScreeningDone = useCallback(
-    (result: ScreenResult): void => {
-      if (!data.email) return;
-      const rec: RecruiterAccount = {
-        name: data.name ?? "",
-        email: data.email,
-        company: data.company ?? "",
-        role: data.role ?? "",
-        url: data.url ?? "",
-        verifiedAt: Date.now(),
-        screen: result,
-      };
-      const accounts = loadAccounts();
-      accounts[data.email.toLowerCase()] = rec;
-      saveAccounts(accounts);
-      setData(rec);
-      go("approved");
-    },
-    [data.email, data.name, data.company, data.role, data.url, go],
-  );
+  const handleScreeningDone = useCallback((): void => {
+    setStep("approved");
+  }, []);
 
-  const handleSignOut = useCallback((): void => {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem(LS_SESSION);
-    }
-    setData({});
-    go("gate");
-  }, [go]);
+  const handleSignOut = useCallback(async (): Promise<void> => {
+    await apiFetch<{ ok: true }>("/api/recruiter/signout", { method: "POST" });
+    setAccount(null);
+    setSignupDraft(null);
+    setSigninEmail("");
+    setStep("gate");
+  }, []);
 
-  const approvedAccount = useMemo<RecruiterAccount | null>(() => {
-    if (step !== "approved") return null;
-    if (!data.email || !data.name) return null;
+  const otpTargetEmail = mode === "signup" ? (signupDraft?.email ?? "") : signinEmail;
+
+  const approvedAccount = useMemo(() => {
+    if (!account) return null;
     return {
-      name: data.name,
-      email: data.email,
-      company: data.company ?? "",
-      role: data.role ?? "",
-      url: data.url ?? "",
-      // `verifiedAt` is set at write time in `handleScreeningDone` and
-      // preserved by auto-resume; 0 is the inert fallback for older
-      // accounts that pre-date that field.
-      verifiedAt: data.verifiedAt ?? 0,
-      screen: data.screen,
+      name: account.name,
+      email: account.email,
+      company: account.company,
+      role: account.role,
+      url: account.url,
+      verifiedAt: account.verifiedAt,
+      screen: account.screen
+        ? {
+            decision: account.screen.decision === "reject" ? ("review" as const) : ("approve" as const),
+            reason: account.screen.reason,
+          }
+        : undefined,
     };
-  }, [step, data]);
+  }, [account]);
+
+  if (!resumed) {
+    return (
+      <>
+        <TopBar />
+        <main className="stage" aria-busy="true" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -210,38 +220,49 @@ export default function RecruiterPage(): React.ReactElement {
             >
               {step === "gate" ? (
                 <Gate
-                  onRequestAccess={() => go("signup")}
-                  onHaveAccess={() => go("signin")}
+                  onRequestAccess={() => {
+                    setMode("signup");
+                    setStep("signup");
+                  }}
+                  onHaveAccess={() => {
+                    setMode("signin");
+                    setStep("signin");
+                  }}
                 />
               ) : null}
               {step === "signup" ? (
                 <SignUp
-                  initial={data}
-                  onBack={() => go("gate")}
+                  initial={signupDraft ?? undefined}
+                  onBack={() => setStep("gate")}
                   onSubmit={handleSignUpSubmit}
-                  onAlreadyVerified={() => go("signin")}
+                  onAlreadyVerified={() => {
+                    setMode("signin");
+                    setStep("signin");
+                  }}
                 />
               ) : null}
               {step === "signin" ? (
                 <SignIn
-                  onBack={() => go("gate")}
-                  onCode={handleSignInCode}
-                  onNewHere={() => go("signup")}
+                  onBack={() => setStep("gate")}
+                  onCode={handleSignInSubmit}
+                  onNewHere={() => {
+                    setMode("signup");
+                    setStep("signup");
+                  }}
                 />
               ) : null}
               {step === "otp" ? (
                 <Otp
-                  email={data.email ?? ""}
-                  code={code}
+                  email={otpTargetEmail}
                   error={otpError}
                   onVerify={handleOtpVerify}
-                  onResend={() => setCode(genCode())}
+                  onResend={handleResend}
                 />
               ) : null}
-              {step === "screening" && data.email ? (
+              {step === "screening" && account ? (
                 <Screening
-                  email={data.email}
-                  screen={screen}
+                  email={account.email}
+                  screen={runScreening}
                   onDone={handleScreeningDone}
                 />
               ) : null}
