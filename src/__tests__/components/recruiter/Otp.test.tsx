@@ -6,18 +6,16 @@ const inputs = (): HTMLInputElement[] =>
   Array.from(document.querySelectorAll(".otp input")) as HTMLInputElement[];
 
 describe("Otp", () => {
-  it("renders 6 inputs and the email + demo code in the note", () => {
+  it("renders 6 inputs and the email in the note", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         onVerify={() => {}}
         onResend={() => {}}
       />,
     );
     expect(inputs().length).toBe(6);
     expect(screen.getByText("jordan@acme.co")).toBeInTheDocument();
-    expect(screen.getByText("123456")).toBeInTheDocument();
   });
 
   it("advances focus on each digit and disables verify until all 6 are filled", async () => {
@@ -26,7 +24,6 @@ describe("Otp", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         onVerify={onVerify}
         onResend={() => {}}
       />,
@@ -53,7 +50,6 @@ describe("Otp", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         onVerify={() => {}}
         onResend={() => {}}
       />,
@@ -71,7 +67,6 @@ describe("Otp", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         onVerify={() => {}}
         onResend={() => {}}
       />,
@@ -88,7 +83,6 @@ describe("Otp", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         error="That code doesn't match. Try again."
         onVerify={() => {}}
         onResend={() => {}}
@@ -104,7 +98,6 @@ describe("Otp", () => {
     render(
       <Otp
         email="jordan@acme.co"
-        code="123456"
         onVerify={() => {}}
         onResend={onResend}
       />,

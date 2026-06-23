@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Recruiter auth setup
+
+The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.
+
+1. Copy `.env.example` to `.env.local` and fill in:
+   - **DATABASE_URL** / **DIRECT_URL** — Neon pooled + direct connection strings.
+   - **BETTER_AUTH_SECRET** — `openssl rand -base64 32`.
+   - **RESEND_API_KEY** + **RESEND_FROM** — verified sender from your Resend domain.
+2. Apply the schema and seed the admin whitelist:
+   ```bash
+   npx prisma migrate deploy   # or `npx prisma db push` for a first-time setup
+   npx prisma db seed
+   ```
+   `mokhatla.mzwakhe@gmail.com` (Mzwakhe Mokhatla) is seeded as the founding admin.
+   Additional admins can be added via `POST /api/admin/whitelist { email, name }`
+   from any signed-in admin session.
+
 ## Getting Started
 
 First, run the development server:
