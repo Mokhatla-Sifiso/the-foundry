@@ -1713,3 +1713,30 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   display: grid;
   place-items: center;
 }
+
+.foot-legal {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 13px;
+}
+.foot-legal a,
+.foot-legal-btn {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+.foot-legal a:hover,
+.foot-legal-btn:hover {
+  color: var(--fg);
+}

@@ -469,3 +469,66 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
 }
 .howto li { font-size: 13.5px; color: var(--fg-2); line-height: 1.45; }
 .howto li b { color: var(--fg); font-weight: 600; }
+
+.consent-checks {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 18px;
+}
+.consent-check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg-2);
+  cursor: pointer;
+}
+.consent-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--candy);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.consent-check a {
+  color: var(--candy);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.consent-check-err {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--warn, #ef4444);
+}
+
+.privacy-tools {
+  margin-top: 18px;
+  border-top: 1px solid var(--border, rgba(10, 10, 10, 0.08));
+  padding-top: 16px;
+}
+.privacy-tools summary {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+.privacy-tools summary::-webkit-details-marker { display: none; }
+.privacy-tools summary::before { content: "+ "; }
+.privacy-tools[open] summary::before { content: "− "; }
+.privacy-tools p {
+  margin: 10px 0 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.privacy-tools-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.privacy-tools-delete {
+  color: var(--warn, #ef4444);
+}
