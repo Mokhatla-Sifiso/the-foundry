@@ -1,20 +1,48 @@
 "use client";
 
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { EASE } from "@/components/primitives/Reveal";
 import { IconCheck, IconDown } from "@/components/primitives/icons";
 import { Dots } from "./Dots";
 import { SITE } from "@/lib/constants";
+import { apiFetch } from "@/lib/api";
 import type { RecruiterAccount } from "@/lib/recruiter";
 
 type ApprovedProps = Readonly<{
   account: RecruiterAccount;
   onSignOut: () => void;
+  onDeleted?: () => void;
 }>;
 
-export function Approved({ account, onSignOut }: ApprovedProps): React.ReactElement {
+export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): React.ReactElement {
   const firstName = account.name.split(" ")[0];
   const fileName = SITE.cvHref.split("/").pop() ?? "Mzwakhe-Mokhatla-CV.pdf";
+
+  const handleExport = (): void => {
+    const link = document.createElement("a");
+    link.href = "/api/recruiter/data";
+    link.rel = "noopener";
+    link.click();
+  };
+
+  const handleDelete = async (): Promise<void> => {
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(
+        "Delete your account and all data we hold? This can't be undone. You'll need to request access again to download the CV.",
+      )
+    ) {
+      return;
+    }
+    const res = await apiFetch<{ ok: true }>("/api/recruiter/account", {
+      method: "DELETE",
+    });
+    if (!res.ok) return;
+    toast.success("Your account and data were deleted.");
+    if (onDeleted) onDeleted();
+    else onSignOut();
+  };
 
   return (
     <>
@@ -57,6 +85,26 @@ export function Approved({ account, onSignOut }: ApprovedProps): React.ReactElem
           Not you? Sign out
         </button>
       </div>
+
+      <details className="privacy-tools">
+        <summary>Manage your data</summary>
+        <p>
+          Under GDPR and similar laws you can ask me for a copy of everything
+          I hold about you or to delete it entirely.
+        </p>
+        <div className="privacy-tools-actions">
+          <button type="button" className="signout" onClick={handleExport}>
+            Export my data (JSON)
+          </button>
+          <button
+            type="button"
+            className="signout privacy-tools-delete"
+            onClick={() => void handleDelete()}
+          >
+            Delete my account
+          </button>
+        </div>
+      </details>
     </>
   );
 }
