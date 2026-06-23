@@ -16,9 +16,15 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  acceptedTermsAt    DateTime?
+  acceptedPrivacyAt  DateTime?
+  acceptedTermsVer   String?
+  acceptedPrivacyVer String?
+
   sessions          Session[]
   accounts          Account[]
   recruiterProfile  RecruiterProfile?
+  consentLogs       ConsentLog[]
 
   @@map("user")
 }
@@ -102,4 +108,32 @@ enum ScreenDecision {
   reject
 
   @@map("screen_decision")
+}
+
+model ConsentLog {
+  id        String       @id @default(cuid())
+  userId    String?
+  clientId  String?
+  action    ConsentAction
+  payload   Json
+  policyVer String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime     @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([clientId])
+  @@map("consent_log")
+}
+
+enum ConsentAction {
+  grant
+  withdraw
+  update
+  accept_terms
+  accept_privacy
+
+  @@map("consent_action")
 }
