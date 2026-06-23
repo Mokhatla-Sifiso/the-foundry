@@ -9,13 +9,12 @@ const OTP_LENGTH = 6;
 
 type OtpProps = Readonly<{
   email: string;
-  code: string;
   onVerify: (entered: string) => void;
   error?: string;
   onResend: () => void;
 }>;
 
-export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React.ReactElement {
+export function Otp({ email, onVerify, error, onResend }: OtpProps): React.ReactElement {
   const [digits, setDigits] = useState<string[]>(() => Array(OTP_LENGTH).fill(""));
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -109,11 +108,10 @@ export function Otp({ email, code, onVerify, error, onResend }: OtpProps): React
       </button>
 
       <div className="note">
-        <span className="b">Demo</span>
+        <span className="b">Heads up</span>
         <div>
-          No mail server in this prototype, so your code is{" "}
-          <code>{code}</code>. In production this is emailed to your work
-          address and expires in 10 minutes.{" "}
+          The code lands in your inbox within a few seconds and expires in 5
+          minutes. Didn&apos;t get it?{" "}
           <a
             role="button"
             tabIndex={0}
