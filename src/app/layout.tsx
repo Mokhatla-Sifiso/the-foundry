@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Onest } from "next/font/google";
 import { Loader } from "@/components/Loader";
 import { ThemeScript } from "@/components/ThemeScript";
+import { Toaster } from "@/components/primitives/Toaster";
 import "./globals.css";
 
 const onest = Onest({
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: RootLayoutProps): React.ReactEl
         </div>
         <Loader />
         {children}
+        <Toaster />
       </body>
     </html>
   );
