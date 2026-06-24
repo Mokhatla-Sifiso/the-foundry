@@ -1486,14 +1486,15 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .c-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px 28px;
   border-top: 1px solid var(--card-line);
   position: relative;
 }
 .c-meta a,
 .c-meta div {
   padding-top: 22px;
+  min-width: 0;
 }
 .c-meta .k {
   font-size: 12px;
@@ -1506,11 +1507,14 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .c-meta .v {
   font-weight: 600;
   font-size: clamp(15px, 1.5vw, 19px);
+  overflow-wrap: anywhere;
 }
 .c-meta a:hover .v {
   color: var(--candy);
 }
-@media (max-width: 640px) {
+@media (max-width: 880px) {
+  /* Below ~880px the three meta columns are too narrow for the email address
+     to fit on one line, so we stack them. */
   .c-meta {
     grid-template-columns: 1fr;
     gap: 0;
@@ -1519,6 +1523,18 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   .c-meta div {
     padding: 18px 0;
     border-top: 1px solid var(--card-line);
+  }
+}
+@media (max-width: 640px) {
+  .c-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .c-actions .btn {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 22px;
   }
 }
 
@@ -1732,28 +1748,39 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 
 /* Footer responsive polish */
 @media (max-width: 720px) {
+  .foot-card {
+    padding: 36px 22px 28px;
+  }
   .foot-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 16px;
-    margin-top: 36px;
+    gap: 14px;
+    margin-top: 32px;
     padding-top: 22px;
   }
   .foot-bar .links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    min-width: 0;
   }
   .foot-bar .links a {
     height: 44px;
-    padding: 0 12px;
+    padding: 0 10px;
     justify-content: space-between;
-    font-size: 11px;
-    letter-spacing: 0.06em;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    gap: 6px;
+    min-width: 0;
   }
   .foot-bar .links a .ic {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .foot-bar .links a .ic svg {
+    width: 12px;
+    height: 12px;
   }
   .goup {
     width: 100%;
