@@ -275,3 +275,30 @@ html[data-theme="dark"] .consent {
     flex: 1;
   }
 }
+
+@media (max-width: 480px) {
+  .consent {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+  }
+  .consent-inner {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .consent-copy h2 {
+    font-size: 14px;
+  }
+  .consent-copy p {
+    font-size: 12.5px;
+  }
+  .consent-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .consent-btn {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+}
