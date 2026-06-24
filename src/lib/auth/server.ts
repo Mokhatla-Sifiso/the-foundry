@@ -4,9 +4,7 @@ import { emailOTP } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/lib/db";
 import { sendOtpEmail } from "./email";
-
 const secret = process.env.BETTER_AUTH_SECRET ?? "dev-only-insecure-secret-change-me";
-
 export const auth = betterAuth({
   appName: "Mzwakhe Mokhatla: Recruiter Access",
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
@@ -36,5 +34,4 @@ export const auth = betterAuth({
     nextCookies(),
   ],
 });
-
 export type Auth = typeof auth;

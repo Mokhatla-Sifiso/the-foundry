@@ -1,17 +1,16 @@
 "use client";
-
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Close } from "@/components/primitives/icons";
 import { EASE } from "@/components/primitives/Reveal";
 import { useTheme } from "@/hooks/useTheme";
 import { NAVLINKS, SITE } from "@/lib/constants";
-
-type MenuProps = Readonly<{ open: boolean; onClose: () => void }>;
-
+type MenuProps = Readonly<{
+  open: boolean;
+  onClose: () => void;
+}>;
 export function Menu({ open, onClose }: MenuProps): React.ReactElement {
   const { theme, toggle } = useTheme();
-
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -25,9 +24,7 @@ export function Menu({ open, onClose }: MenuProps): React.ReactElement {
       document.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);
-
   const themeText = theme === "dark" ? "Light mode" : "Dark mode";
-
   return (
     <AnimatePresence>
       {open && (
@@ -45,12 +42,7 @@ export function Menu({ open, onClose }: MenuProps): React.ReactElement {
             <a href="#top" className="brand" onClick={onClose}>
               mzwakhe<span className="d">.</span>
             </a>
-            <button
-              type="button"
-              className="closeb"
-              aria-label="Close menu"
-              onClick={onClose}
-            >
+            <button type="button" className="closeb" aria-label="Close menu" onClick={onClose}>
               <Close />
             </button>
           </div>

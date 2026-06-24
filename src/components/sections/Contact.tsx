@@ -1,7 +1,6 @@
 import { Cal, Chat } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { SITE } from "@/lib/constants";
-
 export function Contact(): React.ReactElement {
   return (
     <section id="contact" className="contact sec">

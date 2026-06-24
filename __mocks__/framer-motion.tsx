@@ -1,5 +1,4 @@
 import React from "react";
-
 const ANIMATION_PROPS = new Set([
   "initial",
   "animate",
@@ -36,9 +35,9 @@ const ANIMATION_PROPS = new Set([
   "transformTemplate",
   "custom",
 ]);
-
-type AnyProps = Record<string, unknown> & { children?: React.ReactNode };
-
+type AnyProps = Record<string, unknown> & {
+  children?: React.ReactNode;
+};
 function stripAnimationProps(props: AnyProps): AnyProps {
   const cleaned: AnyProps = {};
   for (const [key, value] of Object.entries(props)) {
@@ -46,7 +45,6 @@ function stripAnimationProps(props: AnyProps): AnyProps {
   }
   return cleaned;
 }
-
 const motionFactory = new Proxy(
   {},
   {
@@ -58,26 +56,21 @@ const motionFactory = new Proxy(
     },
   },
 );
-
 const passthroughMotionValue = <T,>(value: T) => ({
   get: () => value,
   set: () => {},
   on: () => () => {},
   destroy: () => {},
 });
-
 export const motion = motionFactory;
-
 export const AnimatePresence = ({ children }: { children?: React.ReactNode }) =>
   React.createElement(React.Fragment, null, children);
-
 export const useScroll = () => ({
   scrollY: passthroughMotionValue(0),
   scrollYProgress: passthroughMotionValue(0),
   scrollX: passthroughMotionValue(0),
   scrollXProgress: passthroughMotionValue(0),
 });
-
 export const useSpring = <T,>(value: T) => value;
 export const useTransform = <T,>(_input: unknown, _from: unknown, to: T[]) => to[0];
 export const useMotionValue = <T,>(value: T) => passthroughMotionValue(value);

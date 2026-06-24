@@ -1,9 +1,16 @@
 import toast from "react-hot-toast";
-
-export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string };
-
-type FetchInit = RequestInit & { silent?: boolean };
-
+export type ApiResult<T> =
+  | {
+      ok: true;
+      data: T;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
+type FetchInit = RequestInit & {
+  silent?: boolean;
+};
 export async function apiFetch<T = unknown>(
   url: string,
   init: FetchInit = {},
@@ -16,7 +23,6 @@ export async function apiFetch<T = unknown>(
     });
     const text = await res.text();
     const body = text ? safeJson(text) : null;
-
     if (!res.ok) {
       const message = pickErrorMessage(body, res.status);
       if (!silent) toast.error(message);
@@ -29,7 +35,6 @@ export async function apiFetch<T = unknown>(
     return { ok: false, error: message };
   }
 }
-
 function safeJson(text: string): unknown {
   try {
     return JSON.parse(text);
@@ -37,7 +42,6 @@ function safeJson(text: string): unknown {
     return text;
   }
 }
-
 function pickErrorMessage(body: unknown, status: number): string {
   if (body && typeof body === "object") {
     const b = body as Record<string, unknown>;

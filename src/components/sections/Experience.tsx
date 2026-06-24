@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/primitives/Reveal";
 import { XP } from "@/lib/constants";
-
 export function Experience(): React.ReactElement {
   return (
     <section id="experience" className="sec">

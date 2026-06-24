@@ -1,7 +1,5 @@
 "use client";
-
 import { useEffect } from "react";
-
 export function Loader(): null {
   useEffect(() => {
     const t1 = window.setTimeout(() => {
@@ -17,6 +15,5 @@ export function Loader(): null {
       window.clearTimeout(t2);
     };
   }, []);
-
   return null;
 }
