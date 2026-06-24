@@ -1,11 +1,4 @@
 import "@testing-library/jest-dom";
-
-/*
- * framer-motion uses browser APIs (matchMedia, IntersectionObserver, ResizeObserver)
- * that jsdom does not implement. We shim the minimum surface so components that
- * render `motion.*` elements don't blow up in unit tests. Tests that care about
- * animation behaviour should still mock framer-motion directly per-suite.
- */
 if (typeof window !== "undefined") {
   if (!window.matchMedia) {
     window.matchMedia = (query: string): MediaQueryList => ({
@@ -19,7 +12,6 @@ if (typeof window !== "undefined") {
       dispatchEvent: () => false,
     });
   }
-
   if (!window.IntersectionObserver) {
     class IntersectionObserverShim {
       observe(): void {}
@@ -35,7 +27,6 @@ if (typeof window !== "undefined") {
     window.IntersectionObserver =
       IntersectionObserverShim as unknown as typeof IntersectionObserver;
   }
-
   if (!window.ResizeObserver) {
     class ResizeObserverShim {
       observe(): void {}

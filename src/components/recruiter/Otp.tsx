@@ -1,42 +1,21 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { Arrow } from "@/components/primitives/icons";
 import { Dots } from "./Dots";
-
 const OTP_LENGTH = 6;
-
 type OtpProps = Readonly<{
   email: string;
   onVerify: (entered: string) => void;
   error?: string;
   onResend: () => void;
 }>;
-
-/**
- * OTP screen — VERBATIM behaviour from §10.6.
- *
- *   - 6 single-char inputs, first auto-focused on mount.
- *   - Each keystroke strips non-digits; pasting distributes up to 6
- *     chars across boxes and focuses the last filled one.
- *   - Backspace on an empty box moves focus to the previous one.
- *   - Verify button disabled until all 6 boxes are filled.
- *   - Caller surfaces an `error` string when verification fails; the
- *     inputs render with `.invalid`-style red borders via aria-invalid.
- *
- * The demo note box (only correct in the prototype) shows the code in
- * plain text so reviewers can type it back in — replaced by a real
- * email send in production per §13.
- */
 export function Otp({ email, onVerify, error, onResend }: OtpProps): React.ReactElement {
   const [digits, setDigits] = useState<string[]>(() => Array(OTP_LENGTH).fill(""));
   const refs = useRef<Array<HTMLInputElement | null>>([]);
-
   useEffect(() => {
     refs.current[0]?.focus();
   }, []);
-
   const setAt = (i: number, value: string): void => {
     setDigits((prev) => {
       const next = [...prev];
@@ -44,7 +23,6 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
       return next;
     });
   };
-
   const handleChange = (i: number, e: ChangeEvent<HTMLInputElement>): void => {
     const raw = e.target.value.replace(/\D/g, "");
     if (raw.length === 0) {
@@ -57,7 +35,6 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
       refs.current[nextIndex]?.focus();
       return;
     }
-    // Paste path — distribute across boxes from i.
     setDigits((prev) => {
       const next = [...prev];
       for (let k = 0; k < OTP_LENGTH - i && k < raw.length; k += 1) {
@@ -68,24 +45,21 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
     const last = Math.min(i + raw.length, OTP_LENGTH) - 1;
     refs.current[Math.max(last, 0)]?.focus();
   };
-
   const handleKeyDown = (i: number, e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Backspace" && digits[i] === "" && i > 0) {
       refs.current[i - 1]?.focus();
     }
   };
-
   const joined = digits.join("");
   const allFilled = joined.length === OTP_LENGTH;
   const handleVerify = (): void => onVerify(joined);
-
   return (
     <>
       <Dots step={1} />
       <h1 className="t">Check your inbox</h1>
       <p className="sub">
-        Enter the 6-digit code sent to <b>{email}</b> to confirm it&apos;s
-        yours.
+        Enter the 6-digit code sent to <b>{email}</b>{" "}
+        to confirm it&apos;s yours.
       </p>
 
       <div className="otp" aria-label="Verification code">
@@ -126,8 +100,8 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
       <div className="note">
         <span className="b">Heads up</span>
         <div>
-          The code lands in your inbox within a few seconds and expires in 5
-          minutes. Didn&apos;t get it?{" "}
+          The code lands in your inbox within a few seconds and expires in 5 minutes. Didn&apos;t
+          get it?{" "}
           <a
             role="button"
             tabIndex={0}

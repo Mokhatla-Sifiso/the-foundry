@@ -1,50 +1,27 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { IconCheck } from "@/components/primitives/icons";
 import { domainOf, type ScreenResult } from "@/lib/recruiter";
 import { Dots } from "./Dots";
-
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
+const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 type ScreeningProps = Readonly<{
   email: string;
-  /** Async screening call. Failures fall back to an approve result. */
   screen: () => Promise<ScreenResult>;
-  /** Fires once the sequence completes — caller transitions to Approved. */
   onDone: (result: ScreenResult) => void;
 }>;
-
-/**
- * Screening screen — VERBATIM animated check sequence from §10.7.
- *
- *   1. wait 550ms → email check tick.
- *   2. wait 650ms → domain check tick.
- *   3. await screen()  → screen check tick + result captured.
- *   4. wait 700ms → onDone(result).
- *
- * Each check row swaps to `.ok` (green icon + dark fg) as it
- * completes. If `screen()` rejects the helper falls back to
- * `{ decision: "approve", reason: "Verified via work email and
- * domain." }` so the user can always reach Approved.
- */
 export function Screening({ email, screen, onDone }: ScreeningProps): React.ReactElement {
   const [emailOk, setEmailOk] = useState(false);
   const [domainOk, setDomainOk] = useState(false);
   const [screenOk, setScreenOk] = useState(false);
-
   useEffect(() => {
     let cancelled = false;
     const run = async (): Promise<void> => {
       await wait(550);
       if (cancelled) return;
       setEmailOk(true);
-
       await wait(650);
       if (cancelled) return;
       setDomainOk(true);
-
       let result: ScreenResult;
       try {
         result = await screen();
@@ -53,7 +30,6 @@ export function Screening({ email, screen, onDone }: ScreeningProps): React.Reac
       }
       if (cancelled) return;
       setScreenOk(true);
-
       await wait(700);
       if (cancelled) return;
       onDone(result);
@@ -63,7 +39,6 @@ export function Screening({ email, screen, onDone }: ScreeningProps): React.Reac
       cancelled = true;
     };
   }, [screen, onDone]);
-
   return (
     <>
       <Dots step={2} />

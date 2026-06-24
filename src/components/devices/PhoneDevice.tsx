@@ -1,17 +1,10 @@
 import { ASSISTANT_NAME } from "@/lib/constants";
-
-type PhoneProps = Readonly<{ assistantName?: string }>;
-
-/**
- * Phone mockup — VERBATIM markup + content from §8.2. Notch, status
- * bar ("9:41" / "AI · live"), Daily PR review card with three bullets
- * and an Open review button.
- *
- * Returns only inner content. The `.phone` wrapper with its
- * `position: absolute; top:-20px; right:-30px; width:180px; …` is
- * supplied by `<Reveal className="phone">` in AISection per §8.2.
- */
-export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {}): React.ReactElement {
+type PhoneProps = Readonly<{
+  assistantName?: string;
+}>;
+export function PhoneDevice({
+  assistantName = ASSISTANT_NAME,
+}: PhoneProps = {}): React.ReactElement {
   return (
     <>
       <div className="phone-notch" />
@@ -26,8 +19,7 @@ export function PhoneDevice({ assistantName = ASSISTANT_NAME }: PhoneProps = {})
             <span className="ai">{assistantName}</span>
           </div>
           <div className="ph-bul">
-            <span className="d">›</span>
-            3 PRs summarised — 1 needs your eyes
+            <span className="d">›</span>3 PRs summarised — 1 needs your eyes
           </div>
           <div className="ph-bul">
             <span className="d">›</span>

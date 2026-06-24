@@ -5,17 +5,9 @@ import { db } from "@/lib/db";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { fetchAccount } from "@/lib/auth/profile";
 import { validateSignup } from "@/lib/auth/validation";
-
+import { logConsent } from "@/lib/privacy/log";
+import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 const OTP_RE = /^\d{6}$/;
-
-/**
- * Finish the recruiter sign-up flow:
- *   1. Re-validate the form payload server-side (never trust client state).
- *   2. Hand the OTP to BetterAuth's sign-in.email-otp — this creates the user
- *      if needed and sets the session cookie via the `nextCookies` plugin.
- *   3. Persist the recruiter profile + the user's display name in one txn.
- *   4. Return the typed account.
- */
 export async function POST(request: Request): Promise<Response> {
   try {
     const payload = await request.json().catch(() => null);
@@ -23,7 +15,6 @@ export async function POST(request: Request): Promise<Response> {
     if (!OTP_RE.test(otp)) {
       return NextResponse.json({ message: "Enter the 6-digit code." }, { status: 400 });
     }
-
     const email = typeof payload?.email === "string" ? payload.email.trim().toLowerCase() : "";
     const adminGate = email ? await isWhitelisted(email) : false;
     const validation = validateSignup(payload, { isAdmin: adminGate });
@@ -34,7 +25,6 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
     const { value } = validation;
-
     const hdrs = await headers();
     let session;
     try {
@@ -53,11 +43,18 @@ export async function POST(request: Request): Promise<Response> {
     if (!session?.user?.id) {
       return NextResponse.json({ message: "That code doesn't match. Try again." }, { status: 401 });
     }
-
+    const now = new Date();
     await db.$transaction([
       db.user.update({
         where: { id: session.user.id },
-        data: { name: value.name, emailVerified: true },
+        data: {
+          name: value.name,
+          emailVerified: true,
+          acceptedTermsAt: now,
+          acceptedPrivacyAt: now,
+          acceptedTermsVer: TERMS_VERSION,
+          acceptedPrivacyVer: PRIVACY_POLICY_VERSION,
+        },
       }),
       db.recruiterProfile.upsert({
         where: { userId: session.user.id },
@@ -74,7 +71,18 @@ export async function POST(request: Request): Promise<Response> {
         },
       }),
     ]);
-
+    await Promise.all([
+      logConsent({
+        userId: session.user.id,
+        action: "accept_terms",
+        payload: { version: TERMS_VERSION },
+      }),
+      logConsent({
+        userId: session.user.id,
+        action: "accept_privacy",
+        payload: { version: PRIVACY_POLICY_VERSION },
+      }),
+    ]);
     const account = await fetchAccount(session.user.id);
     return NextResponse.json({ account });
   } catch (err) {

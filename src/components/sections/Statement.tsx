@@ -1,8 +1,4 @@
 import { Reveal } from "@/components/primitives/Reveal";
-
-/**
- * Statement section — VERBATIM copy + structure from §7.4.
- */
 export function Statement(): React.ReactElement {
   return (
     <section id="about" className="sec">
@@ -13,8 +9,7 @@ export function Statement(): React.ReactElement {
         <Reveal delay={0.05} className="statement">
           <p>
             I&apos;m a full-stack engineer focused on turning your vision into{" "}
-            <span className="em">production-ready</span>{" "}
-            <span className="mut">software.</span>
+            <span className="em">production-ready</span> <span className="mut">software.</span>
           </p>
         </Reveal>
       </div>
