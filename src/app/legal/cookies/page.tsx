@@ -60,10 +60,10 @@ export default function CookiePage(): React.ReactElement {
 
       <h2>Changing your mind</h2>
       <p>
-        Click <strong>&ldquo;Cookie preferences&rdquo;</strong> in the footer at any time to reopen
-        the consent banner. Withdrawing consent does not retroactively erase data we already had
-        your permission to process &mdash; see the <a href="/legal/privacy">Privacy Policy</a> for
-        that.
+        Click <strong>&ldquo;Cookie preferences&rdquo;</strong>{" "}
+        in the footer at any time to reopen the consent banner. Withdrawing consent does not
+        retroactively erase data we already had your permission to process &mdash; see the{" "}
+        <a href="/legal/privacy">Privacy Policy</a> for that.
       </p>
     </LegalLayout>
   );
