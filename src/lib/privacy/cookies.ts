@@ -1,31 +1,12 @@
-/**
- * Cookie & storage inventory. Single source of truth — the consent banner
- * and Cookie Policy page both render from this list, so the published policy
- * can never drift from what the app actually sets.
- *
- * Add a new entry here whenever you introduce a cookie or localStorage key.
- */
-
 export type CookieCategory = "necessary" | "functional" | "analytics";
-
 export type CookieEntry = Readonly<{
-  /** The cookie name or storage key. */
   name: string;
-  /** Where it lives. */
   storage: "cookie" | "localStorage";
-  /** Which consent category it falls under. */
   category: CookieCategory;
-  /** Who sets it. */
   party: "first" | "third";
-  /** Plain-language purpose shown in the Cookie Policy table. */
   purpose: string;
-  /** Human-readable duration shown in the policy. */
   duration: string;
 }>;
-
-/**
- * Order matters — the policy table renders rows in this order.
- */
 export const COOKIE_INVENTORY: readonly CookieEntry[] = [
   {
     name: "better-auth.session_token",
@@ -50,8 +31,7 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     storage: "cookie",
     category: "necessary",
     party: "first",
-    purpose:
-      "Records your cookie preferences so we don't ask you again on every visit.",
+    purpose: "Records your cookie preferences so we don't ask you again on every visit.",
     duration: "12 months",
   },
   {
@@ -63,11 +43,14 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     duration: "Until you clear browser storage",
   },
 ] as const;
-
 export const CATEGORY_META: Readonly<
   Record<
     CookieCategory,
-    Readonly<{ label: string; description: string; alwaysOn: boolean }>
+    Readonly<{
+      label: string;
+      description: string;
+      alwaysOn: boolean;
+    }>
   >
 > = {
   necessary: {
@@ -78,8 +61,7 @@ export const CATEGORY_META: Readonly<
   },
   functional: {
     label: "Functional",
-    description:
-      "Remembers preferences like your theme so the site stays personal across visits.",
+    description: "Remembers preferences like your theme so the site stays personal across visits.",
     alwaysOn: false,
   },
   analytics: {
@@ -89,15 +71,11 @@ export const CATEGORY_META: Readonly<
     alwaysOn: false,
   },
 };
-
 export const CATEGORY_ORDER: readonly CookieCategory[] = [
   "necessary",
   "functional",
   "analytics",
 ] as const;
-
-export function inventoryByCategory(
-  category: CookieCategory,
-): readonly CookieEntry[] {
+export function inventoryByCategory(category: CookieCategory): readonly CookieEntry[] {
   return COOKIE_INVENTORY.filter((c) => c.category === category);
 }

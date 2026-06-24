@@ -1,12 +1,3 @@
-/* ───────────────────────────────────────────────────────────────────────
- * recruiter.css — VERBATIM from §11.
- *
- * The recruiter route has its own theme tokens (notably: white card on
- * light theme, plus --ok / --warn / --field), so this stylesheet
- * redefines them under html[data-theme="…"] selectors. Imported only
- * from src/app/recruiter/page.tsx — never the main site.
- * ─────────────────────────────────────────────────────────────────── */
-
 :root {
   --candy: #b2d5e5;
   --font: var(--font-onest), "Onest", system-ui, sans-serif;
@@ -37,7 +28,8 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   --bg: #020202;
-  --bg-grad: radial-gradient(70vw 60vw at 70% -10%, rgba(178, 213, 229, 0.12), transparent 60%), #020202;
+  --bg-grad:
+    radial-gradient(70vw 60vw at 70% -10%, rgba(178, 213, 229, 0.12), transparent 60%), #020202;
   --fg: #eef5f8;
   --fg-2: #aebec6;
   --muted: #6c7d85;
@@ -65,14 +57,24 @@ body {
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  transition: background-color .5s var(--ease), color .5s var(--ease);
+  transition:
+    background-color 0.5s var(--ease),
+    color 0.5s var(--ease);
 }
 
-::selection { background: var(--candy); color: #06181f; }
-input { font-family: inherit; }
+::selection {
+  background: var(--candy);
+  color: #06181f;
+}
+input {
+  font-family: inherit;
+}
 
-/* ───────────────────────── Top bar ───────────────────────── */
-.topbar { position: fixed; inset: 16px 0 auto 0; z-index: 20; }
+.topbar {
+  position: fixed;
+  inset: 16px 0 auto 0;
+  z-index: 20;
+}
 .topbar-in {
   width: min(960px, 100% - 40px);
   margin-inline: auto;
@@ -80,9 +82,19 @@ input { font-family: inherit; }
   justify-content: space-between;
   align-items: center;
 }
-.brand { font-weight: 800; font-size: 22px; letter-spacing: -.04em; }
-.brand .d { color: var(--candy); }
-.top-actions { display: flex; gap: 10px; align-items: center; }
+.brand {
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+.brand .d {
+  color: var(--candy);
+}
+.top-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 .tbtn {
   width: 44px;
   height: 44px;
@@ -95,10 +107,15 @@ input { font-family: inherit; }
   cursor: pointer;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: transform .2s;
+  transition: transform 0.2s;
 }
-.tbtn:hover { transform: translateY(-1px) rotate(8deg); }
-.tbtn svg { width: 18px; height: 18px; }
+.tbtn:hover {
+  transform: translateY(-1px) rotate(8deg);
+}
+.tbtn svg {
+  width: 18px;
+  height: 18px;
+}
 .backlink {
   display: inline-flex;
   align-items: center;
@@ -113,11 +130,12 @@ input { font-family: inherit; }
   white-space: nowrap;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: transform .2s;
+  transition: transform 0.2s;
 }
-.backlink:hover { transform: translateY(-1px); }
+.backlink:hover {
+  transform: translateY(-1px);
+}
 
-/* ───────────────────────── Stage + card ───────────────────────── */
 .stage {
   min-height: 100vh;
   display: grid;
@@ -141,16 +159,17 @@ input { font-family: inherit; }
   width: 70%;
   aspect-ratio: 1;
   background: radial-gradient(closest-side, var(--candy), transparent 70%);
-  opacity: .5;
+  opacity: 0.5;
   pointer-events: none;
 }
-html[data-theme="light"] .card .glow { opacity: .8; }
+html[data-theme="light"] .card .glow {
+  opacity: 0.8;
+}
 
-/* ───────────────────────── Headings + eyebrow ───────────────────────── */
 .eyebrow {
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: .16em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
   display: inline-flex;
@@ -167,17 +186,24 @@ html[data-theme="light"] .card .glow { opacity: .8; }
   display: grid;
   place-items: center;
 }
-.eyebrow .lock svg { width: 14px; height: 14px; }
+.eyebrow .lock svg {
+  width: 14px;
+  height: 14px;
+}
 h1.t {
   font-weight: 700;
   font-size: clamp(28px, 4.4vw, 40px);
-  letter-spacing: -.03em;
+  letter-spacing: -0.03em;
   line-height: 1.04;
   margin-bottom: 12px;
   text-wrap: balance;
 }
-h1.t .em { color: var(--candy); }
-html[data-theme="light"] h1.t .em { color: #2a6f93; }
+h1.t .em {
+  color: var(--candy);
+}
+html[data-theme="light"] h1.t .em {
+  color: #2a6f93;
+}
 p.sub {
   color: var(--fg-2);
   font-size: 16px;
@@ -186,33 +212,44 @@ p.sub {
   max-width: 44ch;
 }
 
-/* ───────────────────────── Dots progress ───────────────────────── */
-.dots { display: flex; gap: 7px; margin-bottom: 26px; }
+.dots {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 26px;
+}
 .dots i {
   height: 4px;
   flex: 1;
   border-radius: 4px;
   background: var(--line);
-  transition: background .4s var(--ease);
+  transition: background 0.4s var(--ease);
 }
-.dots i.on { background: var(--candy); }
-.dots i.done { background: var(--ok); }
+.dots i.on {
+  background: var(--candy);
+}
+.dots i.done {
+  background: var(--ok);
+}
 
-/* ───────────────────────── Form + fields ───────────────────────── */
-form { display: grid; gap: 16px; }
+form {
+  display: grid;
+  gap: 16px;
+}
 .row2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 @media (max-width: 480px) {
-  .row2 { grid-template-columns: 1fr; }
+  .row2 {
+    grid-template-columns: 1fr;
+  }
 }
 .field label {
   display: block;
   font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   color: var(--fg-2);
   margin-bottom: 7px;
 }
@@ -225,13 +262,20 @@ form { display: grid; gap: 16px; }
   border-radius: 14px;
   padding: 0 15px;
   height: 52px;
-  transition: border-color .2s, box-shadow .2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .field .inp:focus-within {
   border-color: var(--field-focus);
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 40%, transparent);
 }
-.field .inp svg { width: 17px; height: 17px; color: var(--muted); flex: none; }
+.field .inp svg {
+  width: 17px;
+  height: 17px;
+  color: var(--muted);
+  flex: none;
+}
 .field input {
   border: none;
   outline: none;
@@ -241,17 +285,22 @@ form { display: grid; gap: 16px; }
   width: 100%;
   height: 100%;
 }
-.field input::placeholder { color: var(--muted); }
+.field input::placeholder {
+  color: var(--muted);
+}
 .field .err {
   color: var(--warn);
   font-size: 12.5px;
   margin-top: 6px;
   display: none;
 }
-.field.invalid .err { display: block; }
-.field.invalid .inp { border-color: var(--warn); }
+.field.invalid .err {
+  display: block;
+}
+.field.invalid .inp {
+  border-color: var(--warn);
+}
 
-/* ───────────────────────── Buttons ───────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -264,17 +313,32 @@ form { display: grid; gap: 16px; }
   cursor: pointer;
   border: 1px solid transparent;
   width: 100%;
-  transition: transform .2s var(--ease), filter .2s, opacity .2s;
+  transition:
+    transform 0.2s var(--ease),
+    filter 0.2s,
+    opacity 0.2s;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.btn-primary { background: var(--btn); color: var(--btn-fg); }
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-primary {
+  background: var(--btn);
+  color: var(--btn-fg);
+}
 .btn-ghost {
   background: transparent;
   color: var(--fg);
   border-color: var(--field-line);
 }
-.btn svg { width: 17px; height: 17px; }
+.btn svg {
+  width: 17px;
+  height: 17px;
+}
 
 .alt {
   text-align: center;
@@ -287,9 +351,10 @@ form { display: grid; gap: 16px; }
   color: var(--candy);
   cursor: pointer;
 }
-html[data-theme="light"] .alt a { color: #2a6f93; }
+html[data-theme="light"] .alt a {
+  color: #2a6f93;
+}
 
-/* ───────────────────────── Notes + OTP ───────────────────────── */
 .note {
   display: flex;
   gap: 12px;
@@ -303,9 +368,19 @@ html[data-theme="light"] .alt a { color: #2a6f93; }
   line-height: 1.45;
   margin-top: 4px;
 }
-.note .b { color: var(--candy); flex: none; font-weight: 700; }
-html[data-theme="light"] .note .b { color: #2a6f93; }
-.note code { font-weight: 700; color: var(--fg); letter-spacing: .12em; }
+.note .b {
+  color: var(--candy);
+  flex: none;
+  font-weight: 700;
+}
+html[data-theme="light"] .note .b {
+  color: #2a6f93;
+}
+.note code {
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.12em;
+}
 
 .otp {
   display: flex;
@@ -324,15 +399,19 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   border-radius: 14px;
   color: var(--fg);
   outline: none;
-  transition: border-color .2s, box-shadow .2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .otp input:focus {
   border-color: var(--field-focus);
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 40%, transparent);
 }
 
-/* ───────────────────────── Screening + approved ───────────────────────── */
-.center { text-align: center; padding: 16px 0; }
+.center {
+  text-align: center;
+  padding: 16px 0;
+}
 .spinner {
   width: 56px;
   height: 56px;
@@ -342,7 +421,11 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   margin: 0 auto 22px;
   animation: spin 0.9s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .checks {
   display: grid;
@@ -373,8 +456,13 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   color: #fff;
   border-color: var(--ok);
 }
-.checks .c.ok { color: var(--fg); }
-.checks .c .ic svg { width: 14px; height: 14px; }
+.checks .c.ok {
+  color: var(--fg);
+}
+.checks .c .ic svg {
+  width: 14px;
+  height: 14px;
+}
 
 .seal {
   width: 84px;
@@ -386,7 +474,10 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   place-items: center;
   margin: 0 auto 22px;
 }
-.seal svg { width: 40px; height: 40px; }
+.seal svg {
+  width: 40px;
+  height: 40px;
+}
 .who {
   background: var(--field);
   border: 1px solid var(--field-line);
@@ -397,8 +488,14 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   gap: 4px;
   text-align: left;
 }
-.who .nm { font-weight: 700; font-size: 17px; }
-.who .meta { color: var(--fg-2); font-size: 14px; }
+.who .nm {
+  font-weight: 700;
+  font-size: 17px;
+}
+.who .meta {
+  color: var(--fg-2);
+  font-size: 14px;
+}
 .who .badge {
   display: inline-flex;
   align-items: center;
@@ -407,7 +504,7 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   margin-top: 8px;
   font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ok);
   background: color-mix(in oklab, var(--ok) 14%, transparent);
@@ -426,11 +523,16 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform 0.2s;
   text-decoration: none;
 }
-.dl:hover { transform: translateY(-2px); }
-.dl svg { width: 20px; height: 20px; }
+.dl:hover {
+  transform: translateY(-2px);
+}
+.dl svg {
+  width: 20px;
+  height: 20px;
+}
 .signout {
   background: none;
   border: none;
@@ -443,7 +545,6 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   text-underline-offset: 3px;
 }
 
-/* ───────────────────────── Howto disclosure ───────────────────────── */
 .howto {
   margin-top: 26px;
   border-top: 1px solid var(--line);
@@ -459,16 +560,27 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   align-items: center;
   gap: 8px;
 }
-.howto summary::-webkit-details-marker { display: none; }
-.howto summary .pl { color: var(--candy); }
+.howto summary::-webkit-details-marker {
+  display: none;
+}
+.howto summary .pl {
+  color: var(--candy);
+}
 .howto ol {
   margin: 14px 0 0;
   padding-left: 20px;
   display: grid;
   gap: 8px;
 }
-.howto li { font-size: 13.5px; color: var(--fg-2); line-height: 1.45; }
-.howto li b { color: var(--fg); font-weight: 600; }
+.howto li {
+  font-size: 13.5px;
+  color: var(--fg-2);
+  line-height: 1.45;
+}
+.howto li b {
+  color: var(--fg);
+  font-weight: 600;
+}
 
 .consent-checks {
   display: grid;
@@ -515,9 +627,15 @@ html[data-theme="light"] .note .b { color: #2a6f93; }
   cursor: pointer;
   list-style: none;
 }
-.privacy-tools summary::-webkit-details-marker { display: none; }
-.privacy-tools summary::before { content: "+ "; }
-.privacy-tools[open] summary::before { content: "− "; }
+.privacy-tools summary::-webkit-details-marker {
+  display: none;
+}
+.privacy-tools summary::before {
+  content: "+ ";
+}
+.privacy-tools[open] summary::before {
+  content: "− ";
+}
 .privacy-tools p {
   margin: 10px 0 12px;
   font-size: 12.5px;

@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { EASE } from "@/components/primitives/Reveal";
@@ -8,33 +7,20 @@ import { Dots } from "./Dots";
 import { SITE } from "@/lib/constants";
 import { apiFetch } from "@/lib/api";
 import type { RecruiterAccount } from "@/lib/recruiter";
-
 type ApprovedProps = Readonly<{
   account: RecruiterAccount;
   onSignOut: () => void;
   onDeleted?: () => void;
 }>;
-
-/**
- * Approved screen — VERBATIM markup from §10.8. Animated seal,
- * personalised headline ("Thanks, {firstName}."), `.who` card with
- * the recruiter's details + a "Verified recruiter" badge, the
- * download button (links to SITE.cvHref with `download`), and a
- * sign-out text link beneath.
- */
 export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): React.ReactElement {
   const firstName = account.name.split(" ")[0];
   const fileName = SITE.cvHref.split("/").pop() ?? "Mzwakhe-Mokhatla-CV.pdf";
-
   const handleExport = (): void => {
-    // The endpoint sets Content-Disposition: attachment, so the browser
-    // downloads it directly. Using a hidden anchor keeps the page state.
     const link = document.createElement("a");
     link.href = "/api/recruiter/data";
     link.rel = "noopener";
     link.click();
   };
-
   const handleDelete = async (): Promise<void> => {
     if (
       typeof window !== "undefined" &&
@@ -44,7 +30,9 @@ export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): Reac
     ) {
       return;
     }
-    const res = await apiFetch<{ ok: true }>("/api/recruiter/account", {
+    const res = await apiFetch<{
+      ok: true;
+    }>("/api/recruiter/account", {
       method: "DELETE",
     });
     if (!res.ok) return;
@@ -52,7 +40,6 @@ export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): Reac
     if (onDeleted) onDeleted();
     else onSignOut();
   };
-
   return (
     <>
       <Dots step={3} />
@@ -98,8 +85,8 @@ export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): Reac
       <details className="privacy-tools">
         <summary>Manage your data</summary>
         <p>
-          Under GDPR and similar laws you can ask me for a copy of everything
-          I hold about you or to delete it entirely.
+          Under GDPR and similar laws you can ask me for a copy of everything I hold about you or to
+          delete it entirely.
         </p>
         <div className="privacy-tools-actions">
           <button type="button" className="signout" onClick={handleExport}>

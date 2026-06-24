@@ -1,12 +1,4 @@
-import {
-  AIITEMS,
-  NAVLINKS,
-  SERVICES,
-  SITE,
-  WORK,
-  XP,
-} from "@/lib/constants";
-
+import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("SITE", () => {
   it("carries the spec identity strings verbatim", () => {
     expect(SITE.name).toBe("Mzwakhe Mokhatla");
@@ -16,13 +8,11 @@ describe("SITE", () => {
     expect(SITE.location).toBe("Pretoria, South Africa");
     expect(SITE.tagline).toBe("Turning ideas into digital realities.");
   });
-
   it("points cvHref + portrait at the assets shipped under /public", () => {
     expect(SITE.cvHref).toBe("/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf");
     expect(SITE.portrait).toBe("/img/potrait.png");
   });
 });
-
 describe("NAVLINKS", () => {
   it("is the five spec entries in order with the right numbering", () => {
     expect(NAVLINKS.map((l) => `${l.n} ${l.t} ${l.href}`)).toEqual([
@@ -34,7 +24,6 @@ describe("NAVLINKS", () => {
     ]);
   });
 });
-
 describe("SERVICES", () => {
   it("is exactly the four spec services in order", () => {
     expect(SERVICES.map((s) => `${s.w1} ${s.w2}`)).toEqual([
@@ -44,14 +33,12 @@ describe("SERVICES", () => {
       "Platform & DevOps",
     ]);
   });
-
   it("Frontend service has the spec pills + body", () => {
     const fe = SERVICES[0];
     expect(fe.pills).toEqual(["React", "TypeScript", "Next.js", "Microfrontends", "UI/UX"]);
     expect(fe.d).toMatch(/accessible, responsive, and fast/);
   });
 });
-
 describe("WORK", () => {
   it("is the four spec projects in order with the right tags + slots", () => {
     expect(WORK.map((w) => `${w.nm}|${w.tag}|${w.slot}`)).toEqual([
@@ -62,7 +49,6 @@ describe("WORK", () => {
     ]);
   });
 });
-
 describe("XP", () => {
   it("marks MTN and Accenture as ongoing (now=true)", () => {
     expect(XP[0].now).toBe(true);
@@ -71,7 +57,6 @@ describe("XP", () => {
     expect(XP[3].now).toBeUndefined();
   });
 });
-
 describe("AIITEMS", () => {
   it("is the four spec items with their tool sets", () => {
     expect(AIITEMS.map((a) => a.t)).toEqual([

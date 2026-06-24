@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,29 +11,23 @@ import {
 } from "@/lib/privacy/cookies";
 import type { ConsentChoices } from "@/lib/privacy/consent";
 import "./consent.css";
-
 export function ConsentBanner(): React.ReactElement | null {
   const { record, resolved, save, open, close } = useConsent();
   const [customising, setCustomising] = useState(false);
   const [draft, setDraft] = useState<ConsentChoices>(() => record?.choices ?? DEFAULT_REJECTED);
-
-  const visible = (!resolved) || open;
-
+  const visible = !resolved || open;
   const openCustomise = (): void => {
     setDraft(record?.choices ?? DEFAULT_REJECTED);
     setCustomising(true);
   };
-
   const dismiss = (): void => {
     setCustomising(false);
     close();
   };
-
   const toggle = (cat: CookieCategory): void => {
     if (CATEGORY_META[cat].alwaysOn) return;
     setDraft((d) => ({ ...d, [cat]: !d[cat as Exclude<CookieCategory, "necessary">] }));
   };
-
   return (
     <AnimatePresence>
       {visible ? (
@@ -54,11 +47,10 @@ export function ConsentBanner(): React.ReactElement | null {
                 <div className="consent-copy">
                   <h2 id="consent-title">Your privacy</h2>
                   <p>
-                    I use cookies to keep you signed in to <strong>/recruiter</strong> and
-                    remember your preferences. Read the{" "}
-                    <Link href="/legal/cookies">Cookie Policy</Link> and{" "}
-                    <Link href="/legal/privacy">Privacy Policy</Link> for details. You can
-                    change your mind anytime.
+                    I use cookies to keep you signed in to <strong>/recruiter</strong> and remember
+                    your preferences. Read the <Link href="/legal/cookies">Cookie Policy</Link> and{" "}
+                    <Link href="/legal/privacy">Privacy Policy</Link> for details. You can change
+                    your mind anytime.
                   </p>
                 </div>
                 <div className="consent-actions">
@@ -90,14 +82,15 @@ export function ConsentBanner(): React.ReactElement | null {
                 <div className="consent-copy">
                   <h2 id="consent-title">Customise cookies</h2>
                   <p>
-                    Choose which categories you allow. Strictly necessary cookies can&apos;t
-                    be turned off because the site needs them to function.
+                    Choose which categories you allow. Strictly necessary cookies can&apos;t be
+                    turned off because the site needs them to function.
                   </p>
                 </div>
                 <ul className="consent-list">
                   {CATEGORY_ORDER.map((cat) => {
                     const meta = CATEGORY_META[cat];
-                    const checked = cat === "necessary" ? true : draft[cat as "functional" | "analytics"];
+                    const checked =
+                      cat === "necessary" ? true : draft[cat as "functional" | "analytics"];
                     const items = inventoryByCategory(cat);
                     return (
                       <li key={cat} className="consent-row">
@@ -146,11 +139,7 @@ export function ConsentBanner(): React.ReactElement | null {
                   >
                     Back
                   </button>
-                  <button
-                    type="button"
-                    className="consent-btn consent-btn-ghost"
-                    onClick={dismiss}
-                  >
+                  <button type="button" className="consent-btn consent-btn-ghost" onClick={dismiss}>
                     Cancel
                   </button>
                   <button
