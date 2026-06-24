@@ -58,7 +58,8 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
       <Dots step={1} />
       <h1 className="t">Check your inbox</h1>
       <p className="sub">
-        Enter the 6-digit code sent to <b>{email}</b> to confirm it&apos;s yours.
+        Enter the 6-digit code sent to <b>{email}</b>{" "}
+        to confirm it&apos;s yours.
       </p>
 
       <div className="otp" aria-label="Verification code">
