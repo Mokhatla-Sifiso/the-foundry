@@ -1,9 +1,7 @@
 import { Reveal } from "@/components/primitives/Reveal";
 import { StackScaleEffect } from "@/components/primitives/StackScaleEffect";
 import { SERVICES } from "@/lib/constants";
-
 const TOTAL = SERVICES.length;
-
 export function Services(): React.ReactElement {
   return (
     <section id="services" className="sec services-section">
@@ -48,13 +46,15 @@ export function Services(): React.ReactElement {
                 ))}
               </div>
               <div className="svc-desc">
-                <span className="ast" aria-hidden="true">✳</span>
+                <span className="ast" aria-hidden="true">
+                  ✳
+                </span>
                 <p>{s.d}</p>
               </div>
             </Reveal>
           </article>
         ))}
-        {/* Spacer gives the last card reading room while all prior cards stay pinned */}
+
         <div className="stack-spacer" aria-hidden="true" />
       </div>
     </section>

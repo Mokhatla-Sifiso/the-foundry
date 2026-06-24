@@ -3,15 +3,6 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { validateSignup } from "@/lib/auth/validation";
-
-/**
- * Start the recruiter sign-up flow:
- *   1. Validate the 5-field payload.
- *   2. Ask BetterAuth to email a 6-digit OTP (type "sign-in").
- * The client keeps the form fields in component state and replays them at
- * /signup/verify after the OTP succeeds, so we don't need to persist a
- * "pending sign-up" anywhere on the server.
- */
 export async function POST(request: Request): Promise<Response> {
   try {
     const payload = await request.json().catch(() => null);
@@ -24,7 +15,6 @@ export async function POST(request: Request): Promise<Response> {
         { status: 400 },
       );
     }
-
     const hdrs = await headers();
     await auth.api.sendVerificationOTP({
       body: { email: result.value.email, type: "sign-in" },

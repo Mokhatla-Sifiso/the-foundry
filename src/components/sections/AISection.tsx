@@ -1,37 +1,13 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AIITEMS } from "@/lib/constants";
-
 type AISectionProps = Readonly<{
-  /** Toggle phone visibility (Tweaks panel hook). */
   showPhone?: boolean;
-  /** Toggle tablet visibility (Tweaks panel hook). */
   showDesktop?: boolean;
-  /** Fraction of the section's height that must be in view before the
-   *  peak palette kicks in. 0.25 means the section flips when ~a quarter
-   *  of it is visible — tuned to feel natural on a typical scroll. */
   threshold?: number;
 }>;
-
-/**
- * AI section — discrete in-view trigger drives a palette swap.
- *
- * Earlier iterations interpolated colors continuously via `useScroll +
- * useTransform` over the entire scroll range. That made the section's
- * background drift with every scroll tick and felt "stuck on dark"
- * once you crossed midway — the spec's original "latch" behaviour.
- *
- * The new model (per the Medium article the user pointed to): use an
- * `IntersectionObserver` to detect when the section enters/leaves the
- * viewport, toggle the `ai--peak` class on the element, and let CSS
- * variables + a transition handle the visual swap. Discrete trigger,
- * smooth visual via `transition: background-color/color/border-color
- * .8s var(--ease)` defined in globals.css. No JS animation loop, no
- * per-frame work.
- */
 export function AISection({
   showPhone = true,
   showDesktop = true,
@@ -39,20 +15,9 @@ export function AISection({
 }: AISectionProps = {}): React.ReactElement {
   const sectionRef = useRef<HTMLElement>(null);
   const [peakActive, setPeakActive] = useState(false);
-
   useEffect(() => {
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-
-    // `entry.isIntersecting` flips to `true` the moment any pixel of the
-    // section crosses into view — so the peak palette would activate
-    // way too early on a tall section. Apple's pattern: check the
-    // intersectionRatio against the requested threshold so the swap
-    // fires when a meaningful slice (default 25%) is actually visible.
-    //
-    // Multiple thresholds keep the callback firing at intermediate
-    // ratios too, so the visible state stays in sync as the section
-    // scrolls through (vs. only firing at exact crossings).
     const observer = new IntersectionObserver(
       ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
       { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },
@@ -60,13 +25,8 @@ export function AISection({
     observer.observe(el);
     return () => observer.disconnect();
   }, [threshold]);
-
   return (
-    <section
-      ref={sectionRef}
-      id="ai"
-      className={`ai sec${peakActive ? " ai--peak" : ""}`}
-    >
+    <section ref={sectionRef} id="ai" className={`ai sec${peakActive ? " ai--peak" : ""}`}>
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
           AI in the workflow
@@ -78,9 +38,8 @@ export function AISection({
         </Reveal>
         <Reveal delay={0.05}>
           <p className="ai-lead">
-            I treat AI as everyday tooling, not a novelty — wired into the
-            same review and observability loops I expect from production
-            software.
+            I treat AI as everyday tooling, not a novelty — wired into the same review and
+            observability loops I expect from production software.
           </p>
         </Reveal>
 
