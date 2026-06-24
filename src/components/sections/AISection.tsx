@@ -1,16 +1,13 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AIITEMS } from "@/lib/constants";
-
 type AISectionProps = Readonly<{
   showPhone?: boolean;
   showDesktop?: boolean;
   threshold?: number;
 }>;
-
 export function AISection({
   showPhone = true,
   showDesktop = true,
@@ -18,11 +15,9 @@ export function AISection({
 }: AISectionProps = {}): React.ReactElement {
   const sectionRef = useRef<HTMLElement>(null);
   const [peakActive, setPeakActive] = useState(false);
-
   useEffect(() => {
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-
     const observer = new IntersectionObserver(
       ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
       { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },
@@ -30,13 +25,8 @@ export function AISection({
     observer.observe(el);
     return () => observer.disconnect();
   }, [threshold]);
-
   return (
-    <section
-      ref={sectionRef}
-      id="ai"
-      className={`ai sec${peakActive ? " ai--peak" : ""}`}
-    >
+    <section ref={sectionRef} id="ai" className={`ai sec${peakActive ? " ai--peak" : ""}`}>
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
           AI in the workflow
@@ -48,9 +38,8 @@ export function AISection({
         </Reveal>
         <Reveal delay={0.05}>
           <p className="ai-lead">
-            I treat AI as everyday tooling, not a novelty: wired into the
-            same review and observability loops I expect from production
-            software.
+            I treat AI as everyday tooling, not a novelty: wired into the same review and
+            observability loops I expect from production software.
           </p>
         </Reveal>
 

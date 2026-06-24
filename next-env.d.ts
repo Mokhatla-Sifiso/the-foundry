@@ -1,2 +1,2 @@
-import "./.next/dev/types/routes.d.ts";
+import "./.next/types/routes.d.ts";
 

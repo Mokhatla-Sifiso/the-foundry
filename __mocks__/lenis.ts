@@ -3,5 +3,4 @@ class LenisMock {
   raf(_time: number): void {}
   destroy(): void {}
 }
-
 export default LenisMock;

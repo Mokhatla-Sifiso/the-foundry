@@ -1,74 +1,43 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Otp } from "@/components/recruiter/Otp";
-
 const inputs = (): HTMLInputElement[] =>
   Array.from(document.querySelectorAll(".otp input")) as HTMLInputElement[];
-
 describe("Otp", () => {
   it("renders 6 inputs and the email in the note", () => {
-    render(
-      <Otp
-        email="jordan@acme.co"
-        onVerify={() => {}}
-        onResend={() => {}}
-      />,
-    );
+    render(<Otp email="jordan@acme.co" onVerify={() => {}} onResend={() => {}} />);
     expect(inputs().length).toBe(6);
     expect(screen.getByText("jordan@acme.co")).toBeInTheDocument();
   });
-
   it("advances focus on each digit and disables verify until all 6 are filled", async () => {
     const onVerify = jest.fn();
     const user = userEvent.setup();
-    render(
-      <Otp
-        email="jordan@acme.co"
-        onVerify={onVerify}
-        onResend={() => {}}
-      />,
-    );
-
+    render(<Otp email="jordan@acme.co" onVerify={onVerify} onResend={() => {}} />);
     const verify = screen.getByRole("button", { name: /Verify email/i });
     expect((verify as HTMLButtonElement).disabled).toBe(true);
-
     const all = inputs();
     for (let i = 0; i < 6; i += 1) {
       all[i].focus();
       await user.keyboard(String(i + 1));
     }
-
     expect((verify as HTMLButtonElement).disabled).toBe(false);
     await user.click(verify);
     expect(onVerify).toHaveBeenCalledWith("123456");
   });
-
   it("distributes pasted digits across boxes", async () => {
     const user = userEvent.setup();
-    render(
-      <Otp
-        email="jordan@acme.co"
-        onVerify={() => {}}
-        onResend={() => {}}
-      />,
-    );
+    render(<Otp email="jordan@acme.co" onVerify={() => {}} onResend={() => {}} />);
     const first = inputs()[0];
     first.focus();
     await user.paste("987654");
-
-    const after = inputs().map((i) => i.value).join("");
+    const after = inputs()
+      .map((i) => i.value)
+      .join("");
     expect(after).toBe("987654");
   });
-
   it("backspace on empty box moves focus to previous", async () => {
     const user = userEvent.setup();
-    render(
-      <Otp
-        email="jordan@acme.co"
-        onVerify={() => {}}
-        onResend={() => {}}
-      />,
-    );
+    render(<Otp email="jordan@acme.co" onVerify={() => {}} onResend={() => {}} />);
     const all = inputs();
     all[0].focus();
     await user.keyboard("1");
@@ -76,7 +45,6 @@ describe("Otp", () => {
     await user.keyboard("{Backspace}");
     expect(document.activeElement).toBe(all[0]);
   });
-
   it("shows caller-supplied error text + aria-invalid on inputs", () => {
     render(
       <Otp
@@ -89,17 +57,10 @@ describe("Otp", () => {
     expect(screen.getByText(/That code doesn't match/i)).toBeInTheDocument();
     expect(inputs()[0].getAttribute("aria-invalid")).toBe("true");
   });
-
   it("Resend triggers onResend", async () => {
     const onResend = jest.fn();
     const user = userEvent.setup();
-    render(
-      <Otp
-        email="jordan@acme.co"
-        onVerify={() => {}}
-        onResend={onResend}
-      />,
-    );
+    render(<Otp email="jordan@acme.co" onVerify={() => {}} onResend={onResend} />);
     await user.click(screen.getByText("Resend"));
     expect(onResend).toHaveBeenCalledTimes(1);
   });

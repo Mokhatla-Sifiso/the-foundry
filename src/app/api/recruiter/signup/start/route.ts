@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { validateSignup } from "@/lib/auth/validation";
-
 export async function POST(request: Request): Promise<Response> {
   try {
     const payload = await request.json().catch(() => null);
@@ -16,7 +15,6 @@ export async function POST(request: Request): Promise<Response> {
         { status: 400 },
       );
     }
-
     const hdrs = await headers();
     await auth.api.sendVerificationOTP({
       body: { email: result.value.email, type: "sign-in" },

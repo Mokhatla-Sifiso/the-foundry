@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import { Dots } from "@/components/recruiter/Dots";
-
 describe("Dots", () => {
   it("renders 4 segments by default with the active step lit and prior ones done", () => {
     const { container } = render(<Dots step={2} />);
@@ -11,7 +10,6 @@ describe("Dots", () => {
     expect(items[2].className).toBe("on");
     expect(items[3].className).toBe("");
   });
-
   it("respects a custom total", () => {
     const { container } = render(<Dots step={0} total={3} />);
     expect(container.querySelectorAll(".dots i").length).toBe(3);

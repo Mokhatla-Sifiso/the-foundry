@@ -1,6 +1,5 @@
 type Cb = (scroll: number) => void;
 const subs: Cb[] = [];
-
 export const lenisBus = {
   emit(scroll: number): void {
     for (const fn of subs) fn(scroll);
