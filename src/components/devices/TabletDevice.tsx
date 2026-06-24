@@ -1,8 +1,10 @@
 import { ASSISTANT_NAME } from "@/lib/constants";
-
-type TabletProps = Readonly<{ assistantName?: string }>;
-
-export function TabletDevice({ assistantName = ASSISTANT_NAME }: TabletProps = {}): React.ReactElement {
+type TabletProps = Readonly<{
+  assistantName?: string;
+}>;
+export function TabletDevice({
+  assistantName = ASSISTANT_NAME,
+}: TabletProps = {}): React.ReactElement {
   return (
     <>
       <div className="tablet-scr">

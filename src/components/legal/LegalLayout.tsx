@@ -1,13 +1,11 @@
 import Link from "next/link";
 import "./legal.css";
-
 type LegalLayoutProps = Readonly<{
   title: string;
   version: string;
   updatedAt: string;
   children: React.ReactNode;
 }>;
-
 export function LegalLayout({
   title,
   version,
@@ -28,8 +26,8 @@ export function LegalLayout({
 
       <div className="legal-callout" role="note">
         <strong>Note:</strong> this document is provided in good faith to describe how the site
-        actually behaves. It is not legal advice. If you depend on it for regulatory
-        compliance, have qualified counsel review it for your jurisdiction.
+        actually behaves. It is not legal advice. If you depend on it for regulatory compliance,
+        have qualified counsel review it for your jurisdiction.
       </div>
 
       <article className="legal-body">{children}</article>

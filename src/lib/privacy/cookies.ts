@@ -1,5 +1,4 @@
 export type CookieCategory = "necessary" | "functional" | "analytics";
-
 export type CookieEntry = Readonly<{
   name: string;
   storage: "cookie" | "localStorage";
@@ -8,7 +7,6 @@ export type CookieEntry = Readonly<{
   purpose: string;
   duration: string;
 }>;
-
 export const COOKIE_INVENTORY: readonly CookieEntry[] = [
   {
     name: "better-auth.session_token",
@@ -33,8 +31,7 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     storage: "cookie",
     category: "necessary",
     party: "first",
-    purpose:
-      "Records your cookie preferences so we don't ask you again on every visit.",
+    purpose: "Records your cookie preferences so we don't ask you again on every visit.",
     duration: "12 months",
   },
   {
@@ -46,11 +43,14 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     duration: "Until you clear browser storage",
   },
 ] as const;
-
 export const CATEGORY_META: Readonly<
   Record<
     CookieCategory,
-    Readonly<{ label: string; description: string; alwaysOn: boolean }>
+    Readonly<{
+      label: string;
+      description: string;
+      alwaysOn: boolean;
+    }>
   >
 > = {
   necessary: {
@@ -61,8 +61,7 @@ export const CATEGORY_META: Readonly<
   },
   functional: {
     label: "Functional",
-    description:
-      "Remembers preferences like your theme so the site stays personal across visits.",
+    description: "Remembers preferences like your theme so the site stays personal across visits.",
     alwaysOn: false,
   },
   analytics: {
@@ -72,15 +71,11 @@ export const CATEGORY_META: Readonly<
     alwaysOn: false,
   },
 };
-
 export const CATEGORY_ORDER: readonly CookieCategory[] = [
   "necessary",
   "functional",
   "analytics",
 ] as const;
-
-export function inventoryByCategory(
-  category: CookieCategory,
-): readonly CookieEntry[] {
+export function inventoryByCategory(category: CookieCategory): readonly CookieEntry[] {
   return COOKIE_INVENTORY.filter((c) => c.category === category);
 }

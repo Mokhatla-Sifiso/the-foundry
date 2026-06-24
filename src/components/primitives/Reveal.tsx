@@ -1,11 +1,8 @@
 "use client";
-
 import type { ElementType, ReactNode, CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
-
 export const EASE = [0.22, 1, 0.36, 1] as const;
-
 type RevealProps = Readonly<{
   children: ReactNode;
   y?: number;
@@ -14,7 +11,6 @@ type RevealProps = Readonly<{
   style?: CSSProperties;
   as?: ElementType;
 }>;
-
 export function Reveal({
   children,
   y = 38,

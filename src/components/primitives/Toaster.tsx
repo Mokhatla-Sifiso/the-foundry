@@ -1,7 +1,5 @@
 "use client";
-
 import { Toaster as HotToaster } from "react-hot-toast";
-
 export function Toaster(): React.ReactElement {
   return (
     <HotToaster

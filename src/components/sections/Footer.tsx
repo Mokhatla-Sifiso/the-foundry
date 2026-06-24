@@ -1,16 +1,13 @@
 "use client";
-
 import Link from "next/link";
 import { Arrow, Chat, Up } from "@/components/primitives/icons";
 import { SITE } from "@/lib/constants";
 import { useConsent } from "@/components/privacy/ConsentProvider";
-
 export function Footer(): React.ReactElement {
   const { reopen } = useConsent();
   const goUp = (): void => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
   return (
     <footer className="foot">
       <div className="wrap">
@@ -43,12 +40,7 @@ export function Footer(): React.ReactElement {
                 </span>
               </a>
             </div>
-            <button
-              type="button"
-              className="goup"
-              onClick={goUp}
-              aria-label="Scroll back to top"
-            >
+            <button type="button" className="goup" onClick={goUp} aria-label="Scroll back to top">
               Go up
               <span className="ic">
                 <Up />

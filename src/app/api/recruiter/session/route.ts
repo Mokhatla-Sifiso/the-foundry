@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionContext } from "@/lib/auth/admin";
 import { fetchAccount } from "@/lib/auth/profile";
-
 export async function GET(): Promise<Response> {
   try {
     const ctx = await getSessionContext();
