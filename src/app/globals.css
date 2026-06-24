@@ -1,16 +1,9 @@
-@import 'tailwindcss';
-
-/* ───────────────────────────────────────────────────────────────────────
- * 1. ROOT TOKENS  (§3)
- * Onest is loaded via next/font/google in layout.tsx as the CSS var
- * `--font-onest`. The spec's `--font` aliases it so the spec's CSS
- * verbatim references continue to work.
- * ─────────────────────────────────────────────────────────────────── */
+@import "tailwindcss";
 
 :root {
   --onyx: #020202;
   --candy: #b2d5e5;
-  --font: var(--font-onest), 'Onest', system-ui, sans-serif;
+  --font: var(--font-onest), "Onest", system-ui, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --r: 30px;
 }
@@ -50,11 +43,7 @@ a {
   margin-inline: auto;
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 2. THEME TOKENS  (§4)
- * ─────────────────────────────────────────────────────────────────── */
-
-html[data-theme='light'] {
+html[data-theme="light"] {
   --bg: #e9f1f5;
   --bg-grad: linear-gradient(180deg, #eef5f8 0%, #e4f0f5 55%, #d6e9f1 100%);
   --fg: #06090b;
@@ -70,9 +59,7 @@ html[data-theme='light'] {
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-line: rgba(255, 255, 255, 0.75);
   --card: #0a0e10;
-  /* Mid-grey card surface used by .svc-card — softer than --card so it
-   * reads as a separate "panel on a panel" against the icy page bg,
-   * matching the reference design. */
+
   --card-soft: #2f3236;
   --card-soft-fg: #f3f8fa;
   --card-soft-pill: rgba(255, 255, 255, 0.1);
@@ -84,7 +71,7 @@ html[data-theme='light'] {
   --card-line: rgba(178, 213, 229, 0.2);
   --glow: rgba(178, 213, 229, 0.7);
 }
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   --bg: #020202;
   --bg-grad:
     radial-gradient(80vw 60vw at 75% -10%, rgba(178, 213, 229, 0.1), transparent 60%), #020202;
@@ -113,13 +100,6 @@ html[data-theme='dark'] {
   --glow: rgba(178, 213, 229, 0.4);
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 3. TAILWIND TOKEN BRIDGE
- * Exposes the theme vars as Tailwind utilities (bg-bg, text-fg, …) so
- * places that need utility-class composition can still reach for them.
- * Section CSS below is the source of truth for the prototype look.
- * ─────────────────────────────────────────────────────────────────── */
-
 @theme inline {
   --color-bg: var(--bg);
   --color-fg: var(--fg);
@@ -138,10 +118,6 @@ html[data-theme='dark'] {
 }
 
 @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
-/* ───────────────────────────────────────────────────────────────────────
- * 4. PREMIUM LOADER  (§5.3)
- * ─────────────────────────────────────────────────────────────────── */
 
 #loader {
   position: fixed;
@@ -193,10 +169,6 @@ html[data-theme='dark'] {
   }
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 5. PROGRESS BAR  (§7.11)
- * ─────────────────────────────────────────────────────────────────── */
-
 .progress {
   position: fixed;
   inset: 0 0 auto 0;
@@ -205,10 +177,6 @@ html[data-theme='dark'] {
   transform-origin: 0 50%;
   z-index: 120;
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 6. NAV  (§7.1)
- * ─────────────────────────────────────────────────────────────────── */
 
 .nav {
   position: fixed;
@@ -285,7 +253,7 @@ html[data-theme='dark'] {
 .pill-dark .ic {
   background: rgba(255, 255, 255, 0.16);
 }
-html[data-theme='dark'] .pill-dark .ic {
+html[data-theme="dark"] .pill-dark .ic {
   background: rgba(6, 24, 31, 0.22);
 }
 .tbtn {
@@ -320,10 +288,6 @@ html[data-theme='dark'] .pill-dark .ic {
     font-size: 22px;
   }
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 7. MENU OVERLAY  (§7.2)
- * ─────────────────────────────────────────────────────────────────── */
 
 .menu {
   position: fixed;
@@ -398,10 +362,6 @@ html[data-theme='dark'] .pill-dark .ic {
   width: 20px;
   height: 20px;
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 8. HERO  (§7.3)
- * ─────────────────────────────────────────────────────────────────── */
 
 .hero {
   position: relative;
@@ -494,21 +454,41 @@ html[data-theme='dark'] .pill-dark .ic {
   border-radius: 50%;
   background: var(--candy);
 }
+@media (max-width: 1024px) {
+  .hero-mark {
+    font-size: clamp(110px, 22vw, 240px);
+  }
+  .hero-render-wrap {
+    height: clamp(320px, 56svh, 560px);
+    top: 18%;
+    left: 50%;
+    transform: translateX(-12%);
+  }
+  .hero-foot h1 {
+    font-size: clamp(34px, 5vw, 48px);
+    max-width: 16ch;
+  }
+}
 @media (max-width: 720px) {
   .hero-foot {
     flex-direction: column;
     align-items: flex-start;
+    gap: 16px;
+  }
+  .hero-mark {
+    font-size: clamp(96px, 36vw, 180px);
   }
   .hero-render-wrap {
-    height: clamp(300px, 62svh, 520px);
+    height: clamp(280px, 48svh, 440px);
     width: auto;
-    top: 8%;
+    top: 14%;
+    transform: translateX(-22%);
+  }
+  .hero-foot h1 {
+    font-size: clamp(30px, 8vw, 44px);
+    max-width: 14ch;
   }
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 9. GENERIC SECTION + STATEMENT  (§7.4)
- * ─────────────────────────────────────────────────────────────────── */
 
 .sec {
   padding: clamp(70px, 11vh, 130px) 0;
@@ -525,7 +505,7 @@ html[data-theme='dark'] .pill-dark .ic {
   margin-bottom: 22px;
 }
 .eyebrow::before {
-  content: '';
+  content: "";
   width: 26px;
   height: 1px;
   background: var(--candy);
@@ -545,26 +525,11 @@ html[data-theme='dark'] .pill-dark .ic {
   color: var(--candy);
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 10. SERVICES (sticky stacking-cards)  (§7.5)
- *
- * Full-bleed dark cards that pin to the top and stack on top of each
- * other as the user scrolls. Each `<section>` is taller than the
- * viewport, the card inside uses `position: sticky` with a per-index
- * `top` offset so successive cards stop a little lower than the
- * previous one — a thin sliver of the prior card peeks above.
- *
- * The dark card surfaces alternate by index (even = #0A0E14, odd =
- * #1C2128). Heading uses a tight grotesque stack with the second
- * line dropped to muted gray for the stacked-word look. Reduced
- * motion is respected at the React layer.
- * ─────────────────────────────────────────────────────────────────── */
-
 .services-section {
   background: #eef1f4;
   padding-bottom: clamp(60px, 8vh, 120px);
 }
-html[data-theme='dark'] .services-section {
+html[data-theme="dark"] .services-section {
   background: transparent;
 }
 .services-head {
@@ -587,29 +552,28 @@ html[data-theme='dark'] .services-section {
 }
 
 .stack {
-  padding: 0 clamp(16px, 4vw, 64px);
-  margin-top: 32px;
+  width: min(1320px, 100% - 44px);
+  margin: 32px auto 0;
 }
 .stack-spacer {
-  height: 80vh;
+  height: 60vh;
 }
 
 .svc-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(52px, 7vw, 80px);
-  border-radius: 40px;
-  padding: 32px clamp(44px, 5.5vw, 80px) clamp(56px, 7vw, 88px);
-  min-height: clamp(520px, 76vh, 680px);
+  gap: clamp(28px, 4vw, 48px);
+  border-radius: 32px;
+  padding: clamp(22px, 2.4vw, 32px) clamp(24px, 3.5vw, 48px) clamp(28px, 4vw, 48px);
+  min-height: clamp(320px, 52vh, 480px);
   color: #ffffff;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  box-shadow: 0 -32px 80px rgba(0, 0, 0, 0.45);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.38);
   overflow: hidden;
   will-change: transform;
 }
 
-/* Progressive depth: back cards lightest, front card darkest */
 .svc-card--0 {
   background: #444a53;
 }
@@ -637,16 +601,15 @@ html[data-theme='dark'] .services-section {
 .svc-card .svc-h {
   font-family: inherit;
   font-weight: 700;
-  font-size: clamp(72px, 9.5vw, 130px);
-  line-height: 0.93;
-  letter-spacing: -0.035em;
+  font-size: clamp(44px, 5.5vw, 84px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
 }
 .svc-card .svc-h-l1,
 .svc-card .svc-h-l2 {
   display: block;
 }
 
-/* Visual weight decays per layer: back cards barely legible, front card dominant */
 .svc-card--0 .svc-h-l1 {
   color: rgba(255, 255, 255, 0.35);
 }
@@ -728,10 +691,6 @@ html[data-theme='dark'] .services-section {
     font-size: 14px;
   }
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 11. WORK (2-up grid)  (§7.6)
- * ─────────────────────────────────────────────────────────────────── */
 
 .work-head {
   display: flex;
@@ -820,10 +779,6 @@ html[data-theme='dark'] .services-section {
   }
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 12. EXPERIENCE  (§7.7)
- * ─────────────────────────────────────────────────────────────────── */
-
 .xp-list {
   border-top: 1px solid var(--line);
 }
@@ -868,19 +823,6 @@ html[data-theme='dark'] .services-section {
   }
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 13. AI SECTION  (§7.8)
- *
- * Direct color rules on `.ai` (page palette) and `.ai.ai--peak`
- * (contrast palette). No CSS-variable indirection — Turbopack HMR was
- * silently caching the variable-driven version mid-development.
- *
- * The class is toggled by an IntersectionObserver in AISection.tsx
- * once the section crosses an intersectionRatio threshold (Apple's
- * pattern). CSS `transition` on each consumer property handles the
- * eased crossfade.
- * ─────────────────────────────────────────────────────────────────── */
-
 .ai {
   overflow: hidden;
   background-color: transparent;
@@ -890,7 +832,6 @@ html[data-theme='dark'] .services-section {
     color 0.8s var(--ease);
 }
 
-/* Light-theme peak: dark onyx slab with candy accent. */
 .ai.ai--peak {
   background-color: #020202;
   color: #eef5f8;
@@ -909,22 +850,21 @@ html[data-theme='dark'] .services-section {
   border-color: rgba(238, 245, 248, 0.22);
 }
 
-/* Dark-theme peak: candy slab with onyx ink so contrast inverts. */
-html[data-theme='dark'] .ai.ai--peak {
+html[data-theme="dark"] .ai.ai--peak {
   background-color: var(--candy);
   color: #06181f;
 }
-html[data-theme='dark'] .ai.ai--peak .eyebrow,
-html[data-theme='dark'] .ai.ai--peak .ai-lead,
-html[data-theme='dark'] .ai.ai--peak .ai-item p {
+html[data-theme="dark"] .ai.ai--peak .eyebrow,
+html[data-theme="dark"] .ai.ai--peak .ai-lead,
+html[data-theme="dark"] .ai.ai--peak .ai-item p {
   color: rgba(6, 24, 31, 0.74);
 }
-html[data-theme='dark'] .ai.ai--peak .ai-h .em,
-html[data-theme='dark'] .ai.ai--peak .ai-item .ai-n {
+html[data-theme="dark"] .ai.ai--peak .ai-h .em,
+html[data-theme="dark"] .ai.ai--peak .ai-item .ai-n {
   color: #06181f;
 }
-html[data-theme='dark'] .ai.ai--peak .ai-item,
-html[data-theme='dark'] .ai.ai--peak .ai-tools span {
+html[data-theme="dark"] .ai.ai--peak .ai-item,
+html[data-theme="dark"] .ai.ai--peak .ai-tools span {
   border-color: rgba(6, 24, 31, 0.22);
 }
 
@@ -1004,13 +944,7 @@ html[data-theme='dark'] .ai.ai--peak .ai-tools span {
 
 .ai-showcase {
   position: relative;
-  /*
-   * Cap at the laptop's max-width (720px) + room for the device
-   * spill on each side (~80px). Without this cap the showcase
-   * stretches to the .wrap's 1320px ceiling and the negatively-
-   * positioned phone / watch / tablet end up far from the centered
-   * laptop instead of hugging it.
-   */
+
   max-width: 880px;
   margin: 10px auto 56px;
   min-height: 520px;
@@ -1045,7 +979,7 @@ html[data-theme='dark'] .ai.ai--peak .ai-tools span {
   mask-image: linear-gradient(to left, black 60%, transparent);
   -webkit-mask-image: linear-gradient(to left, black 60%, transparent);
 }
-html[data-theme='light'] .ai-showcase .bg-fade {
+html[data-theme="light"] .ai-showcase .bg-fade {
   background: linear-gradient(
     to right,
     transparent 0%,
@@ -1070,10 +1004,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
     display: none;
   }
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 14. LAPTOP DEVICE  (§8.1)
- * ─────────────────────────────────────────────────────────────────── */
 
 .laptop {
   position: relative;
@@ -1262,10 +1192,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   flex: none;
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 15. PHONE DEVICE  (§8.2)
- * ─────────────────────────────────────────────────────────────────── */
-
 .phone {
   position: absolute;
   z-index: 1;
@@ -1344,10 +1270,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   margin-top: 4px;
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 16. WATCH DEVICE  (§8.3)
- * ─────────────────────────────────────────────────────────────────── */
-
 .watch {
   position: absolute;
   z-index: 3;
@@ -1377,7 +1299,7 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   position: relative;
 }
 .watch-ring::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -3px;
   border-radius: 50%;
@@ -1398,10 +1320,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   color: #7e96a0;
   margin-top: 6px;
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 17. TABLET DEVICE  (§8.4)
- * ─────────────────────────────────────────────────────────────────── */
 
 .tablet {
   position: absolute;
@@ -1486,10 +1404,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   background: #5fd09b;
 }
 
-/* ───────────────────────────────────────────────────────────────────────
- * 18. CONTACT  (§7.9)
- * ─────────────────────────────────────────────────────────────────── */
-
 .contact {
   position: relative;
 }
@@ -1570,7 +1484,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
   }
 }
 
-/* Buttons shared by contact (and a few other places) */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1613,10 +1526,6 @@ html[data-theme='light'] .ai-showcase .bg-fade {
 .btn-light .ic {
   background: rgba(255, 255, 255, 0.1);
 }
-
-/* ───────────────────────────────────────────────────────────────────────
- * 19. FOOTER  (§7.10)
- * ─────────────────────────────────────────────────────────────────── */
 
 .foot {
   padding: 30px 0 40px;
@@ -1739,4 +1648,43 @@ html[data-theme='light'] .ai-showcase .bg-fade {
 .foot-legal a:hover,
 .foot-legal-btn:hover {
   color: var(--fg);
+}
+
+/* Mobile fallback for the AI showcase devices — must be after the
+   default position: absolute declarations or they win on source order. */
+@media (max-width: 860px) {
+  .ai-showcase {
+    padding: 16px 0 0;
+  }
+  .ai-showcase .bg-fade {
+    display: none;
+  }
+  .laptop {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .phone,
+  .tablet,
+  .watch {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 24px auto 0;
+    display: block;
+  }
+  .phone {
+    width: min(220px, 80%);
+  }
+  .tablet {
+    width: min(280px, 90%);
+  }
+  .watch {
+    width: 120px;
+    height: 152px;
+  }
+  .dev-label {
+    display: none;
+  }
 }

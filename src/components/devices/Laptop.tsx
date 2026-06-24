@@ -1,21 +1,7 @@
 import { ASSISTANT_NAME } from "@/lib/constants";
-
-type LaptopProps = Readonly<{ assistantName?: string }>;
-
-/**
- * MacBook mockup — VERBATIM markup, content, and SVG data from §8.1.
- *
- * Sidebar nav, 4-stat overview, deploy sparkline (polyline points are
- * VERBATIM), and an Insights column whose bullets quote the assistant
- * by name (default "Clerk", overridable via `assistantName` to support
- * the Tweaks panel from §12).
- *
- * Returns only the inner content (lid + base). The `.laptop` wrapper
- * with its `position: relative; width: min(720px, 100%); margin: 0
- * auto; filter: drop-shadow(...)` is supplied by `<Reveal className=
- * "laptop">` in AISection per §8.1 — wrapping it here too would
- * double-position the device.
- */
+type LaptopProps = Readonly<{
+  assistantName?: string;
+}>;
 export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): React.ReactElement {
   return (
     <>
@@ -90,8 +76,7 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
                   Sprint velocity up 15% — consider tighter cycles
                 </div>
                 <div className="ib">
-                  <span className="id" />
-                  3 PRs need attention before merge
+                  <span className="id" />3 PRs need attention before merge
                 </div>
                 <div className="ib">
                   <span className="id" />

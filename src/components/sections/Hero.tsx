@@ -1,32 +1,18 @@
-'use client';
-
-import { EASE } from '@/components/primitives/Reveal';
-import { SITE } from '@/lib/constants';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
-import { useRef } from 'react';
-
-/**
- * Hero — VERBATIM markup, copy, animations from §7.3.
- *
- * Three parallax tracks driven by `useScroll` on the hero ref with
- * offset `['start start', 'end start']`:
- *   - `.hero-render` (portrait): y maps 0..1 → 0..-120 (drifts up).
- *   - `.hero-mark` (background wordmark): y maps 0..1 → 0..80.
- *   - `.scroll-cue` opacity: 1..0 over progress 0..0.7.
- *
- * Entrance animations match the §15 master reference exactly.
- */
+"use client";
+import { EASE } from "@/components/primitives/Reveal";
+import { SITE } from "@/lib/constants";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import { useRef } from "react";
 export function Hero(): React.ReactElement {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start start', 'end start'],
+    offset: ["start start", "end start"],
   });
   const yRender = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const yMark = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const cueFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-
   return (
     <section id="top" className="hero" ref={ref}>
       <motion.div
@@ -54,7 +40,7 @@ export function Hero(): React.ReactElement {
             fill
             priority
             sizes="(min-width: 1280px) 620px, (min-width: 768px) 40vw, 64vw"
-            style={{ objectFit: 'cover', borderRadius: 26 }}
+            style={{ objectFit: "cover", borderRadius: 26 }}
           />
         </motion.div>
       </div>
@@ -78,7 +64,7 @@ export function Hero(): React.ReactElement {
           <motion.span
             className="dot"
             animate={{ scale: [1, 0.5, 1], opacity: [1, 0.4, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
           Scroll
         </motion.div>

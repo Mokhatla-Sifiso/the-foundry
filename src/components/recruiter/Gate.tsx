@@ -1,20 +1,10 @@
 "use client";
-
 import { Arrow, IconLock } from "@/components/primitives/icons";
 import { Howto } from "./Howto";
-
 type GateProps = Readonly<{
   onRequestAccess: () => void;
   onHaveAccess: () => void;
 }>;
-
-/**
- * Gate screen — VERBATIM copy + layout from §10.4. The recruiter
- * flow's landing card: eyebrow with the small lock circle, the
- * "Download my CV — for verified recruiters." headline, a sub
- * paragraph, two side-by-side buttons (primary + ghost), and the
- * Howto disclosure beneath.
- */
 export function Gate({ onRequestAccess, onHaveAccess }: GateProps): React.ReactElement {
   return (
     <>
@@ -28,9 +18,8 @@ export function Gate({ onRequestAccess, onHaveAccess }: GateProps): React.ReactE
         Download my CV — <span className="em">for verified recruiters.</span>
       </h1>
       <p className="sub">
-        To keep my details with people who are actually hiring, the full CV
-        sits behind a quick verification. Takes about a minute with your work
-        email.
+        To keep my details with people who are actually hiring, the full CV sits behind a quick
+        verification. Takes about a minute with your work email.
       </p>
 
       <div style={{ display: "grid", gap: 12 }}>

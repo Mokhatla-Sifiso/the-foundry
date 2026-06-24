@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SignUp } from "@/components/recruiter/SignUp";
-
 async function fillValid(user: ReturnType<typeof userEvent.setup>): Promise<void> {
   await user.type(screen.getByLabelText(/Full name/i), "Jordan Pillay");
   await user.type(screen.getByLabelText(/Work email/i), "jordan@acme.co");
@@ -11,17 +10,12 @@ async function fillValid(user: ReturnType<typeof userEvent.setup>): Promise<void
   await user.click(screen.getByLabelText(/Recruiter Terms/i));
   await user.click(screen.getByLabelText(/Privacy Policy/i));
 }
-
 describe("SignUp validation", () => {
   it("blocks submit and surfaces 5 inline errors when all fields are empty", async () => {
     const onSubmit = jest.fn();
     const user = userEvent.setup();
-    render(
-      <SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />,
-    );
-
+    render(<SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />);
     await user.click(screen.getByRole("button", { name: /Send verification code/i }));
-
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByText("Please enter your full name.")).toBeInTheDocument();
     expect(screen.getByText("Enter a valid email address.")).toBeInTheDocument();
@@ -29,14 +23,10 @@ describe("SignUp validation", () => {
     expect(screen.getByText("What role are you hiring for?")).toBeInTheDocument();
     expect(screen.getByText("Company website or LinkedIn helps verify you.")).toBeInTheDocument();
   });
-
   it("does not block free-mail addresses client-side (server enforces the rule with admin bypass)", async () => {
     const onSubmit = jest.fn();
     const user = userEvent.setup();
-    render(
-      <SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />,
-    );
-
+    render(<SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />);
     await user.type(screen.getByLabelText(/Full name/i), "Jordan Pillay");
     await user.type(screen.getByLabelText(/Work email/i), "jordan@gmail.com");
     await user.type(screen.getByLabelText(/^Company$/i), "Acme Talent");
@@ -44,40 +34,28 @@ describe("SignUp validation", () => {
     await user.type(screen.getByLabelText(/LinkedIn/i), "acme.com");
     await user.click(screen.getByLabelText(/Recruiter Terms/i));
     await user.click(screen.getByLabelText(/Privacy Policy/i));
-
     await user.click(screen.getByRole("button", { name: /Send verification code/i }));
-
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
-
   it("requires both Terms and Privacy checkboxes before submit", async () => {
     const onSubmit = jest.fn();
     const user = userEvent.setup();
     render(<SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />);
-
     await user.type(screen.getByLabelText(/Full name/i), "Jordan");
     await user.type(screen.getByLabelText(/Work email/i), "jordan@acme.co");
     await user.type(screen.getByLabelText(/^Company$/i), "Acme");
     await user.type(screen.getByLabelText(/Hiring for/i), "Frontend");
     await user.type(screen.getByLabelText(/LinkedIn/i), "acme.co");
-    // No checkboxes ticked.
-
     await user.click(screen.getByRole("button", { name: /Send verification code/i }));
-
     expect(onSubmit).not.toHaveBeenCalled();
-    expect(
-      screen.getByText(/accept the Recruiter Terms and Privacy Policy/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/accept the Recruiter Terms and Privacy Policy/i)).toBeInTheDocument();
   });
-
   it("submits trimmed values + acceptance flags when every field is valid", async () => {
     const onSubmit = jest.fn();
     const user = userEvent.setup();
     render(<SignUp onBack={() => {}} onSubmit={onSubmit} onAlreadyVerified={() => {}} />);
-
     await fillValid(user);
     await user.click(screen.getByRole("button", { name: /Send verification code/i }));
-
     expect(onSubmit).toHaveBeenCalledTimes(1);
     expect(onSubmit).toHaveBeenCalledWith({
       name: "Jordan Pillay",

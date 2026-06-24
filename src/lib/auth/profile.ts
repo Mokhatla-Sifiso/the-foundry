@@ -1,7 +1,5 @@
 import { db } from "@/lib/db";
-
 export type RecruiterDecision = "pending" | "approve" | "reject";
-
 export type RecruiterAccountDto = Readonly<{
   name: string;
   email: string;
@@ -15,7 +13,6 @@ export type RecruiterAccountDto = Readonly<{
     reason: string;
   } | null;
 }>;
-
 export async function fetchAccount(userId: string): Promise<RecruiterAccountDto | null> {
   const user = await db.user.findUnique({
     where: { id: userId },
