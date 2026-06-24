@@ -3,9 +3,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
 import { isWhitelisted } from "@/lib/auth/admin";
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export async function POST(request: Request): Promise<Response> {
   try {
     const payload = await request.json().catch(() => null);
@@ -13,19 +11,16 @@ export async function POST(request: Request): Promise<Response> {
     if (!EMAIL_RE.test(email)) {
       return NextResponse.json({ message: "Enter a valid email address." }, { status: 400 });
     }
-
     const [user, admin] = await Promise.all([
       db.user.findUnique({ where: { email } }),
       isWhitelisted(email),
     ]);
-
     if (!user && !admin) {
       return NextResponse.json(
         { message: "No access found for that email. Request access instead." },
         { status: 404 },
       );
     }
-
     const hdrs = await headers();
     await auth.api.sendVerificationOTP({
       body: { email, type: "sign-in" },

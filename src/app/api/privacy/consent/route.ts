@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionContext } from "@/lib/auth/admin";
 import { logConsent, type ConsentActionKind } from "@/lib/privacy/log";
-
 const VALID_ACTIONS: readonly ConsentActionKind[] = [
   "grant",
   "withdraw",
@@ -9,7 +8,6 @@ const VALID_ACTIONS: readonly ConsentActionKind[] = [
   "accept_terms",
   "accept_privacy",
 ];
-
 export async function POST(request: Request): Promise<Response> {
   try {
     const body = await request.json().catch(() => null);

@@ -1,5 +1,4 @@
 import "@testing-library/jest-dom";
-
 if (typeof window !== "undefined") {
   if (!window.matchMedia) {
     window.matchMedia = (query: string): MediaQueryList => ({
@@ -13,7 +12,6 @@ if (typeof window !== "undefined") {
       dispatchEvent: () => false,
     });
   }
-
   if (!window.IntersectionObserver) {
     class IntersectionObserverShim {
       observe(): void {}
@@ -29,7 +27,6 @@ if (typeof window !== "undefined") {
     window.IntersectionObserver =
       IntersectionObserverShim as unknown as typeof IntersectionObserver;
   }
-
   if (!window.ResizeObserver) {
     class ResizeObserverShim {
       observe(): void {}

@@ -1,7 +1,7 @@
 import { ASSISTANT_NAME } from "@/lib/constants";
-
-type LaptopProps = Readonly<{ assistantName?: string }>;
-
+type LaptopProps = Readonly<{
+  assistantName?: string;
+}>;
 export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): React.ReactElement {
   return (
     <>
@@ -76,8 +76,7 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
                   Sprint velocity up 15%: consider tighter cycles
                 </div>
                 <div className="ib">
-                  <span className="id" />
-                  3 PRs need attention before merge
+                  <span className="id" />3 PRs need attention before merge
                 </div>
                 <div className="ib">
                   <span className="id" />

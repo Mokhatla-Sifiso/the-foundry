@@ -1,5 +1,4 @@
 import type { ChangeEvent, ReactElement } from "react";
-
 type FieldProps = Readonly<{
   name: string;
   label: string;
@@ -12,7 +11,6 @@ type FieldProps = Readonly<{
   autoComplete?: string;
   autoFocus?: boolean;
 }>;
-
 export function Field({
   name,
   label,

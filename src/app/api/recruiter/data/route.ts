@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getSessionContext } from "@/lib/auth/admin";
-import {
-  COOKIE_POLICY_VERSION,
-  PRIVACY_POLICY_VERSION,
-  TERMS_VERSION,
-} from "@/lib/privacy/policy";
-
+import { COOKIE_POLICY_VERSION, PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 export async function GET(): Promise<Response> {
   try {
     const ctx = await getSessionContext();
     if (!ctx) {
       return NextResponse.json({ message: "Sign in required." }, { status: 401 });
     }
-
     const user = await db.user.findUnique({
       where: { id: ctx.userId },
       include: {
@@ -25,11 +19,9 @@ export async function GET(): Promise<Response> {
         },
       },
     });
-
     if (!user) {
       return NextResponse.json({ message: "Account not found." }, { status: 404 });
     }
-
     const snapshot = {
       exportedAt: new Date().toISOString(),
       policyVersions: {
@@ -54,7 +46,6 @@ export async function GET(): Promise<Response> {
       profile: user.recruiterProfile,
       sessions: user.sessions,
     };
-
     return new NextResponse(JSON.stringify(snapshot, null, 2), {
       status: 200,
       headers: {

@@ -1,35 +1,27 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { IconCheck } from "@/components/primitives/icons";
 import { domainOf, type ScreenResult } from "@/lib/recruiter";
 import { Dots } from "./Dots";
-
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
+const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 type ScreeningProps = Readonly<{
   email: string;
   screen: () => Promise<ScreenResult>;
   onDone: (result: ScreenResult) => void;
 }>;
-
 export function Screening({ email, screen, onDone }: ScreeningProps): React.ReactElement {
   const [emailOk, setEmailOk] = useState(false);
   const [domainOk, setDomainOk] = useState(false);
   const [screenOk, setScreenOk] = useState(false);
-
   useEffect(() => {
     let cancelled = false;
     const run = async (): Promise<void> => {
       await wait(550);
       if (cancelled) return;
       setEmailOk(true);
-
       await wait(650);
       if (cancelled) return;
       setDomainOk(true);
-
       let result: ScreenResult;
       try {
         result = await screen();
@@ -38,7 +30,6 @@ export function Screening({ email, screen, onDone }: ScreeningProps): React.Reac
       }
       if (cancelled) return;
       setScreenOk(true);
-
       await wait(700);
       if (cancelled) return;
       onDone(result);
@@ -48,7 +39,6 @@ export function Screening({ email, screen, onDone }: ScreeningProps): React.Reac
       cancelled = true;
     };
   }, [screen, onDone]);
-
   return (
     <>
       <Dots step={2} />

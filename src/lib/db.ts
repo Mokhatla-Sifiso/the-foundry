@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
-
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
-
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
 function createClient(): PrismaClient {
   const url = process.env.DATABASE_URL;
   if (!url) {
@@ -13,7 +13,6 @@ function createClient(): PrismaClient {
   const adapter = new PrismaNeon({ connectionString: url });
   return new PrismaClient({ adapter, log: ["warn", "error"] });
 }
-
 export const db: PrismaClient = new Proxy({} as PrismaClient, {
   get(_target, prop, receiver) {
     if (!globalForPrisma.prisma) globalForPrisma.prisma = createClient();

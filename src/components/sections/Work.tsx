@@ -1,9 +1,7 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { Reveal, EASE } from "@/components/primitives/Reveal";
 import { WORK } from "@/lib/constants";
-
 export function Work(): React.ReactElement {
   return (
     <section id="work" className="sec">
@@ -17,8 +15,8 @@ export function Work(): React.ReactElement {
           </Reveal>
           <Reveal delay={0.06}>
             <p>
-              Selected projects across telecom, consulting, fintech, and GIS,
-              built and shipped end to end.
+              Selected projects across telecom, consulting, fintech, and GIS: built and shipped end
+              to end.
             </p>
           </Reveal>
         </div>
