@@ -1882,3 +1882,226 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   height: 100%;
   display: block;
 }
+
+/* ───────────────────────── Transcontinental section ─────────────────── */
+
+.trans-sec {
+  position: relative;
+  overflow: clip;
+}
+.trans-h {
+  font-size: clamp(40px, 6vw, 88px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin: 8px 0 18px;
+  max-width: 18ch;
+}
+.trans-h .em {
+  color: var(--candy);
+}
+.trans-lead {
+  font-size: clamp(16px, 1.3vw, 19px);
+  color: var(--fg-2);
+  max-width: 60ch;
+  line-height: 1.55;
+  margin: 0 0 36px;
+}
+.trans-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+.trans-map-wrap {
+  position: relative;
+  background:
+    radial-gradient(80% 60% at 50% 50%, rgba(178, 213, 229, 0.06), transparent 70%),
+    var(--pill);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 18px;
+  overflow: hidden;
+  color: var(--fg);
+}
+.trans-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Make sure SVG text doesn't get blurry on Safari */
+  font-family: var(--font);
+}
+
+.trans-pin {
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.18s ease;
+}
+.trans-pin:focus-visible .trans-pin-ring {
+  fill: var(--candy);
+  fill-opacity: 0.38;
+}
+.trans-pin:hover {
+  transform: translate(var(--tx, 0), var(--ty, 0));
+}
+.trans-pin .trans-pin-halo {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.trans-pin .trans-pin-ring {
+  transition:
+    fill-opacity 0.25s ease,
+    transform 0.25s ease;
+  transform-origin: 0 0;
+}
+.trans-pin .trans-pin-dot {
+  transition: transform 0.25s ease;
+  transform-origin: 0 0;
+}
+.trans-pin:hover .trans-pin-halo,
+.trans-pin--active .trans-pin-halo {
+  opacity: 1;
+}
+.trans-pin--active .trans-pin-ring {
+  fill-opacity: 0.4;
+}
+.trans-pin--active .trans-pin-dot {
+  transform: scale(1.2);
+}
+.trans-pin-label {
+  pointer-events: none;
+  letter-spacing: 0.04em;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+.trans-chips {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.trans-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg-2);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+.trans-chip:hover {
+  color: var(--fg);
+  border-color: var(--candy);
+}
+.trans-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--candy);
+  opacity: 0.45;
+  transition: opacity 0.18s ease;
+}
+.trans-chip--active {
+  color: var(--fg);
+  border-color: var(--candy);
+  background: rgba(178, 213, 229, 0.12);
+}
+.trans-chip--active .trans-chip-dot {
+  opacity: 1;
+}
+
+.trans-panel {
+  background: var(--card);
+  color: var(--card-fg);
+  border-radius: 24px;
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--card-line);
+  min-height: 220px;
+}
+.trans-panel-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--card-muted);
+  margin-bottom: 12px;
+}
+.trans-panel-city {
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  line-height: 1.05;
+}
+.trans-panel-country {
+  font-weight: 500;
+  color: var(--card-2);
+}
+.trans-panel-org {
+  font-size: 15px;
+  color: var(--candy);
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+.trans-panel-role {
+  font-size: 14.5px;
+  color: var(--card-2);
+  margin: 0;
+}
+.trans-panel-when {
+  font-size: 13px;
+  color: var(--card-muted);
+  margin-top: 8px;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 960px) {
+  .trans-shell {
+    grid-template-columns: 1fr;
+  }
+  .trans-panel {
+    min-height: auto;
+  }
+  .trans-pin-label {
+    font-size: 14px;
+  }
+}
+@media (max-width: 560px) {
+  .trans-h {
+    font-size: clamp(32px, 9vw, 56px);
+  }
+  .trans-map-wrap {
+    padding: 12px;
+    border-radius: 22px;
+  }
+  .trans-svg {
+    /* Push the SVG slightly bigger inside its container so labels stay
+       legible at narrow widths. */
+    transform: scale(1.05);
+    transform-origin: center center;
+  }
+  .trans-pin-label {
+    font-size: 16px;
+  }
+  .trans-panel {
+    padding: 22px 20px;
+  }
+}
