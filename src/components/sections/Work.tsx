@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Reveal, EASE } from "@/components/primitives/Reveal";
+import { LogoBar } from "@/components/sections/LogoBar";
 import { WORK } from "@/lib/constants";
 export function Work(): React.ReactElement {
   return (
@@ -20,6 +21,8 @@ export function Work(): React.ReactElement {
             </p>
           </Reveal>
         </div>
+
+        <LogoBar />
 
         <div className="work-grid">
           {WORK.map((w, i) => (
