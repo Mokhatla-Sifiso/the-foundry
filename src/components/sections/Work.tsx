@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Reveal, EASE } from "@/components/primitives/Reveal";
 import { LogoBar } from "@/components/sections/LogoBar";
+import { WorkVisual } from "@/components/sections/WorkVisual";
 import { WORK } from "@/lib/constants";
 export function Work(): React.ReactElement {
   return (
@@ -32,7 +33,9 @@ export function Work(): React.ReactElement {
                 whileHover={{ y: -6 }}
                 transition={{ duration: 0.4, ease: EASE }}
               >
-                <div className="image-slot" aria-hidden="true" data-slot={w.slot} />
+                <div className="image-slot" aria-hidden="true" data-slot={w.slot}>
+                  <WorkVisual slot={w.slot} />
+                </div>
                 <div className="ov">
                   <span className="tag">{w.tag}</span>
                   <div className="nm">{w.nm}</div>
