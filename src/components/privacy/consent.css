@@ -72,20 +72,20 @@ html[data-theme="dark"] .consent {
 }
 
 .consent-btn-primary {
-  background: var(--fg, #0a0a0a);
-  color: var(--card, #ffffff);
+  background: #0a0a0a;
+  color: #ffffff;
 }
 
 .consent-btn-primary:hover {
   background: #1f1f1f;
 }
 
-[data-theme="dark"] .consent-btn-primary {
+html[data-theme="dark"] .consent-btn-primary {
   background: #fafafa;
   color: #0a0a0a;
 }
 
-[data-theme="dark"] .consent-btn-primary:hover {
+html[data-theme="dark"] .consent-btn-primary:hover {
   background: #ffffff;
 }
 

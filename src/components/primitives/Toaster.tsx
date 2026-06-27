@@ -8,8 +8,8 @@ export function Toaster(): React.ReactElement {
       toastOptions={{
         duration: 4500,
         style: {
-          background: "var(--card, #0a0a0a)",
-          color: "var(--fg, #fafafa)",
+          background: "#0a0a0a",
+          color: "#fafafa",
           border: "1px solid var(--border, rgba(255,255,255,0.08))",
           borderRadius: "12px",
           padding: "12px 16px",

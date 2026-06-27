@@ -32,11 +32,23 @@ export function StackScaleEffect(): null {
         card.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${(1 - reduction).toFixed(4)})`;
       });
     }
+    let rafId = 0;
+    let pending = window.scrollY;
+    const schedule = (scroll: number): void => {
+      pending = scroll;
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        apply(pending);
+      });
+    };
+
     apply(window.scrollY);
-    const unsub = lenisBus.on(apply);
-    const onNativeScroll = (): void => apply(window.scrollY);
+    const unsub = lenisBus.on(schedule);
+    const onNativeScroll = (): void => schedule(window.scrollY);
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     return (): void => {
+      if (rafId) window.cancelAnimationFrame(rafId);
       unsub();
       window.removeEventListener("scroll", onNativeScroll);
       cards.forEach((c) => {
