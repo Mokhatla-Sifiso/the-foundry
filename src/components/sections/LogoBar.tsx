@@ -25,7 +25,7 @@ const BRANDS: ReadonlyArray<Brand> = [
   { name: "MTN Group", ariaLabel: "MTN Group", kind: "text", display: "MTN Group" },
   {
     name: "GE Smallworld",
-    ariaLabel: "General Electric — Smallworld",
+    ariaLabel: "General Electric Smallworld",
     kind: "icon",
     iconPath: siGeneralelectric.path,
   },
