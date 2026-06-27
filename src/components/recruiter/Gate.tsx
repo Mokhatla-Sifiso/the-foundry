@@ -15,7 +15,7 @@ export function Gate({ onRequestAccess, onHaveAccess }: GateProps): React.ReactE
         Verified recruiter access
       </span>
       <h1 className="t">
-        Download my CV — <span className="em">for verified recruiters.</span>
+        Download my CV, <span className="em">for verified recruiters.</span>
       </h1>
       <p className="sub">
         To keep my details with people who are actually hiring, the full CV sits behind a quick

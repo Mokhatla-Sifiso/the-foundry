@@ -6,7 +6,7 @@ export function Howto(): React.ReactElement {
       </summary>
       <ol>
         <li>
-          <b>Work email.</b> Personal inboxes are blocked — a company domain ties you to your
+          <b>Work email.</b> Personal inboxes are blocked, a company domain ties you to your
           organisation.
         </li>
         <li>
@@ -16,7 +16,7 @@ export function Howto(): React.ReactElement {
           <b>Quick screen.</b> Your company, role and link are reviewed for a genuine hiring intent.
         </li>
         <li>
-          <b>Access on file.</b> You can sign back in anytime to re-download — no re-verifying.
+          <b>Access on file.</b> You can sign back in anytime to re-download, no re-verifying.
         </li>
       </ol>
       <p style={{ marginTop: 14, fontSize: 13, color: "var(--muted)", lineHeight: 1.45 }}>

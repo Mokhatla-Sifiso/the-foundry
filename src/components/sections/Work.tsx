@@ -17,7 +17,7 @@ export function Work(): React.ReactElement {
           </Reveal>
           <Reveal delay={0.06}>
             <p>
-              Selected projects across telecom, consulting, fintech, and GIS — built and shipped end
+              Selected projects across telecom, consulting, fintech, and GIS, built and shipped end
               to end.
             </p>
           </Reveal>

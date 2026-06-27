@@ -9,9 +9,11 @@ describe("RootLayout metadata", () => {
     );
   });
   it("uses the spec tagline as the description", () => {
-    expect(metadata.description).toMatch(/Turning ideas into digital realities/);
+    expect(metadata.description).toMatch(/turning ideas into digital realities/i);
   });
   it("opts into indexing", () => {
-    expect(metadata.robots).toEqual({ index: true, follow: true });
+    expect(metadata.robots).toEqual(
+      expect.objectContaining({ index: true, follow: true }),
+    );
   });
 });

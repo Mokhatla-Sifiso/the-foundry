@@ -19,7 +19,7 @@ export function PhoneDevice({
             <span className="ai">{assistantName}</span>
           </div>
           <div className="ph-bul">
-            <span className="d">›</span>3 PRs summarised — 1 needs your eyes
+            <span className="d">›</span>3 PRs summarised, 1 needs your eyes
           </div>
           <div className="ph-bul">
             <span className="d">›</span>

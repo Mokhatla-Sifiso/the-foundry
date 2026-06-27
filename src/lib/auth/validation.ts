@@ -77,7 +77,7 @@ export function validateSignup(
       error: {
         field: "email",
         message:
-          "Please use your work email — personal inboxes (gmail, outlook…) can't be verified.",
+          "Please use your work email, personal inboxes (gmail, outlook…) can't be verified.",
       },
     };
   }

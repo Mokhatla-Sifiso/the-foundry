@@ -58,7 +58,7 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
 
             <div className="ldash-chart">
               <div className="ldash-ch">
-                <div className="ct">Deploys — 7 days</div>
+                <div className="ct">Deploys, 7 days</div>
                 <svg viewBox="0 0 200 50" width="100%" height={40} aria-hidden="true">
                   <polyline
                     points="0,42 28,38 56,40 84,30 112,32 140,22 168,15 200,8"
@@ -73,14 +73,14 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
                 <div className="it">{assistantName} Insights</div>
                 <div className="ib">
                   <span className="id" />
-                  Sprint velocity up 15% — consider tighter cycles
+                  Sprint velocity up 15%, consider tighter cycles
                 </div>
                 <div className="ib">
                   <span className="id" />3 PRs need attention before merge
                 </div>
                 <div className="ib">
                   <span className="id" />
-                  API latency spike at 02:14 — auto-resolved
+                  API latency spike at 02:14, auto-resolved
                 </div>
               </div>
             </div>

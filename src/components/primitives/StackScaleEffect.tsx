@@ -32,11 +32,27 @@ export function StackScaleEffect(): null {
         card.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${(1 - reduction).toFixed(4)})`;
       });
     }
+    // Coalesce scroll updates from both sources (Lenis RAF + native scroll
+    // event) into a single rAF tick. Without this the two listeners fire in
+    // the same frame with values a fraction of a pixel apart, the transforms
+    // get rewritten twice, and the cards visibly vibrate on scroll.
+    let rafId = 0;
+    let pending = window.scrollY;
+    const schedule = (scroll: number): void => {
+      pending = scroll;
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        apply(pending);
+      });
+    };
+
     apply(window.scrollY);
-    const unsub = lenisBus.on(apply);
-    const onNativeScroll = (): void => apply(window.scrollY);
+    const unsub = lenisBus.on(schedule);
+    const onNativeScroll = (): void => schedule(window.scrollY);
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     return (): void => {
+      if (rafId) window.cancelAnimationFrame(rafId);
       unsub();
       window.removeEventListener("scroll", onNativeScroll);
       cards.forEach((c) => {

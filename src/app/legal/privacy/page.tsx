@@ -22,19 +22,19 @@ export default function PrivacyPage(): React.ReactElement {
       </p>
       <ul>
         <li>
-          <strong>Account details</strong> — your full name, work email, company, role you&apos;re
+          <strong>Account details</strong>, your full name, work email, company, role you&apos;re
           hiring for, and a company website / LinkedIn URL. You give this when you request access.
         </li>
         <li>
-          <strong>Authentication data</strong> — a one-time code emailed to your inbox, plus a
+          <strong>Authentication data</strong>, a one-time code emailed to your inbox, plus a
           session token after verification so you stay signed in.
         </li>
         <li>
-          <strong>Technical metadata</strong> — IP address and user-agent of the device that signed
+          <strong>Technical metadata</strong>, IP address and user-agent of the device that signed
           in, captured for fraud prevention and audit logs.
         </li>
         <li>
-          <strong>Consent records</strong> — your cookie choices and policy acceptance, so I can
+          <strong>Consent records</strong>, your cookie choices and policy acceptance, so I can
           prove consent was given (GDPR Article 7).
         </li>
       </ul>
@@ -46,29 +46,29 @@ export default function PrivacyPage(): React.ReactElement {
       <h2>Lawful basis</h2>
       <ul>
         <li>
-          <strong>Contract / pre-contract</strong> (GDPR Art. 6(1)(b)) — you provide your details to
+          <strong>Contract / pre-contract</strong> (GDPR Art. 6(1)(b)), you provide your details to
           take a step toward a hiring conversation.
         </li>
         <li>
-          <strong>Legitimate interest</strong> (Art. 6(1)(f)) — fraud prevention and audit logs of
+          <strong>Legitimate interest</strong> (Art. 6(1)(f)), fraud prevention and audit logs of
           who accessed the CV.
         </li>
         <li>
-          <strong>Consent</strong> (Art. 6(1)(a)) — non-essential cookies and any future analytics.
+          <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies and any future analytics.
         </li>
       </ul>
 
       <h2>Who processes the data with me</h2>
       <ul>
         <li>
-          <strong>Neon</strong> (Postgres database, EU-West-2) — stores user records and consent
+          <strong>Neon</strong> (Postgres database, EU-West-2), stores user records and consent
           logs.
         </li>
         <li>
-          <strong>Resend</strong> — delivers the one-time verification code to your inbox.
+          <strong>Resend</strong>, delivers the one-time verification code to your inbox.
         </li>
         <li>
-          <strong>Vercel</strong> — hosts the site and routes traffic.
+          <strong>Vercel</strong>, hosts the site and routes traffic.
         </li>
       </ul>
       <p>
@@ -88,26 +88,26 @@ export default function PrivacyPage(): React.ReactElement {
       <p>Under GDPR and similar laws (UK GDPR, POPIA, CCPA), you have the right to:</p>
       <ul>
         <li>
-          <strong>Access</strong> — export everything I hold about you as JSON via{" "}
+          <strong>Access</strong>, export everything I hold about you as JSON via{" "}
           <code>/recruiter</code> → &ldquo;Export my data&rdquo;.
         </li>
         <li>
-          <strong>Rectification</strong> — update your name, company, role, and URL by going through
+          <strong>Rectification</strong>, update your name, company, role, and URL by going through
           sign-up again with the same email.
         </li>
         <li>
-          <strong>Erasure</strong> — delete your account and all associated profile data via{" "}
+          <strong>Erasure</strong>, delete your account and all associated profile data via{" "}
           <code>/recruiter</code> → &ldquo;Delete my account&rdquo;.
         </li>
         <li>
-          <strong>Withdraw consent</strong> — reopen the cookie banner at any time from the footer.
+          <strong>Withdraw consent</strong>, reopen the cookie banner at any time from the footer.
         </li>
         <li>
-          <strong>Object / restrict</strong> — email me and I&apos;ll comply within 30 days (usually
+          <strong>Object / restrict</strong>, email me and I&apos;ll comply within 30 days (usually
           within 48 hours).
         </li>
         <li>
-          <strong>Lodge a complaint</strong> — with your local supervisory authority (in South
+          <strong>Lodge a complaint</strong>, with your local supervisory authority (in South
           Africa, the Information Regulator; in the EU, your national DPA).
         </li>
       </ul>

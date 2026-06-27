@@ -16,7 +16,7 @@ export function Footer(): React.ReactElement {
             Mzwakhe Mokhatla<span className="d">.</span>
           </div>
           <div className="foot-sub">
-            Software Engineer · Full-Stack · Tech Lead — {SITE.location}
+            Software Engineer · Full-Stack · Tech Lead, {SITE.location}
           </div>
 
           <div className="foot-bar">

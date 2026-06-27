@@ -12,7 +12,7 @@ export async function sendOtpEmail(to: string, otp: string): Promise<void> {
   const client = getResend();
   if (!client) {
     if (process.env.NODE_ENV !== "production") {
-      console.warn(`[email] RESEND_API_KEY missing — OTP for ${to}: ${otp}`);
+      console.warn(`[email] RESEND_API_KEY missing, OTP for ${to}: ${otp}`);
       return;
     }
     throw new Error("RESEND_API_KEY missing");

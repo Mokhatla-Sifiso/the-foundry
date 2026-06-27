@@ -48,7 +48,7 @@ describe("Services", () => {
   it("renders the eyebrow, intro statement, and all four cards with stack styles", () => {
     const { container } = render(<Services />);
     expect(screen.getAllByText("Services").length).toBeGreaterThan(0);
-    expect(screen.getByText(/What I do —/)).toBeInTheDocument();
+    expect(screen.getByText(/What I do:/)).toBeInTheDocument();
     const cards = container.querySelectorAll(".svc-card");
     expect(cards.length).toBe(SERVICES.length);
     cards.forEach((card, i) => {
