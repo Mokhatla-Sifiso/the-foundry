@@ -6,7 +6,7 @@ export const SITE = {
   location: "Pretoria, South Africa",
   tagline: "Turning ideas into digital realities.",
   cvHref: "/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf",
-  portrait: "/img/potrait.png",
+  portrait: "/img/Potrait.png",
 } as const;
 export type NavLink = Readonly<{
   n: string;
