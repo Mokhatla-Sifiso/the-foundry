@@ -1804,3 +1804,75 @@ html[data-theme="light"] .ai-showcase .bg-fade {
     line-height: 1.5;
   }
 }
+
+/* ───────────────────────── Logo bar (Work section) ───────────────────────── */
+
+.logo-bar-wrap {
+  margin: 36px 0 56px;
+}
+.logo-bar-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 18px;
+  text-align: center;
+}
+.logo-bar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(28px, 5vw, 64px) clamp(28px, 5vw, 72px);
+  /* Theme-aware: logos inherit the foreground color via currentColor on the
+     svg path / text, then we dim them so they read as a subtle row instead
+     of competing with the headline. */
+  color: var(--fg);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.logo-bar:hover {
+  opacity: 0.8;
+}
+.logo-bar-item {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  transition: filter 0.2s ease;
+}
+.logo-bar-item:hover {
+  filter: brightness(1.2);
+}
+.logo-bar-svg {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.logo-bar-text {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .logo-bar-wrap {
+    margin: 28px 0 40px;
+  }
+  .logo-bar {
+    gap: 22px 32px;
+  }
+  .logo-bar-item,
+  .logo-bar-svg {
+    height: 22px;
+  }
+  .logo-bar-text {
+    font-size: 15px;
+  }
+}
