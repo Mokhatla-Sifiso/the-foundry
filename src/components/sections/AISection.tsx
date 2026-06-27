@@ -38,7 +38,7 @@ export function AISection({
         </Reveal>
         <Reveal delay={0.05}>
           <p className="ai-lead">
-            I treat AI as everyday tooling, not a novelty — wired into the same review and
+            I treat AI as everyday tooling, not a novelty, wired into the same review and
             observability loops I expect from production software.
           </p>
         </Reveal>

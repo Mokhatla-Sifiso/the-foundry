@@ -1,5 +1,29 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Custom domain (v1 launch)
+
+The canonical URL used by `sitemap.xml`, `robots.txt`, OG metadata, and the
+JSON-LD Person schema reads from a single source — `src/lib/site-url.ts`.
+Priority order:
+
+1. `NEXT_PUBLIC_SITE_URL` (set this in Vercel once a custom domain is
+   attached, e.g. `https://mzwakhe.dev`).
+2. `VERCEL_PROJECT_PRODUCTION_URL` (Vercel injects on production builds).
+3. `VERCEL_URL` (preview deployments).
+4. `http://localhost:3000` for local dev.
+
+### Launch checklist
+
+1. Buy + add the domain in **Vercel → Settings → Domains**.
+2. Add the suggested A / CNAME records at the registrar (Vercel shows the
+   exact values). Wait for verification.
+3. In **Vercel → Settings → Environment Variables**, set:
+   - `NEXT_PUBLIC_SITE_URL` = `https://your-domain` (all environments).
+   - `BETTER_AUTH_URL` = the same value (production only).
+4. Update `RESEND_FROM` to a sender on your verified domain.
+5. Redeploy. Visit `/sitemap.xml` and `/robots.txt` — they should now
+   reference the custom domain.
+
 ## Recruiter auth setup
 
 The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.

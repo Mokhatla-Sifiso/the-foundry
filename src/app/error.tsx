@@ -18,7 +18,7 @@ export default function GlobalError({
     <main style={{ padding: "80px 24px", textAlign: "center" }}>
       <h1 style={{ fontSize: 28, marginBottom: 12 }}>We hit a snag.</h1>
       <p style={{ opacity: 0.7, marginBottom: 24 }}>
-        The page failed to load. Try refreshing — your session is safe.
+        The page failed to load. Try refreshing, your session is safe.
       </p>
       <button
         onClick={() => reset()}

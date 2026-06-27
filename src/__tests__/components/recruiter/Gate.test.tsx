@@ -6,7 +6,7 @@ describe("Gate", () => {
     render(<Gate onRequestAccess={() => {}} onHaveAccess={() => {}} />);
     expect(screen.getByText(/Verified recruiter access/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /Download my CV — for verified recruiters\./i,
+      /Download my CV, for verified recruiters\./i,
     );
     expect(screen.getByText(/Takes about a minute with your work email/i)).toBeInTheDocument();
   });

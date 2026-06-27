@@ -11,7 +11,7 @@ export function Services(): React.ReactElement {
         </Reveal>
         <Reveal delay={0.05} className="statement">
           <p>
-            <span className="mut">What I do —</span> front-end-focused,{" "}
+            <span className="mut">What I do:</span> front-end-focused,{" "}
             <span className="em">full-stack capable.</span>
           </p>
         </Reveal>

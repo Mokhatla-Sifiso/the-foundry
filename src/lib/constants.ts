@@ -31,7 +31,7 @@ export const SERVICES: ReadonlyArray<Service> = [
     w1: "Frontend",
     w2: "Engineering",
     pills: ["React", "TypeScript", "Next.js", "Microfrontends", "UI/UX"],
-    d: "I build the interfaces people count on at work — accessible, responsive, and fast. Reusable component systems and design-faithful UI, translated straight from Figma into production.",
+    d: "I build the interfaces people count on at work, accessible, responsive, and fast. Reusable component systems and design-faithful UI, translated straight from Figma into production.",
   },
   {
     w1: "Full-Stack",
@@ -44,19 +44,19 @@ export const SERVICES: ReadonlyArray<Service> = [
       "Pulumi · IaC",
       "Docker",
     ],
-    d: "The contracts underneath the screen: APIs, relational data, and Azure-native services — designed to scale and stay honest from the UI all the way down to the database.",
+    d: "The contracts underneath the screen: APIs, relational data, and Azure-native services, designed to scale and stay honest from the UI all the way down to the database.",
   },
   {
     w1: "Technical",
     w2: "Leadership",
     pills: ["Code review", "Mentorship", "Architecture", "Agile · Scrum", "Sprint delivery"],
-    d: "Acting Technical Lead on StudioSync — owning specs, component boundaries, and migrations while mentoring the team and holding engineering standards high across frontend and backend.",
+    d: "Acting Technical Lead on StudioSync, owning specs, component boundaries, and migrations while mentoring the team and holding engineering standards high across frontend and backend.",
   },
   {
     w1: "Platform",
     w2: "& DevOps",
     pills: ["Azure DevOps", "GitHub Actions", "Grafana", "CI/CD", "Observability"],
-    d: "Pipelines and observability that make shipping calm — infrastructure as code, automated delivery, and dashboards that surface what production is actually doing.",
+    d: "Pipelines and observability that make shipping calm, infrastructure as code, automated delivery, and dashboards that surface what production is actually doing.",
   },
 ];
 export type Work = Readonly<{
@@ -80,22 +80,22 @@ export type XpRow = Readonly<{
 export const XP: ReadonlyArray<XpRow> = [
   {
     role: "Software Engineer · Tech Lead",
-    org: "MTN Group — Roodepoort",
-    when: "Mar 2024 — Present",
+    org: "MTN Group, Roodepoort",
+    when: "Mar 2024 to Present",
     now: true,
   },
   {
     role: "Product & Platform Engineer",
-    org: "Accenture — Waterfall",
-    when: "Mar 2024 — Present",
+    org: "Accenture, Waterfall",
+    when: "Mar 2024 to Present",
     now: true,
   },
   {
     role: "Frontend Engineer",
-    org: "Nybble Technologies — Bryanston / Dar es Salaam",
-    when: "Dec 2022 — Jun 2023",
+    org: "Nybble Technologies, Bryanston / Dar es Salaam",
+    when: "Dec 2022 to Jun 2023",
   },
-  { role: "Junior Software Developer", org: "IST — Pretoria", when: "Jan 2021 — Dec 2022" },
+  { role: "Junior Software Developer", org: "IST, Pretoria", when: "Jan 2021, Dec 2022" },
 ];
 export type AiItem = Readonly<{
   t: string;
@@ -105,7 +105,7 @@ export type AiItem = Readonly<{
 export const AIITEMS: ReadonlyArray<AiItem> = [
   {
     t: "AI pair-programming",
-    d: "Cursor and Copilot handle scaffolding, refactors, and the tedious parts of a migration — so I stay in flow while the boilerplate writes itself.",
+    d: "Cursor and Copilot handle scaffolding, refactors, and the tedious parts of a migration, so I stay in flow while the boilerplate writes itself.",
     tools: ["Cursor", "Copilot"],
   },
   {
