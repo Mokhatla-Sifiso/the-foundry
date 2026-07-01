@@ -13,21 +13,41 @@ export function StackScaleEffect(): null {
     const stack = document.querySelector<HTMLElement>(".stack");
     if (!cards.length || !stack) return;
 
-    // Measure once at mount and stamp transform-origin once. Re-stamping
-    // transform-origin every frame triggers a style recalc that contributes
-    // to the visible jitter; the value never changes anyway.
-    const naturalY = cards.map((c) => c.getBoundingClientRect().top + window.scrollY);
-    const cardH = cards.map((c) => c.getBoundingClientRect().height);
-    const thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
-    const stackBottom = stack.getBoundingClientRect().bottom + window.scrollY;
-    cards.forEach((c) => {
-      c.style.transformOrigin = "top center";
-      // Promote each card to its own compositing layer immediately so the
-      // first transform doesn't trigger a layer-creation hiccup.
-      c.style.willChange = "transform";
-    });
+    let naturalY: number[] = [];
+    let cardH: number[] = [];
+    let thresholds: number[] = [];
+    let stackBottom = 0;
 
-    function apply(scroll: number): void {
+    // Read the cards' true (untransformed) document geometry. We clear any
+    // applied transform first, because getBoundingClientRect reports the
+    // transformed box — measuring with a transform still on would feed a wrong
+    // natural position back in. Card heights are viewport-relative (vh / clamp),
+    // so this is re-run on resize / orientation change.
+    function measure(): void {
+      for (const c of cards) c.style.transform = "";
+      const sy = window.scrollY;
+      naturalY = cards.map((c) => c.getBoundingClientRect().top + sy);
+      cardH = cards.map((c) => c.getBoundingClientRect().height);
+      thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
+      stackBottom = stack!.getBoundingClientRect().bottom + sy;
+    }
+
+    for (const c of cards) {
+      c.style.transformOrigin = "top center";
+      c.style.willChange = "transform";
+    }
+
+    // Compute the transform from the ACTUAL current scroll position, read live
+    // at paint time. A card "sticks" because we translate it down by exactly
+    // (scroll - threshold); that offset only stays constant if the scroll value
+    // we translate against equals the browser's real paint-time scroll
+    // position. Reading window.scrollY here — rather than a scroll value
+    // emitted from Lenis or captured off an event — guarantees that on every
+    // device. Lenis moves window.scrollY on desktop (smoothWheel), and native
+    // touch moves window.scrollY on mobile (Lenis leaves touch alone by
+    // default), so the two can never drift and wobble the card.
+    function apply(): void {
+      const scroll = window.scrollY;
       for (let i = 0; i < cards.length; i++) {
         const rawY = Math.max(0, scroll - thresholds[i]);
         const maxY = stackBottom - naturalY[i] - cardH[i];
@@ -46,54 +66,39 @@ export function StackScaleEffect(): null {
       }
     }
 
-    // The real source of jitter was that Lenis (via lenisBus) and the
-    // native scroll event were both feeding apply() with slightly
-    // different values in the same frame. window.scrollY is the browser's
-    // integer-rounded current scroll position; Lenis emits its own
-    // floating-point smoothed value, and the two diverge mid-animation.
-    //
-    // Solution: trust Lenis whenever it's emitting. Only fall back to the
-    // native scroll listener when Lenis isn't driving (reduced-motion users
-    // who never instantiate it). A short timestamp window keeps the fallback
-    // quiet when Lenis briefly idles between scroll bursts.
+    // One transform write per frame, regardless of how many scroll signals
+    // land in that frame. Both Lenis and the native scroll event now converge
+    // on the same live source, so there is nothing to reconcile.
     let rafId = 0;
-    let pending = window.scrollY;
-    let lastLenisEmit = 0;
-
-    const schedule = (scroll: number): void => {
-      pending = scroll;
+    const schedule = (): void => {
       if (rafId) return;
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
-        apply(pending);
+        apply();
       });
     };
 
-    const onLenis = (scroll: number): void => {
-      lastLenisEmit = performance.now();
-      schedule(scroll);
-    };
-    const onNativeScroll = (): void => {
-      // If Lenis emitted within the last second, it owns the scroll value.
-      // Letting native sneak in would race a near-but-not-equal integer value
-      // into pending and produce the visible vibration.
-      if (performance.now() - lastLenisEmit < 1000) return;
-      schedule(window.scrollY);
-    };
+    measure();
+    apply();
 
-    apply(window.scrollY);
-    const unsub = lenisBus.on(onLenis);
-    window.addEventListener("scroll", onNativeScroll, { passive: true });
+    const unsub = lenisBus.on(schedule);
+    window.addEventListener("scroll", schedule, { passive: true });
+    const onResize = (): void => {
+      measure();
+      apply();
+    };
+    window.addEventListener("resize", onResize);
 
     return (): void => {
       if (rafId) window.cancelAnimationFrame(rafId);
       unsub();
-      window.removeEventListener("scroll", onNativeScroll);
-      cards.forEach((c) => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", onResize);
+      for (const c of cards) {
         c.style.transform = "";
         c.style.transformOrigin = "";
         c.style.willChange = "";
-      });
+      }
     };
   }, []);
   return null;
