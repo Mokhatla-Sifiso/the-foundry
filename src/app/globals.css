@@ -598,7 +598,13 @@ html[data-theme="dark"] .services-section {
 }
 
 .svc-card {
-  position: relative;
+  /* Native sticky stacking. The browser pins each card at its own top offset
+     on the compositor thread, so it can never lag the scroll (that lag was the
+     source of the jitter when JS drove the position). --i is the card index,
+     set inline in Services.tsx. */
+  position: sticky;
+  top: calc(80px + var(--i, 0) * 48px);
+  transform-origin: top center;
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 4vw, 48px);
@@ -609,7 +615,6 @@ html[data-theme="dark"] .services-section {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.38);
   overflow: hidden;
-  will-change: transform;
 }
 
 .svc-card--0 {
