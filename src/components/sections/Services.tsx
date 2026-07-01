@@ -23,10 +23,13 @@ export function Services(): React.ReactElement {
           <article
             key={s.w1}
             className={`svc-card svc-card--${i}`}
-            style={{
-              zIndex: i + 1,
-              ...(i > 0 ? { marginTop: "12vh" } : {}),
-            }}
+            style={
+              {
+                zIndex: i + 1,
+                "--i": i,
+                ...(i > 0 ? { marginTop: "12vh" } : {}),
+              } as React.CSSProperties
+            }
           >
             <span className="num">
               {String(i + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
