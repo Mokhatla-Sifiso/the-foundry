@@ -1905,14 +1905,10 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .trans-pin {
   cursor: pointer;
   outline: none;
-  transition: transform 0.18s ease;
 }
 .trans-pin:focus-visible .trans-pin-ring {
   fill: var(--candy);
   fill-opacity: 0.38;
-}
-.trans-pin:hover {
-  transform: translate(var(--tx, 0), var(--ty, 0));
 }
 .trans-pin .trans-pin-halo {
   opacity: 0;

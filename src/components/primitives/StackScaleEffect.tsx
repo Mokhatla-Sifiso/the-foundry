@@ -13,16 +13,27 @@ export function StackScaleEffect(): null {
     const stack = document.querySelector<HTMLElement>(".stack");
     if (!cards.length || !stack) return;
 
-    const naturalY = cards.map((c) => c.getBoundingClientRect().top + window.scrollY);
-    const cardH = cards.map((c) => c.getBoundingClientRect().height);
-    const thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
-    const stackBottom = stack.getBoundingClientRect().bottom + window.scrollY;
-    cards.forEach((c) => {
+    let naturalY: number[] = [];
+    let cardH: number[] = [];
+    let thresholds: number[] = [];
+    let stackBottom = 0;
+
+    function measure(): void {
+      for (const c of cards) c.style.transform = "";
+      const sy = window.scrollY;
+      naturalY = cards.map((c) => c.getBoundingClientRect().top + sy);
+      cardH = cards.map((c) => c.getBoundingClientRect().height);
+      thresholds = naturalY.map((y, i) => y - (BASE_TOP + i * STEP));
+      stackBottom = stack!.getBoundingClientRect().bottom + sy;
+    }
+
+    for (const c of cards) {
       c.style.transformOrigin = "top center";
       c.style.willChange = "transform";
-    });
+    }
 
-    function apply(scroll: number): void {
+    function apply(): void {
+      const scroll = window.scrollY;
       for (let i = 0; i < cards.length; i++) {
         const rawY = Math.max(0, scroll - thresholds[i]);
         const maxY = stackBottom - naturalY[i] - cardH[i];
@@ -42,40 +53,35 @@ export function StackScaleEffect(): null {
     }
 
     let rafId = 0;
-    let pending = window.scrollY;
-    let lastLenisEmit = 0;
-
-    const schedule = (scroll: number): void => {
-      pending = scroll;
+    const schedule = (): void => {
       if (rafId) return;
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
-        apply(pending);
+        apply();
       });
     };
 
-    const onLenis = (scroll: number): void => {
-      lastLenisEmit = performance.now();
-      schedule(scroll);
-    };
-    const onNativeScroll = (): void => {
-      if (performance.now() - lastLenisEmit < 1000) return;
-      schedule(window.scrollY);
-    };
+    measure();
+    apply();
 
-    apply(window.scrollY);
-    const unsub = lenisBus.on(onLenis);
-    window.addEventListener("scroll", onNativeScroll, { passive: true });
+    const unsub = lenisBus.on(schedule);
+    window.addEventListener("scroll", schedule, { passive: true });
+    const onResize = (): void => {
+      measure();
+      apply();
+    };
+    window.addEventListener("resize", onResize);
 
     return (): void => {
       if (rafId) window.cancelAnimationFrame(rafId);
       unsub();
-      window.removeEventListener("scroll", onNativeScroll);
-      cards.forEach((c) => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", onResize);
+      for (const c of cards) {
         c.style.transform = "";
         c.style.transformOrigin = "";
         c.style.willChange = "";
-      });
+      }
     };
   }, []);
   return null;
