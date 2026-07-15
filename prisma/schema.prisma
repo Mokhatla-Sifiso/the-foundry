@@ -137,3 +137,50 @@ enum ConsentAction {
 
   @@map("consent_action")
 }
+
+model AccessRequest {
+  id          String              @id @default(cuid())
+  email       String
+  name        String
+  tier        AccessTier
+  kind        AccessRequestKind
+  detail      Json
+  message     String?
+  status      AccessRequestStatus @default(pending)
+  reviewToken String?             @unique
+  ipAddress   String?
+  userAgent   String?
+  decidedAt   DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@map("access_request")
+}
+
+enum AccessTier {
+  guest
+  recruiter
+  executive
+
+  @@map("access_tier")
+}
+
+enum AccessRequestKind {
+  resource
+  demo
+  repo
+
+  @@map("access_request_kind")
+}
+
+enum AccessRequestStatus {
+  pending
+  approved
+  rejected
+  expired
+
+  @@map("access_request_status")
+}

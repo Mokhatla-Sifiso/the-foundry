@@ -6,6 +6,7 @@ import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { TransContinental } from "@/components/sections/TransContinental";
@@ -23,6 +24,7 @@ export default function HomePage(): React.ReactElement {
         <Experience />
         <TransContinental />
         <AISection />
+        <Recruiters />
         <Contact />
       </main>
       <Footer />
