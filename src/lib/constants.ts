@@ -5,7 +5,8 @@ export const SITE = {
   phoneHref: "tel:+27679801166",
   location: "Pretoria, South Africa",
   tagline: "Turning ideas into digital realities.",
-  cvHref: "/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf",
+  cvHref: "/api/cv",
+  cvFileName: "Mzwakhe_Sifiso_Mokhatla_CV.pdf",
   portrait: "/img/Potrait.png",
 } as const;
 export type NavLink = Readonly<{
@@ -18,7 +19,8 @@ export const NAVLINKS: ReadonlyArray<NavLink> = [
   { n: "02", t: "Services", href: "#services" },
   { n: "03", t: "AI Workflow", href: "#ai" },
   { n: "04", t: "Experience", href: "#experience" },
-  { n: "05", t: "Contact", href: "#contact" },
+  { n: "05", t: "For recruiters", href: "#recruiters" },
+  { n: "06", t: "Contact", href: "#contact" },
 ];
 export type Service = Readonly<{
   w1: string;

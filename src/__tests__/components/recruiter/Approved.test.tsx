@@ -20,8 +20,8 @@ describe("Approved", () => {
     expect(screen.getByText(/Senior Frontend Engineer · Acme Talent/)).toBeInTheDocument();
     expect(screen.getByText(ACCOUNT.email)).toBeInTheDocument();
     const dl = screen.getByRole("link", { name: /Download CV \(PDF\)/i });
-    expect(dl).toHaveAttribute("href", "/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf");
-    expect(dl).toHaveAttribute("download");
+    expect(dl).toHaveAttribute("href", "/api/cv");
+    expect(dl).toHaveAttribute("download", "Mzwakhe_Sifiso_Mokhatla_CV.pdf");
   });
   it("calls onSignOut when 'Not you? Sign out' is clicked", async () => {
     const onSignOut = jest.fn();
