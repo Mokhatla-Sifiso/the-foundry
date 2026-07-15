@@ -14,13 +14,13 @@ describe("Loader", () => {
     const { container } = render(<Loader />);
     expect(container.firstChild).toBeNull();
   });
-  it("adds .hide at 600ms and removes the #loader element at 1400ms", () => {
+  it("adds .hide at 600ms but keeps the #loader node in the DOM", () => {
     render(<Loader />);
     expect(document.getElementById("loader")?.classList.contains("hide")).toBe(false);
     act(() => jest.advanceTimersByTime(600));
     expect(document.getElementById("loader")?.classList.contains("hide")).toBe(true);
-    act(() => jest.advanceTimersByTime(800));
-    expect(document.getElementById("loader")).toBeNull();
+    act(() => jest.advanceTimersByTime(2000));
+    expect(document.getElementById("loader")).not.toBeNull();
   });
   it("does nothing when the loader element is missing", () => {
     document.body.innerHTML = "";

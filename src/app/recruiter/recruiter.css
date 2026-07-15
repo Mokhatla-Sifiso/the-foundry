@@ -651,3 +651,184 @@ html[data-theme="light"] .note .b {
 .privacy-tools-delete {
   color: var(--warn, #ef4444);
 }
+
+.gpick {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.gpick label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--field);
+  border: 1px solid var(--field-line);
+  color: var(--fg);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.gpick label:hover {
+  border-color: var(--field-focus);
+}
+.gpick label.on {
+  border-color: var(--field-focus);
+  background: color-mix(in oklab, var(--candy) 12%, var(--field));
+}
+.gpick input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.gcheck {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 7px;
+  border: 1px solid var(--field-line);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+.gcheck svg {
+  width: 13px;
+  height: 13px;
+}
+.gpick label.on .gcheck {
+  background: var(--candy);
+  border-color: var(--candy);
+  color: #06181f;
+}
+.gtext {
+  width: 100%;
+  resize: vertical;
+  min-height: 84px;
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: var(--field);
+  border: 1px solid var(--field-line);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.55;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.gtext:focus {
+  outline: none;
+  border-color: var(--field-focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 40%, transparent);
+}
+.gtext::placeholder {
+  color: var(--muted);
+}
+
+.exec-opts {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.exec-opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 16px 16px;
+  border-radius: 16px;
+  background: var(--field);
+  border: 1px solid var(--field-line);
+  color: var(--fg);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    transform 0.2s var(--ease),
+    background 0.2s;
+}
+.exec-opt:hover {
+  border-color: var(--field-focus);
+  transform: translateY(-1px);
+}
+.exec-opt-ic {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--candy) 16%, transparent);
+  color: var(--candy);
+}
+.exec-opt-ic svg {
+  width: 20px;
+  height: 20px;
+}
+.exec-opt-tx {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.exec-opt-t {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15.5px;
+  font-weight: 600;
+}
+.exec-opt-d {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.exec-tag {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ok, #22c55e) 20%, transparent);
+  color: var(--ok, #22c55e);
+}
+.exec-opt > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--muted);
+}
+.exec-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 18px;
+}
+.exec-back:hover {
+  color: var(--fg);
+}
+.exec-back svg {
+  width: 15px;
+  height: 15px;
+}

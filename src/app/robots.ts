@@ -7,9 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Keep crawlers out of authentication + DSAR surfaces — they are
-        // either personal data or stateful per-session and have no SEO value.
-        disallow: ["/api/", "/recruiter"],
+        disallow: ["/api/", "/recruiter", "/guest", "/executive"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

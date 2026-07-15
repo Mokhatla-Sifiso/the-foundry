@@ -16,12 +16,8 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  /// Timestamp the user accepted the current Terms of Service version.
   acceptedTermsAt    DateTime?
-  /// Timestamp the user accepted the current Privacy Notice version.
   acceptedPrivacyAt  DateTime?
-  /// Snapshot of the policy versions the user agreed to. Used to detect
-  /// when they need to re-consent (e.g. we shipped a new version).
   acceptedTermsVer   String?
   acceptedPrivacyVer String?
 
@@ -79,8 +75,6 @@ model Verification {
   @@map("verification")
 }
 
-/// Pre-trusted administrators. Source of truth for who is allowed to act as admin.
-/// Seeded with mokhatla.mzwakhe@gmail.com. New entries can be added by existing admins.
 model AdminWhitelist {
   id         String   @id @default(cuid())
   email      String   @unique
@@ -91,8 +85,6 @@ model AdminWhitelist {
   @@map("admin_whitelist")
 }
 
-/// Recruiter profile created post sign-up. One-to-one with User. Distinct from
-/// AdminWhitelist — recruiters never appear in that table.
 model RecruiterProfile {
   id         String        @id @default(cuid())
   userId     String        @unique
@@ -118,19 +110,12 @@ enum ScreenDecision {
   @@map("screen_decision")
 }
 
-/// Append-only audit trail of every consent action a user takes — granting,
-/// withdrawing, or updating any policy / cookie category. GDPR Article 7
-/// requires us to be able to demonstrate that consent was given.
 model ConsentLog {
   id        String       @id @default(cuid())
   userId    String?
-  /// Anonymous client identifier (hashed) for pre-login consent events.
   clientId  String?
   action    ConsentAction
-  /// JSON snapshot of which categories were granted at the time of the event.
-  /// Shape: { necessary: true, functional: true|false, analytics: true|false }
   payload   Json
-  /// Version of the privacy + cookie policy in effect.
   policyVer String
   ipAddress String?
   userAgent String?
@@ -151,4 +136,51 @@ enum ConsentAction {
   accept_privacy
 
   @@map("consent_action")
+}
+
+model AccessRequest {
+  id          String              @id @default(cuid())
+  email       String
+  name        String
+  tier        AccessTier
+  kind        AccessRequestKind
+  detail      Json
+  message     String?
+  status      AccessRequestStatus @default(pending)
+  reviewToken String?             @unique
+  ipAddress   String?
+  userAgent   String?
+  decidedAt   DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@map("access_request")
+}
+
+enum AccessTier {
+  guest
+  recruiter
+  executive
+
+  @@map("access_tier")
+}
+
+enum AccessRequestKind {
+  resource
+  demo
+  repo
+
+  @@map("access_request_kind")
+}
+
+enum AccessRequestStatus {
+  pending
+  approved
+  rejected
+  expired
+
+  @@map("access_request_status")
 }

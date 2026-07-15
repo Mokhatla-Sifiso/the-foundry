@@ -14,7 +14,7 @@ type ApprovedProps = Readonly<{
 }>;
 export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): React.ReactElement {
   const firstName = account.name.split(" ")[0];
-  const fileName = SITE.cvHref.split("/").pop() ?? "Mzwakhe-Mokhatla-CV.pdf";
+  const fileName = SITE.cvFileName;
   const handleExport = (): void => {
     const link = document.createElement("a");
     link.href = "/api/recruiter/data";

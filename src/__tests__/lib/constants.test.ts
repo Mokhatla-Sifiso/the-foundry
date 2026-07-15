@@ -8,20 +8,35 @@ describe("SITE", () => {
     expect(SITE.location).toBe("Pretoria, South Africa");
     expect(SITE.tagline).toBe("Turning ideas into digital realities.");
   });
-  it("points cvHref + portrait at the assets shipped under /public", () => {
-    expect(SITE.cvHref).toBe("/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf");
+  it("serves the CV through the gated endpoint and keeps the portrait under /public", () => {
+    expect(SITE.cvHref).toBe("/api/cv");
+    expect(SITE.cvFileName).toBe("Mzwakhe_Sifiso_Mokhatla_CV.pdf");
     expect(SITE.portrait).toBe("/img/Potrait.png");
   });
 });
 describe("NAVLINKS", () => {
-  it("is the five spec entries in order with the right numbering", () => {
+  it("is the six entries in order with the right numbering", () => {
     expect(NAVLINKS.map((l) => `${l.n} ${l.t} ${l.href}`)).toEqual([
       "01 Work #work",
       "02 Services #services",
       "03 AI Workflow #ai",
       "04 Experience #experience",
-      "05 Contact #contact",
+      "05 For recruiters #recruiters",
+      "06 Contact #contact",
     ]);
+  });
+  it("every in-page nav href targets a section id that exists on the home page", () => {
+    const HOME_SECTION_IDS = new Set([
+      "work",
+      "services",
+      "ai",
+      "experience",
+      "recruiters",
+      "contact",
+    ]);
+    for (const link of NAVLINKS) {
+      expect(HOME_SECTION_IDS.has(link.href.replace("#", ""))).toBe(true);
+    }
   });
 });
 describe("SERVICES", () => {
