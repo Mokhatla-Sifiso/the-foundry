@@ -1,5 +1,5 @@
 class LenisMock {
-  constructor(_options?: any) {}
+  constructor(_options?: Record<string, unknown>) {}
   raf(_time: number): void {}
   destroy(): void {}
 }
