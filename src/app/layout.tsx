@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { Onest } from "next/font/google";
 import { Loader } from "@/components/Loader";
 import { ThemeScript } from "@/components/ThemeScript";
@@ -95,8 +96,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-/** Person + WebSite + ProfilePage structured data for rich results. */
-function StructuredData(): React.ReactElement {
+function StructuredData({ nonce }: { nonce?: string }): React.ReactElement {
   const person = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -139,10 +139,14 @@ function StructuredData(): React.ReactElement {
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
       />
       <script
         type="application/ld+json"
+        nonce={nonce}
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
       />
     </>
@@ -153,12 +157,15 @@ type RootLayoutProps = Readonly<{
   children: React.ReactNode;
 }>;
 
-export default function RootLayout({ children }: RootLayoutProps): React.ReactElement {
+export default async function RootLayout({
+  children,
+}: RootLayoutProps): Promise<React.ReactElement> {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
-    <html lang="en" className={onest.variable}>
+    <html lang="en" className={onest.variable} suppressHydrationWarning>
       <head>
-        <ThemeScript />
-        <StructuredData />
+        <ThemeScript nonce={nonce} />
+        <StructuredData nonce={nonce} />
       </head>
       <body>
         <div id="loader">

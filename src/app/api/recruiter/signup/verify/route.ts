@@ -7,6 +7,7 @@ import { fetchAccount } from "@/lib/auth/profile";
 import { validateSignup } from "@/lib/auth/validation";
 import { logConsent } from "@/lib/privacy/log";
 import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 const OTP_RE = /^\d{6}$/;
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -14,6 +15,13 @@ export async function POST(request: Request): Promise<Response> {
     const otp = typeof payload?.otp === "string" ? payload.otp.trim() : "";
     if (!OTP_RE.test(otp)) {
       return NextResponse.json({ message: "Enter the 6-digit code." }, { status: 400 });
+    }
+    const hdrs = await headers();
+    if (!(await rateLimit("otp-verify", `ip:${clientIp(hdrs)}`))) {
+      return NextResponse.json(
+        { message: "Too many attempts. Please wait a few minutes and try again." },
+        { status: 429 },
+      );
     }
     const email = typeof payload?.email === "string" ? payload.email.trim().toLowerCase() : "";
     const adminGate = email ? await isWhitelisted(email) : false;
@@ -25,7 +33,6 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
     const { value } = validation;
-    const hdrs = await headers();
     let session;
     try {
       session = await auth.api.signInEmailOTP({

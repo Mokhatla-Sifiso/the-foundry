@@ -3,11 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Reveal } from "@/components/primitives/Reveal";
 
-/**
- * Geographic facts about the cities on the CV. Coordinates are public
- * knowledge; the visual treatment is hand-authored abstract art (no map
- * tiles, no third-party imagery — just an SVG painted from scratch).
- */
 type Location = Readonly<{
   id: string;
   city: string;
@@ -16,15 +11,10 @@ type Location = Readonly<{
   role: string;
   when: string;
   order: number;
-  // Approximate lat / lng. Used only to plot the marker — geographic facts.
   lat: number;
   lng: number;
-  /** Optional pixel-space nudge applied after projection so cities within
-   *  a few km of each other (the SA cluster) don't render on top of each
-   *  other. Pure visual layout; no semantic meaning. */
   offsetX?: number;
   offsetY?: number;
-  /** Optional label alignment override for crowded clusters. */
   labelAnchor?: "start" | "end";
 }>;
 
@@ -100,8 +90,6 @@ const LOCATIONS: ReadonlyArray<Location> = [
   },
 ];
 
-/* viewBox plotting. We use a slightly compressed projection so the SA
-   cluster stays readable next to Tanzania. */
 const VB_W = 800;
 const VB_H = 500;
 const LAT_TOP = -4;
@@ -115,8 +103,6 @@ function project(lat: number, lng: number): { x: number; y: number } {
   return { x, y };
 }
 
-/** Hand-authored stylized southern-African coastline. Not a literal map —
- *  just enough silhouette to anchor the markers visually. */
 const COAST_PATH =
   "M 80 60 " +
   "Q 220 40 320 90 " +
@@ -140,9 +126,6 @@ export function TransContinental(): React.ReactElement {
   const pathRef = useRef<SVGPathElement>(null);
   const [pathLen, setPathLen] = useState(0);
 
-  // Measure the connection path so we can draw it with a single dasharray
-  // value, giving us a clean reveal animation. JSDOM doesn't implement
-  // getTotalLength, so guard it so unit tests don't blow up.
   useEffect(() => {
     const el = pathRef.current;
     if (el && typeof el.getTotalLength === "function") {
@@ -187,7 +170,6 @@ export function TransContinental(): React.ReactElement {
               className="trans-svg"
               aria-hidden="true"
             >
-              {/* Dotted grid background */}
               <defs>
                 <pattern
                   id="trans-grid"
@@ -204,7 +186,6 @@ export function TransContinental(): React.ReactElement {
               </defs>
               <rect width={VB_W} height={VB_H} fill="url(#trans-grid)" />
 
-              {/* Abstract stylized continent silhouette */}
               <path
                 d={COAST_PATH}
                 fill="currentColor"
@@ -215,7 +196,6 @@ export function TransContinental(): React.ReactElement {
                 strokeDasharray="2 6"
               />
 
-              {/* Journey arc, ordered by start date */}
               <path
                 ref={pathRef}
                 d={journeyPath}
@@ -231,7 +211,6 @@ export function TransContinental(): React.ReactElement {
                 }}
               />
 
-              {/* Markers */}
               {points.map((p) => {
                 const isActive = p.id === activeId;
                 return (

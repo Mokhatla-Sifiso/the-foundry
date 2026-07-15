@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth/server";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
 import { fetchAccount } from "@/lib/auth/profile";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OTP_RE = /^\d{6}$/;
 export async function POST(request: Request): Promise<Response> {
@@ -18,6 +19,12 @@ export async function POST(request: Request): Promise<Response> {
       return NextResponse.json({ message: "Enter the 6-digit code." }, { status: 400 });
     }
     const hdrs = await headers();
+    if (!(await rateLimit("otp-verify", `ip:${clientIp(hdrs)}`))) {
+      return NextResponse.json(
+        { message: "Too many attempts. Please wait a few minutes and try again." },
+        { status: 429 },
+      );
+    }
     let session;
     try {
       session = await auth.api.signInEmailOTP({
