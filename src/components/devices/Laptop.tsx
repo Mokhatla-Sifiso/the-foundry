@@ -12,15 +12,15 @@ export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): Re
               <span className="ld" />
               {assistantName}
             </div>
-            <nav className="ldash-nav">
-              <a className="on" href="#">
+            <nav className="ldash-nav" aria-hidden="true">
+              <a className="on">
                 <span className="dot" />
                 Dashboard
               </a>
-              <a href="#">Code Review</a>
-              <a href="#">Deployments</a>
-              <a href="#">Analytics</a>
-              <a href="#">Settings</a>
+              <a>Code Review</a>
+              <a>Deployments</a>
+              <a>Analytics</a>
+              <a>Settings</a>
             </nav>
           </aside>
 

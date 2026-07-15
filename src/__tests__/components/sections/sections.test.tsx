@@ -11,10 +11,26 @@ import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
 import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+describe("Recruiters", () => {
+  it("renders three tier cards, each routed to its own access path, plus one email link", () => {
+    const { container } = render(<Recruiters />);
+    expect(container.querySelector("section#recruiters")).not.toBeNull();
+    const href = (sel: string): string | null | undefined =>
+      container.querySelector(sel)?.getAttribute("href");
+    expect(href(".pass--silver")).toBe("/guest");
+    expect(href(".pass--platinum")).toBe("/recruiter");
+    expect(href(".pass--black")).toBe("/executive");
+    const toEmail = screen
+      .getAllByRole("link")
+      .filter((a) => a.getAttribute("href") === `mailto:${SITE.email}`);
+    expect(toEmail).toHaveLength(1);
+  });
+});
 describe("Hero", () => {
   it("renders the spec's lowercase wordmark + h1 + Scroll cue", () => {
     const { container } = render(<Hero />);
@@ -164,7 +180,7 @@ describe("Footer", () => {
   });
 });
 describe("NAVLINKS shape (re-asserted at section level)", () => {
-  it("has exactly 5 entries and the order matches what Menu renders", () => {
-    expect(NAVLINKS.length).toBe(5);
+  it("has exactly 6 entries and the order matches what Menu renders", () => {
+    expect(NAVLINKS.length).toBe(6);
   });
 });
