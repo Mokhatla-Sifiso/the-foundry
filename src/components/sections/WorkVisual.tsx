@@ -1,10 +1,3 @@
-/**
- * Abstract domain-themed illustrations rendered into each Work card's
- * background. Pure geometric art — no real product UI is referenced.
- * Each one picks up the page's --fg and --candy tokens via CSS variables
- * so it stays on theme in both light and dark mode.
- */
-
 type Props = Readonly<{ slot: string }>;
 
 export function WorkVisual({ slot }: Props): React.ReactElement {
@@ -22,16 +15,12 @@ export function WorkVisual({ slot }: Props): React.ReactElement {
   }
 }
 
-/* ---------- shared SVG primitives ---------- */
-
 const BG_LIGHT = "var(--card-soft, #2f3236)";
 const BG_DARK = "#0c1316";
 const FG_TINT = "rgba(255,255,255,0.07)";
 const FG_LINE = "rgba(255,255,255,0.16)";
 const FG_TEXT = "rgba(255,255,255,0.6)";
 const ACCENT = "var(--candy, #b2d5e5)";
-
-/* ---------- 1. Platform: dashboard panels + sparkline ---------- */
 
 function PlatformVisual(): React.ReactElement {
   return (
@@ -44,13 +33,11 @@ function PlatformVisual(): React.ReactElement {
       </defs>
       <rect width="600" height="412" fill="url(#pv-bg)" />
 
-      {/* sidebar rail */}
       <rect x="32" y="32" width="116" height="348" rx="14" fill={FG_TINT} />
       {[64, 100, 136, 172, 208].map((y, i) => (
         <rect key={y} x="50" y={y} width={i === 0 ? 80 : 64 + (i % 2) * 12} height="10" rx="5" fill={i === 0 ? ACCENT : FG_LINE} opacity={i === 0 ? 1 : 0.7} />
       ))}
 
-      {/* top KPI cards */}
       {[0, 1, 2].map((i) => (
         <g key={i} transform={`translate(${172 + i * 132}, 32)`}>
           <rect width="120" height="92" rx="14" fill={FG_TINT} />
@@ -60,7 +47,6 @@ function PlatformVisual(): React.ReactElement {
         </g>
       ))}
 
-      {/* deploy sparkline panel */}
       <g transform="translate(172, 142)">
         <rect width="384" height="160" rx="16" fill={FG_TINT} />
         <rect x="18" y="18" width="120" height="10" rx="5" fill={FG_TEXT} opacity="0.5" />
@@ -72,14 +58,12 @@ function PlatformVisual(): React.ReactElement {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* dots */}
         {[22, 70, 110, 152, 196, 240, 282, 326, 366].map((x, i) => {
           const ys = [128, 108, 118, 86, 96, 62, 76, 48, 58];
           return <circle key={x} cx={x} cy={ys[i]} r="3" fill={ACCENT} />;
         })}
       </g>
 
-      {/* status pills */}
       <g transform="translate(172, 322)">
         {[0, 1, 2].map((i) => (
           <g key={i} transform={`translate(${i * 132}, 0)`}>
@@ -94,8 +78,6 @@ function PlatformVisual(): React.ReactElement {
   );
 }
 
-/* ---------- 2. Frontend / Portal: browser chrome + sign-in form ---------- */
-
 function PortalVisual(): React.ReactElement {
   return (
     <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
@@ -107,7 +89,6 @@ function PortalVisual(): React.ReactElement {
       </defs>
       <rect width="600" height="412" fill="url(#bv-bg)" />
 
-      {/* browser frame */}
       <rect x="44" y="48" width="512" height="316" rx="18" fill={FG_TINT} />
       <rect x="44" y="48" width="512" height="36" rx="18" fill="rgba(255,255,255,0.04)" />
       <circle cx="68" cy="66" r="5" fill="rgba(255,255,255,0.22)" />
@@ -115,12 +96,10 @@ function PortalVisual(): React.ReactElement {
       <circle cx="104" cy="66" r="5" fill="rgba(255,255,255,0.22)" />
       <rect x="138" y="58" width="280" height="16" rx="8" fill="rgba(255,255,255,0.08)" />
 
-      {/* main panel headline */}
       <rect x="80" y="116" width="220" height="14" rx="7" fill={ACCENT} />
       <rect x="80" y="138" width="320" height="10" rx="5" fill={FG_LINE} />
       <rect x="80" y="156" width="240" height="10" rx="5" fill={FG_LINE} opacity="0.7" />
 
-      {/* form fields */}
       {[0, 1].map((i) => (
         <g key={i} transform={`translate(80, ${200 + i * 56})`}>
           <rect width="280" height="44" rx="10" fill="rgba(255,255,255,0.05)" stroke={FG_LINE} />
@@ -128,13 +107,11 @@ function PortalVisual(): React.ReactElement {
         </g>
       ))}
 
-      {/* CTA button */}
       <g transform="translate(80, 320)">
         <rect width="160" height="44" rx="22" fill={ACCENT} />
         <rect x="32" y="18" width="96" height="8" rx="4" fill="rgba(6,24,31,0.8)" />
       </g>
 
-      {/* sidebar mini-cards */}
       <g transform="translate(400, 116)">
         {[0, 1, 2].map((i) => (
           <g key={i} transform={`translate(0, ${i * 76})`}>
@@ -148,8 +125,6 @@ function PortalVisual(): React.ReactElement {
     </svg>
   );
 }
-
-/* ---------- 3. Fintech: payment card + transaction rows ---------- */
 
 function FintechVisual(): React.ReactElement {
   return (
@@ -166,14 +141,11 @@ function FintechVisual(): React.ReactElement {
       </defs>
       <rect width="600" height="412" fill="url(#fv-bg)" />
 
-      {/* virtual card */}
       <g transform="translate(60, 70) rotate(-6 130 80)">
         <rect width="260" height="160" rx="18" fill="url(#fv-card)" stroke="rgba(255,255,255,0.08)" />
-        {/* chip */}
         <rect x="22" y="34" width="36" height="26" rx="6" fill={ACCENT} opacity="0.85" />
         <rect x="28" y="40" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
         <rect x="28" y="46" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
-        {/* digits */}
         {[0, 1, 2, 3].map((i) => (
           <g key={i} transform={`translate(${22 + i * 56}, 90)`}>
             {[0, 1, 2, 3].map((j) => (
@@ -181,12 +153,10 @@ function FintechVisual(): React.ReactElement {
             ))}
           </g>
         ))}
-        {/* labels */}
         <rect x="22" y="124" width="56" height="6" rx="3" fill="rgba(255,255,255,0.3)" />
         <rect x="22" y="134" width="80" height="8" rx="4" fill="rgba(255,255,255,0.7)" />
       </g>
 
-      {/* transaction list panel */}
       <g transform="translate(340, 56)">
         <rect width="216" height="300" rx="16" fill={FG_TINT} />
         <rect x="18" y="20" width="80" height="10" rx="5" fill={FG_TEXT} opacity="0.5" />
@@ -205,10 +175,7 @@ function FintechVisual(): React.ReactElement {
   );
 }
 
-/* ---------- 4. GIS: map grid with nodes + paths ---------- */
-
 function GisVisual(): React.ReactElement {
-  // Pre-computed node positions to avoid math at render time.
   const nodes: ReadonlyArray<{ x: number; y: number; r: number; accent?: boolean }> = [
     { x: 90, y: 90, r: 6 },
     { x: 200, y: 130, r: 5 },
@@ -242,12 +209,10 @@ function GisVisual(): React.ReactElement {
       <rect width="600" height="412" fill="url(#gv-bg)" />
       <rect width="600" height="412" fill="url(#gv-grid)" />
 
-      {/* contour-ish curves */}
       <path d="M 0 280 Q 150 240, 300 270 T 600 250" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
       <path d="M 0 320 Q 180 290, 320 310 T 600 295" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
       <path d="M 0 200 Q 200 160, 380 190 T 600 180" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
 
-      {/* edges */}
       {edges.map(([a, b], i) => {
         const A = nodes[a];
         const B = nodes[b];
@@ -266,7 +231,6 @@ function GisVisual(): React.ReactElement {
         );
       })}
 
-      {/* nodes */}
       {nodes.map((n, i) => (
         <g key={i}>
           <circle cx={n.x} cy={n.y} r={n.r + 6} fill={n.accent ? ACCENT : "rgba(255,255,255,0.05)"} opacity={n.accent ? 0.18 : 1} />
@@ -274,7 +238,6 @@ function GisVisual(): React.ReactElement {
         </g>
       ))}
 
-      {/* mini compass / scale bar */}
       <g transform="translate(40, 360)">
         <rect width="120" height="6" rx="3" fill="rgba(255,255,255,0.18)" />
         <rect width="60" height="6" rx="3" fill={ACCENT} />

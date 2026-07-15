@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-# Cancel in-flight runs on the same ref when a newer commit lands. Keeps the
-# Actions minutes spend predictable when force-pushing to a PR.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -30,9 +28,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      # `npm ci` enforces an exact match between package-lock.json and
-      # node_modules — slower than `npm install` on cold cache but
-      # deterministic, which matters for CI gating.
       - name: Install dependencies
         run: npm ci
 
@@ -42,9 +37,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # Run with coverage so the jest.config.ts thresholds on `src/lib/**`
-      # and `src/hooks/**` (80% lines / statements / functions, 70%
-      # branches) actually gate. Plain `npm test` would skip them.
       - name: Test (with coverage gates)
         run: npm run test:coverage
 

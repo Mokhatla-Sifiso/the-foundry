@@ -9,12 +9,6 @@ type Brand = Readonly<
   )
 >;
 
-/**
- * Companies & products on the CV. Where a clean MIT-licensed monochrome SVG
- * exists in `simple-icons`, we use that. For private / regional brands we
- * render a typographic wordmark (just the name in our display font) — no
- * attempt to reproduce a real logo design.
- */
 const BRANDS: ReadonlyArray<Brand> = [
   {
     name: "Accenture",

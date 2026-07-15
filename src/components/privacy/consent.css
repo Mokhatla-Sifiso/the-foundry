@@ -71,10 +71,6 @@ html[data-theme="dark"] .consent {
     border-color 0.15s ease;
 }
 
-/* Primary button: dark surface with white text in light mode, inverted in
-   dark mode. We hardcode the text colors instead of using --card/--fg because
-   those two tokens are nearly identical in light mode (both very dark), which
-   made the button text disappear against the button background. */
 .consent-btn-primary {
   background: #0a0a0a;
   color: #ffffff;

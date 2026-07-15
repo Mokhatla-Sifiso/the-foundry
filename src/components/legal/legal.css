@@ -165,8 +165,6 @@
   .legal-body li {
     font-size: 14.5px;
   }
-  /* Table can't fit five columns on a phone — let it scroll horizontally
-     inside its own container instead of pushing the page wide. */
   .legal-table {
     display: block;
     overflow-x: auto;
