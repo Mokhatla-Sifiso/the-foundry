@@ -1,5 +1,12 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   ACCEPT_ALL,
   CONSENT_COOKIE,
@@ -43,16 +50,20 @@ function writeCookie(name: string, value: string, maxAge: number): void {
   document.cookie =
     `${name}=${value}; Max-Age=${maxAge}; Path=/; SameSite=Lax` + (isSecure ? "; Secure" : "");
 }
+const emptySubscribe = (): (() => void) => () => {};
+
 export function ConsentProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const [record, setRecord] = useState<ConsentRecord | null>(null);
-  const [resolved, setResolved] = useState(false);
+  const hydrated = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  const [saved, setSaved] = useState<ConsentRecord | null>(null);
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const raw = readCookie(CONSENT_COOKIE);
-    const parsed = parseConsent(raw);
-    setRecord(parsed);
-    setResolved(parsed !== null);
-  }, []);
+  const rawCookie = hydrated ? readCookie(CONSENT_COOKIE) : null;
+  const cookieRecord = useMemo(() => parseConsent(rawCookie), [rawCookie]);
+  const record = saved ?? cookieRecord;
+  const resolved = saved !== null || (hydrated && cookieRecord !== null);
   const save = useCallback(
     async (choices: ConsentChoices, action: ConsentAction = "update"): Promise<void> => {
       writeCookie(CONSENT_COOKIE, serializeConsent(choices), CONSENT_COOKIE_MAX_AGE);
@@ -61,8 +72,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }): Re
         ts: Date.now(),
         choices,
       };
-      setRecord(next);
-      setResolved(true);
+      setSaved(next);
       setOpen(false);
       try {
         await fetch("/api/privacy/consent", {
