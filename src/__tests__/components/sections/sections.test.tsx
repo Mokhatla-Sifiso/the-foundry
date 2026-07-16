@@ -5,8 +5,9 @@ jest.mock("next/image", () => ({
     <img src={src} alt={alt} {...rest} />
   ),
 }));
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
+import { TransContinental } from "@/components/sections/TransContinental";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Footer } from "@/components/sections/Footer";
@@ -163,6 +164,25 @@ describe("AISection", () => {
     window.localStorage.clear();
     document.documentElement.removeAttribute("data-theme");
   }
+});
+describe("TransContinental", () => {
+  it("shows the Now showing panel for the first location with day-to-day, core and deliverables", () => {
+    render(<TransContinental />);
+    expect(screen.getByText("Now showing")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent(/Pretoria/);
+    expect(screen.getByText("Day to day")).toBeInTheDocument();
+    expect(screen.getByText("Core")).toBeInTheDocument();
+    expect(screen.getByText("Deliverables")).toBeInTheDocument();
+    expect(screen.getByText(/GE Smallworld Magik platform/)).toBeInTheDocument();
+  });
+  it("switches the panel content when another city is selected", () => {
+    render(<TransContinental />);
+    fireEvent.click(screen.getByRole("button", { name: "Roodepoort" }));
+    expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent(/Roodepoort/);
+    expect(screen.getByText("MTN Group")).toBeInTheDocument();
+    expect(screen.getByText(/Leading StudioSync sprints/)).toBeInTheDocument();
+    expect(screen.getByText(/Time reporting, people and contract-management modules/)).toBeInTheDocument();
+  });
 });
 describe("Contact", () => {
   it("renders the Don't be shy headline and both action buttons", () => {
