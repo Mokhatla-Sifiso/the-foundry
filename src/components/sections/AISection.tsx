@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AILattice } from "./AILattice";
@@ -7,27 +6,13 @@ import { AI_WORKFLOW, AI_VALUE } from "@/lib/constants";
 type AISectionProps = Readonly<{
   showPhone?: boolean;
   showDesktop?: boolean;
-  threshold?: number;
 }>;
 export function AISection({
   showPhone = true,
   showDesktop = true,
-  threshold = 0.25,
 }: AISectionProps = {}): React.ReactElement {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [peakActive, setPeakActive] = useState(false);
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setPeakActive(entry.intersectionRatio >= threshold),
-      { threshold: [0, threshold / 2, threshold, threshold * 1.5, 1].filter((t) => t <= 1) },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
   return (
-    <section ref={sectionRef} id="ai" className={`ai sec${peakActive ? " ai--peak" : ""}`}>
+    <section id="ai" className="ai sec">
       <AILattice />
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
