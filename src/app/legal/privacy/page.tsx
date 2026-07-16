@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default function PrivacyPage(): React.ReactElement {
   return (
-    <LegalLayout title="Privacy Policy" version={PRIVACY_POLICY_VERSION} updatedAt="23 June 2026">
+    <LegalLayout title="Privacy Policy" version={PRIVACY_POLICY_VERSION} updatedAt="16 July 2026">
       <h2>Who I am</h2>
       <p>
         This site is operated personally by <strong>{DATA_CONTROLLER.name}</strong>, based in{" "}
@@ -17,8 +17,8 @@ export default function PrivacyPage(): React.ReactElement {
 
       <h2>What I collect, and why</h2>
       <p>
-        I only collect what the recruiter verification flow on <code>/recruiter</code> actually
-        needs.
+        Most of what I collect powers the recruiter verification flow on <code>/recruiter</code>.
+        With your consent, I also collect anonymous usage analytics across the whole site.
       </p>
       <ul>
         <li>
@@ -37,6 +37,12 @@ export default function PrivacyPage(): React.ReactElement {
           <strong>Consent records</strong>, your cookie choices and policy acceptance, so I can
           prove consent was given (GDPR Article 7).
         </li>
+        <li>
+          <strong>Usage analytics</strong>, only if you accept analytics cookies: pages viewed,
+          approximate location, device and browser, and a random client ID, collected through Google
+          Analytics so I can see how the site is used. Advertising and cross-site signals are
+          switched off.
+        </li>
       </ul>
       <p>
         I do <strong>not</strong> sell data, run advertising, or share data with social networks.
@@ -54,7 +60,7 @@ export default function PrivacyPage(): React.ReactElement {
           who accessed the CV.
         </li>
         <li>
-          <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies and any future analytics.
+          <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies and Google Analytics.
         </li>
       </ul>
 
@@ -69,6 +75,10 @@ export default function PrivacyPage(): React.ReactElement {
         </li>
         <li>
           <strong>Vercel</strong>, hosts the site and routes traffic.
+        </li>
+        <li>
+          <strong>Google</strong> (Google Analytics, Google Ireland Ltd / Google LLC), processes
+          anonymous usage analytics when you consent. This data is transferred to the United States.
         </li>
       </ul>
       <p>
@@ -116,7 +126,9 @@ export default function PrivacyPage(): React.ReactElement {
       <p>
         Data is processed primarily in the EU (Neon EU-West-2, Resend EU region) and may transit
         through Vercel&apos;s global edge network. Standard contractual clauses (or the equivalent
-        transfer mechanism) are in place with each processor.
+        transfer mechanism) are in place with each processor. If you consent to analytics, Google
+        Analytics transfers usage data to the United States under Google&apos;s Standard Contractual
+        Clauses and its EU&ndash;US Data Privacy Framework certification.
       </p>
 
       <h2>Changes to this policy</h2>
