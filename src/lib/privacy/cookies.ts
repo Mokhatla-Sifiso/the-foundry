@@ -42,6 +42,24 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     purpose: "Remembers whether you chose light or dark mode.",
     duration: "Until you clear browser storage",
   },
+  {
+    name: "_ga",
+    storage: "cookie",
+    category: "analytics",
+    party: "third",
+    purpose:
+      "Google Analytics uses this to tell one visitor apart from another so I can see how many people visit and which pages get read. Only set if you allow analytics.",
+    duration: "2 years",
+  },
+  {
+    name: "_ga_<container>",
+    storage: "cookie",
+    category: "analytics",
+    party: "third",
+    purpose:
+      "Google Analytics uses this to keep your current session together so a single visit isn't counted twice. Only set if you allow analytics.",
+    duration: "2 years",
+  },
 ] as const;
 export const CATEGORY_META: Readonly<
   Record<
@@ -67,7 +85,7 @@ export const CATEGORY_META: Readonly<
   analytics: {
     label: "Analytics",
     description:
-      "Helps me understand which parts of the site are useful. We don't currently set any analytics cookies, but turning this off will keep it that way if we add them.",
+      "Loads Google Analytics so I can see aggregate visits and which pages are useful. Nothing loads and no analytics cookies are set unless you turn this on.",
     alwaysOn: false,
   },
 };

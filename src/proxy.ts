@@ -4,13 +4,22 @@ export function proxy(request: NextRequest): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
 
+  const gaEnabled = /^G-[A-Z0-9]{4,}$/i.test(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "");
+  const gaScript = gaEnabled ? " https://www.googletagmanager.com" : "";
+  const gaConnect = gaEnabled
+    ? " https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com"
+    : "";
+  const gaImg = gaEnabled
+    ? " https://www.googletagmanager.com https://*.google-analytics.com"
+    : "";
+
   const csp = [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}${gaScript}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' blob: data:`,
+    `img-src 'self' blob: data:${gaImg}`,
     `font-src 'self'`,
-    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+    `connect-src 'self'${isDev ? " ws: wss:" : ""}${gaConnect}`,
     `object-src 'none'`,
     `base-uri 'none'`,
     `form-action 'self'`,
