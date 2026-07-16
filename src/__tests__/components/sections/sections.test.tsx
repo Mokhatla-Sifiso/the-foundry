@@ -122,6 +122,16 @@ describe("AISection", () => {
       expect(screen.getByText(tool)).toBeInTheDocument();
     }
   });
+  it("shows the workflow steps, recruiter value points, and the real proof line", () => {
+    beforeEachLocal();
+    render(<AISection />);
+    for (const step of ["Edit", "Pair", "Verify", "Ship"]) {
+      expect(screen.getByText(step)).toBeInTheDocument();
+    }
+    expect(screen.getByText("Production-grade, not prototypes")).toBeInTheDocument();
+    expect(screen.getByText("Velocity with judgment")).toBeInTheDocument();
+    expect(screen.getByText("329 tests")).toBeInTheDocument();
+  });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();
     const { container } = render(<AISection showPhone={false} showDesktop={false} />);

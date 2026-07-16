@@ -22,11 +22,16 @@ export type ToolMark =
   | Readonly<{ kind: "icon"; name: string; path: string }>
   | Readonly<{ kind: "mono"; name: string; short: string }>;
 
-export type ToolGroup = Readonly<{ label: string; tools: ReadonlyArray<ToolMark> }>;
+export type ToolGroup = Readonly<{
+  label: string;
+  desc: string;
+  tools: ReadonlyArray<ToolMark>;
+}>;
 
 export const AI_TOOLS: ReadonlyArray<ToolGroup> = [
   {
     label: "Agents in the loop",
+    desc: "Draft code, refactors and tests. I review and own the result.",
     tools: [
       { kind: "icon", name: "Claude Code", path: siClaude.path },
       { kind: "icon", name: "Codex", path: OPENAI_PATH },
@@ -37,6 +42,7 @@ export const AI_TOOLS: ReadonlyArray<ToolGroup> = [
   },
   {
     label: "Think & capture",
+    desc: "Where ideas and specs live before they become code.",
     tools: [
       { kind: "icon", name: "Obsidian", path: siObsidian.path },
       { kind: "icon", name: "Notion", path: siNotion.path },
@@ -44,6 +50,7 @@ export const AI_TOOLS: ReadonlyArray<ToolGroup> = [
   },
   {
     label: "Local AI & ops",
+    desc: "Private models and tracing for sensitive or offline work.",
     tools: [
       { kind: "icon", name: "Ollama", path: siOllama.path },
       { kind: "mono", name: "Open WebUI", short: "OW" },
@@ -53,6 +60,7 @@ export const AI_TOOLS: ReadonlyArray<ToolGroup> = [
   },
   {
     label: "Edit & ship",
+    desc: "The path from editor to production.",
     tools: [
       { kind: "icon", name: "VS Code", path: VSCODE_PATH },
       { kind: "icon", name: "GitHub", path: siGithub.path },
