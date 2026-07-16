@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Arrow, IconCheck, IconMail } from "@/components/primitives/icons";
+import { Arrow } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { CONTACT_INTENTS, SITE, type ContactIntent } from "@/lib/constants";
 
@@ -87,153 +87,160 @@ export function Contact(): React.ReactElement {
   return (
     <section id="contact" className="collab sec">
       <div className="wrap">
-        <Reveal>
-          <div className="collab-card">
-            <div className="collab-left">
-              <span className="collab-status">
-                <span className="collab-dot" aria-hidden="true" />
-                Available for contract &amp; freelance
-              </span>
+        <Reveal as="div" className="collab-head">
+          <span className="eyebrow">Let&apos;s collaborate</span>
+          <span className="collab-status">
+            <span className="collab-dot" aria-hidden="true" />
+            Available for contract &amp; freelance
+          </span>
+        </Reveal>
+
+        <div className="collab-grid">
+          <div className="collab-info">
+            <Reveal>
               <h2 className="collab-h">
                 Let&apos;s build something <span className="em">worth shipping.</span>
               </h2>
+            </Reveal>
+            <Reveal delay={0.05}>
               <p className="collab-lead">
-                Tell me what you&apos;re building. I read every message myself and come back to you
-                personally, usually within a day.
+                Tell me what you&apos;re building. I read every message myself and reply personally,
+                usually within a day.
               </p>
-
-              <div className="collab-channels">
-                <button type="button" className="collab-chan collab-copy" onClick={copyEmail}>
-                  <span className="collab-chan-ic">{copied ? <IconCheck /> : <IconMail />}</span>
-                  <span className="collab-chan-body">
-                    <span className="collab-chan-k">{copied ? "Copied" : "Email"}</span>
-                    <span className="collab-chan-v">{SITE.email}</span>
-                  </span>
-                </button>
-                <a className="collab-chan" href={SITE.phoneHref}>
-                  <span className="collab-chan-body">
-                    <span className="collab-chan-k">Phone</span>
-                    <span className="collab-chan-v">{SITE.phone}</span>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <div className="collab-direct">
+                <a className="collab-mail" href={`mailto:${SITE.email}`}>
+                  <span className="collab-mail-v">{SITE.email}</span>
+                  <span className="collab-mail-ar" aria-hidden="true">
+                    <Arrow />
                   </span>
                 </a>
-                <div className="collab-chan collab-chan--static">
-                  <span className="collab-chan-body">
-                    <span className="collab-chan-k">Based in</span>
-                    <span className="collab-chan-v">
-                      {SITE.location}
-                      {localTime ? <span className="collab-time"> · {localTime} local</span> : null}
-                    </span>
-                  </span>
-                </div>
+                <button type="button" className="collab-copy" onClick={copyEmail}>
+                  {copied ? "Copied" : "Copy"}
+                </button>
               </div>
-            </div>
-
-            <div className="collab-right">
-              {status === "sent" ? (
-                <div className="collab-done" role="status">
-                  <span className="collab-done-ic">
-                    <IconCheck />
-                  </span>
-                  <h3 className="collab-done-h">Message sent.</h3>
-                  <p className="collab-done-p">
-                    Thanks, {name.split(" ")[0] || "there"}. It landed in my inbox and I&apos;ll reply
-                    personally, usually within a day.
-                  </p>
-                  <button type="button" className="collab-reset" onClick={reset}>
-                    Send another
-                  </button>
+            </Reveal>
+            <Reveal delay={0.14}>
+              <dl className="collab-meta">
+                <div>
+                  <dt>Phone</dt>
+                  <dd>
+                    <a href={SITE.phoneHref}>{SITE.phone}</a>
+                  </dd>
                 </div>
-              ) : (
-                <form className="collab-form" onSubmit={handleSubmit} noValidate>
-                  <div className="collab-hp" aria-hidden="true">
-                    <label htmlFor="collab-website">Leave this empty</label>
-                    <input
-                      id="collab-website"
-                      type="text"
-                      tabIndex={-1}
-                      autoComplete="off"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                    />
-                  </div>
+                <div>
+                  <dt>Based in</dt>
+                  <dd>
+                    {SITE.location}
+                    {localTime ? <span className="collab-time"> · {localTime}</span> : null}
+                  </dd>
+                </div>
+              </dl>
+            </Reveal>
+          </div>
 
-                  <div className="collab-row">
-                    <label className="collab-field">
-                      <span className="collab-label">Name</span>
-                      <input
-                        type="text"
-                        name="name"
-                        autoComplete="name"
-                        placeholder="Your name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                    </label>
-                    <label className="collab-field">
-                      <span className="collab-label">Email</span>
-                      <input
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        placeholder="you@company.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </label>
-                  </div>
+          <Reveal delay={0.08} as="div" className="collab-formwrap">
+            {status === "sent" ? (
+              <div className="collab-done" role="status">
+                <span className="collab-done-mark" aria-hidden="true">
+                  <Arrow />
+                </span>
+                <h3 className="collab-done-h">Message sent.</h3>
+                <p className="collab-done-p">
+                  Thanks, {name.split(" ")[0] || "there"}. It&apos;s in my inbox and I&apos;ll reply
+                  personally, usually within a day.
+                </p>
+                <button type="button" className="collab-textbtn" onClick={reset}>
+                  Send another
+                </button>
+              </div>
+            ) : (
+              <form className="collab-form" onSubmit={handleSubmit} noValidate>
+                <div className="collab-hp" aria-hidden="true">
+                  <label htmlFor="collab-website">Leave this empty</label>
+                  <input
+                    id="collab-website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
 
-                  <fieldset className="collab-intent">
-                    <legend className="collab-label">What&apos;s this about?</legend>
-                    <div className="collab-chips">
-                      {CONTACT_INTENTS.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`collab-chip${intent === opt.value ? " collab-chip--on" : ""}`}
-                          aria-pressed={intent === opt.value}
-                          onClick={() => setIntent(opt.value)}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
-
+                <div className="collab-line">
                   <label className="collab-field">
-                    <span className="collab-label">Message</span>
-                    <textarea
-                      name="message"
-                      rows={4}
-                      placeholder="A sentence on the project, timeline, or what you need."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                    <span className="collab-label">Name</span>
+                    <input
+                      type="text"
+                      name="name"
+                      autoComplete="name"
+                      placeholder="Your name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       required
                     />
                   </label>
+                  <label className="collab-field">
+                    <span className="collab-label">Email</span>
+                    <input
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      placeholder="you@company.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
 
-                  {error ? (
-                    <p className="collab-error" role="alert">
-                      {error}
-                    </p>
-                  ) : null}
+                <fieldset className="collab-intent">
+                  <legend className="collab-label">What&apos;s this about?</legend>
+                  <div className="collab-chips">
+                    {CONTACT_INTENTS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        className={`collab-chip${intent === opt.value ? " collab-chip--on" : ""}`}
+                        aria-pressed={intent === opt.value}
+                        onClick={() => setIntent(opt.value)}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
 
-                  <button
-                    type="submit"
-                    className="collab-submit"
-                    disabled={status === "sending"}
-                  >
-                    {status === "sending" ? "Sending…" : "Send message"}
-                    <span className="collab-submit-ic" aria-hidden="true">
-                      <Arrow />
-                    </span>
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </Reveal>
+                <label className="collab-field">
+                  <span className="collab-label">Message</span>
+                  <textarea
+                    name="message"
+                    rows={3}
+                    placeholder="A sentence on the project, timeline, or what you need."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                  />
+                </label>
+
+                {error ? (
+                  <p className="collab-error" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+
+                <button type="submit" className="collab-send" disabled={status === "sending"}>
+                  {status === "sending" ? "Sending" : "Send message"}
+                  <span className="collab-send-ar" aria-hidden="true">
+                    <Arrow />
+                  </span>
+                </button>
+              </form>
+            )}
+          </Reveal>
+        </div>
       </div>
     </section>
   );

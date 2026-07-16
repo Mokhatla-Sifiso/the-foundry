@@ -1504,51 +1504,49 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 
 .collab {
   position: relative;
-}
-.collab-card {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(32px, 4vw, 64px);
-  align-items: start;
-  background: var(--card);
-  color: var(--card-fg);
-  border: 1px solid var(--card-line);
-  border-radius: var(--r);
-  padding: clamp(32px, 5vw, 64px);
-  position: relative;
   overflow: hidden;
+  background: #0a0d0f;
+  color: #eaf1f4;
 }
-.collab-card::before {
+.collab::before {
   content: "";
   position: absolute;
-  right: -12%;
-  top: -40%;
-  width: 60%;
-  aspect-ratio: 1;
+  left: 50%;
+  top: -18%;
+  width: 72%;
+  height: 62%;
+  transform: translateX(-50%);
   background: radial-gradient(
-    closest-side,
-    color-mix(in oklab, var(--candy) 16%, transparent),
+    ellipse 50% 50% at 50% 50%,
+    color-mix(in oklab, var(--candy) 10%, transparent),
     transparent 70%
   );
   pointer-events: none;
 }
-.collab-left,
-.collab-right {
+.collab > .wrap {
   position: relative;
   z-index: 1;
-  min-width: 0;
+}
+.collab .eyebrow {
+  color: color-mix(in oklab, #eaf1f4 55%, transparent);
+}
+.collab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: clamp(26px, 3.5vw, 44px);
+  margin-bottom: clamp(30px, 4.5vw, 60px);
+  border-bottom: 1px solid color-mix(in oklab, #eaf1f4 12%, transparent);
 }
 .collab-status {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--card-2);
-  padding: 7px 14px 7px 12px;
-  border: 1px solid var(--card-line);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--card-fg) 4%, transparent);
+  color: color-mix(in oklab, #eaf1f4 72%, transparent);
 }
 .collab-dot {
   width: 8px;
@@ -1569,103 +1567,129 @@ html[data-theme="light"] .ai-showcase .bg-fade {
     box-shadow: 0 0 0 0 transparent;
   }
 }
+.collab-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+.collab-info {
+  min-width: 0;
+}
 .collab-h {
   font-weight: 700;
-  font-size: clamp(38px, 5.4vw, 72px);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  margin: 22px 0 18px;
-  max-width: 14ch;
+  font-size: clamp(44px, 6.4vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  margin: 0 0 24px;
+  max-width: 12ch;
 }
 .collab-h .em {
   color: var(--candy);
 }
 .collab-lead {
-  font-size: clamp(15px, 1.5vw, 17px);
+  font-size: clamp(16px, 1.6vw, 19px);
   line-height: 1.6;
-  color: var(--card-2);
-  max-width: 42ch;
-  margin: 0 0 34px;
+  color: color-mix(in oklab, #eaf1f4 62%, transparent);
+  max-width: 40ch;
+  margin: 0 0 clamp(34px, 4vw, 48px);
 }
-.collab-channels {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.collab-chan {
+.collab-direct {
   display: flex;
   align-items: center;
-  gap: 14px;
-  text-align: left;
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--card-line);
-  border-radius: 14px;
-  background: color-mix(in oklab, var(--card-fg) 3%, transparent);
-  color: inherit;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 3.5vw, 40px);
+}
+.collab-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #eaf1f4;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.collab-mail-v {
+  background-image: linear-gradient(var(--candy), var(--candy));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 0.35s ease;
+  padding-bottom: 3px;
+}
+.collab-mail:hover .collab-mail-v {
+  background-size: 100% 1.5px;
+}
+.collab-mail-ar {
+  display: inline-flex;
+  color: var(--candy);
+  transition: transform 0.3s ease;
+}
+.collab-mail:hover .collab-mail-ar {
+  transform: translate(3px, -3px);
+}
+.collab-mail-ar svg {
+  width: 18px;
+  height: 18px;
+}
+.collab-copy {
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, #eaf1f4 18%, transparent);
+  background: transparent;
+  color: color-mix(in oklab, #eaf1f4 65%, transparent);
   font: inherit;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition:
-    border-color 0.18s ease,
-    background 0.18s ease;
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
-a.collab-chan {
-  text-decoration: none;
+.collab-copy:hover {
+  color: #eaf1f4;
+  border-color: var(--candy);
 }
-.collab-chan--static {
-  cursor: default;
-}
-.collab-chan:not(.collab-chan--static):hover {
-  border-color: color-mix(in oklab, var(--candy) 60%, var(--card-line));
-  background: color-mix(in oklab, var(--card-fg) 6%, transparent);
-}
-.collab-chan-ic {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: color-mix(in oklab, var(--candy) 16%, transparent);
-  color: var(--candy);
-}
-.collab-chan-ic svg {
-  width: 17px;
-  height: 17px;
-}
-.collab-chan-body {
+.collab-meta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  gap: clamp(28px, 4vw, 56px);
+  flex-wrap: wrap;
+  margin: 0;
+}
+.collab-meta div {
   min-width: 0;
 }
-.collab-chan-k {
+.collab-meta dt {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--card-muted);
+  color: color-mix(in oklab, #eaf1f4 45%, transparent);
+  margin-bottom: 6px;
 }
-.collab-chan-v {
-  font-size: 14.5px;
+.collab-meta dd {
+  margin: 0;
+  font-size: 15px;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+.collab-meta dd a {
+  color: inherit;
+  text-decoration: none;
+}
+.collab-meta dd a:hover {
+  color: var(--candy);
+}
 .collab-time {
-  color: var(--card-muted);
+  color: color-mix(in oklab, #eaf1f4 50%, transparent);
   font-weight: 500;
 }
-.collab-right {
-  border: 1px solid var(--card-line);
-  border-radius: 20px;
-  padding: clamp(22px, 2.4vw, 30px);
-  background: color-mix(in oklab, var(--card-fg) 3%, transparent);
-}
-.collab-form {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+.collab-formwrap {
+  min-width: 0;
 }
 .collab-hp {
   position: absolute;
@@ -1674,10 +1698,16 @@ a.collab-chan {
   height: 1px;
   overflow: hidden;
 }
-.collab-row {
+.collab-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.4vw, 28px);
+}
+.collab-line {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: clamp(20px, 2.4vw, 28px);
 }
 .collab-field {
   display: flex;
@@ -1689,37 +1719,34 @@ a.collab-chan {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--card-muted);
+  color: color-mix(in oklab, #eaf1f4 45%, transparent);
 }
-.collab-field input,
-.collab-field textarea {
+.collab-form input,
+.collab-form textarea {
   width: 100%;
   font: inherit;
-  font-size: 15px;
-  color: var(--card-fg);
-  background: color-mix(in oklab, var(--card-fg) 5%, transparent);
-  border: 1px solid var(--card-line);
-  border-radius: 12px;
-  padding: 13px 15px;
-  transition:
-    border-color 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease;
+  font-size: 16px;
+  color: #eaf1f4;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid color-mix(in oklab, #eaf1f4 20%, transparent);
+  border-radius: 0;
+  padding: 8px 0;
+  transition: border-color 0.2s ease;
 }
-.collab-field textarea {
+.collab-form textarea {
   resize: vertical;
-  min-height: 104px;
+  min-height: 62px;
+  line-height: 1.5;
 }
-.collab-field input::placeholder,
-.collab-field textarea::placeholder {
-  color: color-mix(in oklab, var(--card-fg) 32%, transparent);
+.collab-form input::placeholder,
+.collab-form textarea::placeholder {
+  color: color-mix(in oklab, #eaf1f4 28%, transparent);
 }
-.collab-field input:focus,
-.collab-field textarea:focus {
+.collab-form input:focus,
+.collab-form textarea:focus {
   outline: none;
-  border-color: var(--candy);
-  background: color-mix(in oklab, var(--card-fg) 8%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 22%, transparent);
+  border-bottom-color: var(--candy);
 }
 .collab-intent {
   border: 0;
@@ -1727,7 +1754,7 @@ a.collab-chan {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 .collab-chips {
   display: flex;
@@ -1735,12 +1762,12 @@ a.collab-chan {
   gap: 8px;
 }
 .collab-chip {
-  height: 38px;
-  padding: 0 16px;
+  height: 34px;
+  padding: 0 15px;
   border-radius: 999px;
-  border: 1px solid var(--card-line);
+  border: 1px solid color-mix(in oklab, #eaf1f4 18%, transparent);
   background: transparent;
-  color: var(--card-2);
+  color: color-mix(in oklab, #eaf1f4 65%, transparent);
   font: inherit;
   font-size: 13px;
   font-weight: 600;
@@ -1751,11 +1778,11 @@ a.collab-chan {
     background 0.18s ease;
 }
 .collab-chip:hover {
-  color: var(--card-fg);
-  border-color: color-mix(in oklab, var(--candy) 60%, var(--card-line));
+  color: #eaf1f4;
+  border-color: color-mix(in oklab, var(--candy) 55%, transparent);
 }
 .collab-chip--on {
-  color: #0a0f12;
+  color: #0a0d0f;
   background: var(--candy);
   border-color: var(--candy);
 }
@@ -1764,17 +1791,17 @@ a.collab-chan {
   font-size: 13.5px;
   color: #ff9b9b;
 }
-.collab-submit {
+.collab-send {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  height: 52px;
-  padding: 0 24px;
+  height: 54px;
+  padding: 0 28px;
   border: 0;
-  border-radius: 14px;
+  border-radius: 999px;
   background: var(--candy);
-  color: #0a0f12;
+  color: #0a0d0f;
   font: inherit;
   font-size: 15px;
   font-weight: 700;
@@ -1784,93 +1811,95 @@ a.collab-chan {
     filter 0.18s ease,
     opacity 0.18s ease;
 }
-.collab-submit:hover {
+.collab-send:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
 }
-.collab-submit:disabled {
+.collab-send:disabled {
   opacity: 0.6;
   cursor: progress;
   transform: none;
 }
-.collab-submit-ic {
+.collab-send-ar {
   display: inline-flex;
 }
-.collab-submit-ic svg {
-  width: 16px;
-  height: 16px;
+.collab-send-ar svg {
+  width: 15px;
+  height: 15px;
 }
 .collab-done {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  min-height: 280px;
+  gap: 14px;
+  min-height: 220px;
   justify-content: center;
 }
-.collab-done-ic {
+.collab-done-mark {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: color-mix(in oklab, #43d17f 20%, transparent);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: color-mix(in oklab, #43d17f 22%, transparent);
   color: #43d17f;
 }
-.collab-done-ic svg {
-  width: 24px;
-  height: 24px;
+.collab-done-mark svg {
+  width: 20px;
+  height: 20px;
 }
 .collab-done-h {
-  font-size: 24px;
+  font-size: clamp(26px, 3vw, 36px);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   margin: 0;
 }
 .collab-done-p {
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
-  color: var(--card-2);
+  color: color-mix(in oklab, #eaf1f4 62%, transparent);
   margin: 0;
-  max-width: 36ch;
+  max-width: 34ch;
 }
-.collab-reset {
-  margin-top: 6px;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 12px;
-  border: 1px solid var(--card-line);
+.collab-textbtn {
+  margin-top: 4px;
   background: transparent;
-  color: var(--card-fg);
+  border: 0;
+  padding: 0;
+  color: var(--candy);
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.18s ease;
-}
-.collab-reset:hover {
-  border-color: var(--candy);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 @media (max-width: 900px) {
-  .collab-card {
+  .collab-grid {
     grid-template-columns: 1fr;
-    gap: 34px;
+    gap: clamp(40px, 8vw, 56px);
   }
   .collab-h {
     max-width: none;
   }
 }
 @media (max-width: 520px) {
-  .collab-row {
+  .collab-line {
     grid-template-columns: 1fr;
   }
-  .collab-chan {
-    padding: 12px 14px;
+  .collab-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .collab-dot {
     animation: none;
+  }
+  .collab-mail-v,
+  .collab-mail-ar {
+    transition: none;
   }
 }
 
