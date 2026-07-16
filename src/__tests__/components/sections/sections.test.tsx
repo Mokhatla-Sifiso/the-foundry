@@ -186,25 +186,26 @@ describe("TransContinental", () => {
   });
 });
 describe("Faq", () => {
-  it("renders the FAQ accordion with every question as a details/summary", () => {
+  it("renders every question and answer as an open two-column list", () => {
     const { container } = render(<Faq />);
     expect(container.querySelector("section#faq")).not.toBeNull();
-    for (const q of FAQS) {
-      expect(screen.getByText(q.q)).toBeInTheDocument();
+    for (const item of FAQS) {
+      expect(screen.getByText(item.q)).toBeInTheDocument();
+      expect(screen.getByText(item.a)).toBeInTheDocument();
     }
-    expect(container.querySelectorAll("details.faq-item").length).toBe(FAQS.length);
+    expect(container.querySelectorAll(".faq-item").length).toBe(FAQS.length);
   });
 });
 describe("Contact", () => {
   it("renders the collaboration section: headline, channels, and the form", () => {
     render(<Contact />);
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
-    expect(screen.getByText(/reply personally/i)).toBeInTheDocument();
+    expect(screen.getByText(/reply within a day/i)).toBeInTheDocument();
     expect(screen.getByText(SITE.email)).toBeInTheDocument();
-    expect(screen.getByText(SITE.phone)).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Your name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("you@company.com")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Contract" })).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Contract" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Send message/i })).toBeInTheDocument();
   });
   it("posts to /api/contact and shows the sent confirmation on success", async () => {

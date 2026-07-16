@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { Arrow } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { CONTACT_INTENTS, SITE, type ContactIntent } from "@/lib/constants";
 
@@ -56,48 +55,28 @@ export function Contact(): React.ReactElement {
     <section id="contact" className="collab sec">
       <div className="wrap">
         <div className="collab-grid">
-          <div className="collab-info">
+          <div className="collab-intro">
             <Reveal>
-              <h2 className="collab-h">
-                Let&apos;s build something <span className="em">worth shipping.</span>
-              </h2>
+              <h2 className="collab-h">Let&apos;s build something worth shipping.</h2>
             </Reveal>
             <Reveal delay={0.05}>
-              <p className="collab-lead">
-                Tell me what you&apos;re building. I read every message myself and reply personally,
-                usually within a day.
-              </p>
+              <ul className="collab-points">
+                <li>Contract and freelance engagements</li>
+                <li>Full-stack builds, microfrontends, and architecture</li>
+                <li>A reply within a day, from me directly</li>
+              </ul>
             </Reveal>
             <Reveal delay={0.1}>
-              <a className="collab-mail" href={`mailto:${SITE.email}`}>
-                <span className="collab-mail-v">{SITE.email}</span>
-                <span className="collab-mail-ar" aria-hidden="true">
-                  <Arrow />
-                </span>
-              </a>
-            </Reveal>
-            <Reveal delay={0.14}>
-              <dl className="collab-meta">
-                <div>
-                  <dt>Phone</dt>
-                  <dd>
-                    <a href={SITE.phoneHref}>{SITE.phone}</a>
-                  </dd>
-                </div>
-                <div>
-                  <dt>Based in</dt>
-                  <dd>{SITE.location}</dd>
-                </div>
-              </dl>
+              <p className="collab-alt">
+                Prefer email?{" "}
+                <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              </p>
             </Reveal>
           </div>
 
           <Reveal delay={0.08} as="div" className="collab-formwrap">
             {status === "sent" ? (
               <div className="collab-done" role="status">
-                <span className="collab-done-mark" aria-hidden="true">
-                  <Arrow />
-                </span>
                 <h3 className="collab-done-h">Message sent.</h3>
                 <p className="collab-done-p">
                   Thanks, {name.split(" ")[0] || "there"}. It&apos;s in my inbox and I&apos;ll reply
@@ -121,55 +100,48 @@ export function Contact(): React.ReactElement {
                   />
                 </div>
 
-                <div className="collab-line">
-                  <label className="collab-field">
-                    <span className="collab-label">Name</span>
-                    <input
-                      type="text"
-                      name="name"
-                      autoComplete="name"
-                      placeholder="Your name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <label className="collab-field">
-                    <span className="collab-label">Email</span>
-                    <input
-                      type="email"
-                      name="email"
-                      autoComplete="email"
-                      placeholder="you@company.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
+                <label className="collab-field">
+                  <span className="collab-label">Name</span>
+                  <input
+                    type="text"
+                    name="name"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </label>
 
-                <fieldset className="collab-intent">
-                  <legend className="collab-label">What&apos;s this about?</legend>
-                  <div className="collab-chips">
+                <label className="collab-field">
+                  <span className="collab-label">Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="you@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </label>
+
+                <label className="collab-field">
+                  <span className="collab-label">What&apos;s this about?</span>
+                  <select value={intent} onChange={(e) => setIntent(e.target.value as ContactIntent)}>
                     {CONTACT_INTENTS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        className={`collab-chip${intent === opt.value ? " collab-chip--on" : ""}`}
-                        aria-pressed={intent === opt.value}
-                        onClick={() => setIntent(opt.value)}
-                      >
+                      <option key={opt.value} value={opt.value}>
                         {opt.label}
-                      </button>
+                      </option>
                     ))}
-                  </div>
-                </fieldset>
+                  </select>
+                </label>
 
                 <label className="collab-field">
                   <span className="collab-label">Message</span>
                   <textarea
                     name="message"
-                    rows={3}
+                    rows={4}
                     placeholder="A sentence on the project, timeline, or what you need."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -185,9 +157,6 @@ export function Contact(): React.ReactElement {
 
                 <button type="submit" className="collab-send" disabled={status === "sending"}>
                   {status === "sending" ? "Sending" : "Send message"}
-                  <span className="collab-send-ar" aria-hidden="true">
-                    <Arrow />
-                  </span>
                 </button>
               </form>
             )}

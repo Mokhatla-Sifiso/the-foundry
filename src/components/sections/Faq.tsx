@@ -1,29 +1,33 @@
 import { Reveal } from "@/components/primitives/Reveal";
-import { FAQS } from "@/lib/constants";
+import { FAQS, SITE } from "@/lib/constants";
 
 export function Faq(): React.ReactElement {
   return (
     <section id="faq" className="faq sec">
       <div className="wrap">
-        <Reveal as="span" className="eyebrow">
-          FAQ
-        </Reveal>
-        <Reveal>
-          <h2 className="faq-h">A few common questions.</h2>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <div className="faq-list">
-            {FAQS.map((item) => (
-              <details className="faq-item" key={item.q} name="faq">
-                <summary className="faq-q">
-                  <span>{item.q}</span>
-                  <span className="faq-ic" aria-hidden="true" />
-                </summary>
-                <p className="faq-a">{item.a}</p>
-              </details>
-            ))}
+        <div className="faq-grid">
+          <div className="faq-aside">
+            <Reveal>
+              <h2 className="faq-h">Questions, answered.</h2>
+            </Reveal>
+            <Reveal delay={0.05}>
+              <p className="faq-sub">A few things worth knowing before we start.</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <a className="faq-ask" href={`mailto:${SITE.email}`}>
+                Still curious? Email me
+              </a>
+            </Reveal>
           </div>
-        </Reveal>
+          <Reveal delay={0.05} as="div" className="faq-list">
+            {FAQS.map((item) => (
+              <div className="faq-item" key={item.q}>
+                <h3 className="faq-q">{item.q}</h3>
+                <p className="faq-a">{item.a}</p>
+              </div>
+            ))}
+          </Reveal>
+        </div>
       </div>
     </section>
   );
