@@ -186,14 +186,23 @@ describe("TransContinental", () => {
   });
 });
 describe("Faq", () => {
-  it("renders every question and answer as an open two-column list", () => {
+  it("renders an accordion: a toggle button per question and the answers present", () => {
     const { container } = render(<Faq />);
     expect(container.querySelector("section#faq")).not.toBeNull();
     for (const item of FAQS) {
-      expect(screen.getByText(item.q)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: new RegExp(item.q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) })).toBeInTheDocument();
       expect(screen.getByText(item.a)).toBeInTheDocument();
     }
-    expect(container.querySelectorAll(".faq-card").length).toBe(FAQS.length);
+    expect(container.querySelectorAll(".faq-item").length).toBe(FAQS.length);
+  });
+  it("opens the first item by default and toggles on click", () => {
+    const { container } = render(<Faq />);
+    const items = container.querySelectorAll(".faq-item");
+    expect(items[0].classList.contains("faq-item--open")).toBe(true);
+    expect(items[1].classList.contains("faq-item--open")).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(FAQS[1].q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }));
+    expect(container.querySelectorAll(".faq-item")[1].classList.contains("faq-item--open")).toBe(true);
+    expect(container.querySelectorAll(".faq-item")[0].classList.contains("faq-item--open")).toBe(false);
   });
 });
 describe("Contact", () => {
