@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { AI_TOOLS } from "@/lib/ai-tools";
 
 const LOGOS = AI_TOOLS.flatMap((g) => g.tools);
-const COUNT = 120;
+const COUNT = 84;
 const CELLS: ReadonlyArray<(typeof LOGOS)[number] | null> = (() => {
   const arr: ((typeof LOGOS)[number] | null)[] = Array.from({ length: COUNT }, () => null);
   LOGOS.forEach((logo, j) => {

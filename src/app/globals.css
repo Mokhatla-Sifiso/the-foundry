@@ -858,8 +858,12 @@ html[data-theme="dark"] .services-section {
 .ai {
   position: relative;
   overflow: hidden;
-  background-color: #080b0d;
-  color: #e9f1f4;
+  --ai-ink: var(--fg);
+  background-color: transparent;
+  color: var(--fg);
+  transition:
+    background-color 0.7s var(--ease),
+    color 0.7s var(--ease);
 }
 .ai > .wrap {
   position: relative;
@@ -867,10 +871,11 @@ html[data-theme="dark"] .services-section {
 }
 .ai .eyebrow,
 .ai .ai-lead {
-  color: rgba(233, 241, 244, 0.58);
+  color: color-mix(in oklab, var(--ai-ink) 58%, transparent);
+  transition: color 0.7s var(--ease);
 }
 .ai .ai-h {
-  color: #f5fafb;
+  color: currentColor;
   font-weight: 700;
   font-size: clamp(34px, 6vw, 84px);
   letter-spacing: -0.04em;
@@ -880,6 +885,21 @@ html[data-theme="dark"] .services-section {
   text-wrap: balance;
 }
 .ai .ai-h .em {
+  color: #0f5f7c;
+  transition: color 0.7s var(--ease);
+}
+html[data-theme="dark"] .ai .ai-h .em {
+  color: var(--candy);
+}
+.ai.ai--peak {
+  --ai-ink: #e9f1f4;
+  background-color: #070a0c;
+  color: #e9f1f4;
+}
+.ai.ai--peak .ai-h {
+  color: #f5fafb;
+}
+.ai.ai--peak .ai-h .em {
   color: var(--candy);
 }
 .ai-lead {
@@ -2484,7 +2504,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   gap: 22px 28px;
   margin: 4px 0 clamp(48px, 6vw, 76px);
   list-style: none;
-  border-top: 1px solid color-mix(in oklab, currentColor 15%, transparent);
+  border-top: 1px solid color-mix(in oklab, var(--ai-ink) 15%, transparent);
   padding-top: 28px;
 }
 .ai-flow-step {
@@ -2497,17 +2517,18 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: color-mix(in oklab, currentColor 52%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 52%, transparent);
 }
 .ai-flow-t {
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--ai-ink);
 }
 .ai-flow-l {
   font-size: 13.5px;
   line-height: 1.5;
-  color: color-mix(in oklab, currentColor 68%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 72%, transparent);
 }
 
 .ai-value {
@@ -2521,23 +2542,24 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   font-weight: 600;
   letter-spacing: -0.015em;
   margin-bottom: 9px;
+  color: var(--ai-ink);
 }
 .ai-value-l {
   font-size: 14.5px;
   line-height: 1.55;
-  color: color-mix(in oklab, currentColor 70%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 74%, transparent);
 }
 
 .ai-proof {
   font-size: 14.5px;
   line-height: 1.55;
-  color: color-mix(in oklab, currentColor 60%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 64%, transparent);
   margin: 0 0 clamp(48px, 6vw, 76px);
   max-width: 62ch;
 }
 .ai-proof b {
   font-weight: 700;
-  color: color-mix(in oklab, currentColor 94%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 96%, transparent);
 }
 
 .ai-tk-gd {
@@ -2586,7 +2608,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   overflow: hidden;
   pointer-events: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 .lat-cell {
   aspect-ratio: 1;
@@ -2595,12 +2617,12 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .lat-tile {
   position: relative;
-  width: 72%;
-  height: 72%;
+  width: 74%;
+  height: 74%;
   transform: rotate(45deg);
-  border-radius: 13px;
-  background: color-mix(in oklab, currentColor 2.5%, transparent);
-  border: 1px solid color-mix(in oklab, currentColor 7%, transparent);
+  border-radius: 22px;
+  background: color-mix(in oklab, var(--ai-ink) 2.5%, transparent);
+  border: 1px solid color-mix(in oklab, var(--ai-ink) 7%, transparent);
 }
 .lat-in {
   position: absolute;
@@ -2610,20 +2632,20 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   place-items: center;
 }
 .lat-in svg {
-  width: 32px;
-  height: 32px;
-  color: color-mix(in oklab, currentColor 11%, transparent);
+  width: 50px;
+  height: 50px;
+  color: color-mix(in oklab, var(--ai-ink) 11%, transparent);
 }
 .lat-mono {
-  font-size: 16px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.04em;
-  color: color-mix(in oklab, currentColor 13%, transparent);
+  color: color-mix(in oklab, var(--ai-ink) 13%, transparent);
 }
 .lat-glow {
   position: absolute;
-  border-radius: 13px;
-  padding: 1.5px;
+  border-radius: 22px;
+  padding: 2px;
   transform: rotate(45deg);
   background: conic-gradient(
     from var(--lat-a),

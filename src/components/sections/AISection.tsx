@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AILattice } from "./AILattice";
@@ -11,8 +12,19 @@ export function AISection({
   showPhone = true,
   showDesktop = true,
 }: AISectionProps = {}): React.ReactElement {
+  const ref = useRef<HTMLElement>(null);
+  const [peak, setPeak] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(([entry]) => setPeak(entry.isIntersecting), {
+      rootMargin: "-42% 0px -42% 0px",
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
   return (
-    <section id="ai" className="ai sec">
+    <section ref={ref} id="ai" className={`ai sec${peak ? " ai--peak" : ""}`}>
       <AILattice />
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
