@@ -1,4 +1,4 @@
-import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { SHIFTS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("SITE", () => {
   it("carries the spec identity strings verbatim", () => {
     expect(SITE.name).toBe("Mzwakhe Mokhatla");
@@ -72,14 +72,13 @@ describe("XP", () => {
     expect(XP[3].now).toBeUndefined();
   });
 });
-describe("AIITEMS", () => {
-  it("is the four spec items with their tool sets", () => {
-    expect(AIITEMS.map((a) => a.t)).toEqual([
-      "AI pair-programming",
-      "Rapid prototyping",
-      "Tests & documentation",
-      "Review & research",
-    ]);
-    expect(AIITEMS[0].tools).toEqual(["Cursor", "Copilot"]);
+describe("SHIFTS", () => {
+  it("is four old-way/now pairs, each with both sides filled", () => {
+    expect(SHIFTS).toHaveLength(4);
+    for (const s of SHIFTS) {
+      expect(s.old.length).toBeGreaterThan(0);
+      expect(s.now.length).toBeGreaterThan(0);
+    }
+    expect(SHIFTS[0].now).toMatch(/reviewed/i);
   });
 });

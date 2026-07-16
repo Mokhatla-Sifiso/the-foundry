@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
-import { AIITEMS } from "@/lib/constants";
+import { AIToolkit } from "./AIToolkit";
+import { SHIFTS } from "@/lib/constants";
 type AISectionProps = Readonly<{
   showPhone?: boolean;
   showDesktop?: boolean;
@@ -29,17 +30,18 @@ export function AISection({
     <section ref={sectionRef} id="ai" className={`ai sec${peakActive ? " ai--peak" : ""}`}>
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
-          AI in the workflow
+          In the workflow
         </Reveal>
         <Reveal>
           <h2 className="ai-h">
-            AI is part of <span className="em">how I build.</span>
+            My stack got faster. <span className="em">My judgment stayed mine.</span>
           </h2>
         </Reveal>
         <Reveal delay={0.05}>
           <p className="ai-lead">
-            I treat AI as everyday tooling, not a novelty, wired into the same review and
-            observability loops I expect from production software.
+            Agents live in my terminal and editor now, handling scaffolding, migrations, tests and
+            first drafts across the whole stack. I still own the architecture, the review, and the
+            call on what ships. The difference is I get there in hours, not days.
           </p>
         </Reveal>
 
@@ -67,32 +69,42 @@ export function AISection({
           ) : null}
 
           <span className="dev-label" style={{ top: -8, left: 56 }}>
-            AI Briefings
+            VS Code
           </span>
           <span className="dev-label" style={{ bottom: 22, left: -28 }}>
-            On your wrist
+            Claude
           </span>
           <span className="dev-label" style={{ bottom: -2, right: -14 }}>
-            Full reporting
+            GitHub
           </span>
         </div>
 
-        <div className="ai-grid">
-          {AIITEMS.map((item, i) => (
-            <Reveal key={item.t} delay={(i % 2) * 0.06} style={{ height: "100%" }}>
-              <div className="ai-item">
-                <div className="ai-n">{String(i + 1).padStart(2, "0")}</div>
-                <h3>{item.t}</h3>
-                <p>{item.d}</p>
-                <div className="ai-tools">
-                  {item.tools.map((tool) => (
-                    <span key={tool}>{tool}</span>
-                  ))}
-                </div>
+        <Reveal>
+          <div className="ai-shift" role="table" aria-label="How my workflow changed">
+            <div className="ai-shift-row ai-shift-head" role="row">
+              <span className="ai-shift-then" role="columnheader">
+                The old way
+              </span>
+              <span className="ai-shift-now" role="columnheader">
+                Now
+              </span>
+            </div>
+            {SHIFTS.map((s) => (
+              <div key={s.now} className="ai-shift-row" role="row">
+                <span className="ai-shift-then" role="cell">
+                  {s.old}
+                </span>
+                <span className="ai-shift-now" role="cell">
+                  {s.now}
+                </span>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <AIToolkit />
+        </Reveal>
       </div>
     </section>
   );
