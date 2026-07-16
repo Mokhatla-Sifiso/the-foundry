@@ -10,6 +10,9 @@ type Location = Readonly<{
   org: string;
   role: string;
   when: string;
+  dayToDay: string;
+  core: ReadonlyArray<string>;
+  deliverables: ReadonlyArray<string>;
   order: number;
   lat: number;
   lng: number;
@@ -24,8 +27,19 @@ const LOCATIONS: ReadonlyArray<Location> = [
     city: "Pretoria",
     country: "South Africa",
     org: "IST",
-    role: "Junior Software Developer",
+    role: "Junior Software Developer & Intern",
     when: "Jan 2021 to Dec 2022",
+    dayToDay:
+      "Customising utility GIS software and migrating spatial data on the GE Smallworld Magik platform.",
+    core: [
+      "Magik development across Electric Office and Physical Network Inventory",
+      "Data migration and GE Mobile Enterprise customisation (JSON, XML)",
+      "Formal training in Magik, EO Admin and spatial databases",
+    ],
+    deliverables: [
+      "Customised Electric Office and mobile-enterprise modules",
+      "Spatial datasets migrated into production GIS systems",
+    ],
     order: 1,
     lat: -25.73,
     lng: 28.19,
@@ -40,6 +54,17 @@ const LOCATIONS: ReadonlyArray<Location> = [
     org: "Nybble Technologies",
     role: "Frontend Engineer",
     when: "Dec 2022 to Jun 2023",
+    dayToDay:
+      "Building responsive React UI over a Postgres backend and demoing progress straight to clients.",
+    core: [
+      "Responsive components in ReactJS + Redux on PostgreSQL",
+      "GitHub, Azure DevOps and Postman in the daily workflow",
+      "Client-facing collaboration and product demos",
+    ],
+    deliverables: [
+      "Reusable, responsive front-end component set",
+      "Live product demos delivered to clients",
+    ],
     order: 2,
     lat: -26.05,
     lng: 28.03,
@@ -54,6 +79,17 @@ const LOCATIONS: ReadonlyArray<Location> = [
     org: "Nybble · NMB Bank",
     role: "Frontend Engineer (e-Teller)",
     when: "Dec 2022 to Jun 2023",
+    dayToDay:
+      "On the ground in Tanzania, hardening and releasing the e-Teller banking app with NMB's team.",
+    core: [
+      "Led testing and deployment of the e-Teller app",
+      "On-site international delivery at NMB Bank",
+      "Direct collaboration with the client's banking team",
+    ],
+    deliverables: [
+      "e-Teller app tested and deployed into NMB's environment",
+      "In-country release and handover to the bank",
+    ],
     order: 3,
     lat: -6.79,
     lng: 39.21,
@@ -65,8 +101,21 @@ const LOCATIONS: ReadonlyArray<Location> = [
     city: "Roodepoort",
     country: "South Africa",
     org: "MTN Group",
-    role: "Software Engineer · Tech Lead",
+    role: "Software Engineer · Acting Tech Lead",
     when: "Mar 2024 to Present",
+    dayToDay:
+      "Leading StudioSync sprints, reviews and mentoring while building microfrontends across MTN's internal platforms.",
+    core: [
+      "Acting Technical Lead on StudioSync (payroll & contract platform)",
+      "Microfrontends for Kente, Bayobab BSP Portal, HR Assist, Knowledge Base",
+      "React/TypeScript, Azure Functions, Pulumi IaC, PostgreSQL, Grafana",
+      "Code reviews, engineering standards and mentoring juniors",
+    ],
+    deliverables: [
+      "Time reporting, people and contract-management modules",
+      "Compliance dashboards and administrative insights",
+      "Component standardisation rollout; quarterly exec demos",
+    ],
     order: 4,
     lat: -26.17,
     lng: 27.87,
@@ -79,8 +128,20 @@ const LOCATIONS: ReadonlyArray<Location> = [
     city: "Waterfall",
     country: "South Africa",
     org: "Accenture",
-    role: "Product & Platform Engineer",
+    role: "Software Product & Platform Engineer",
     when: "Mar 2024 to Present",
+    dayToDay:
+      "Shaping the Bayobab Client Portal's architecture and moving its backend from Java to TypeScript.",
+    core: [
+      "Frontend architecture for the Bayobab Client Portal",
+      "Java to TypeScript backend migration",
+      "Product discovery, technical direction and documentation",
+      "Architecture and tooling standards in a Scrum team",
+    ],
+    deliverables: [
+      "Backend services moved onto maintainable TypeScript",
+      "Architectural guidance, tooling standards and mentoring",
+    ],
     order: 5,
     lat: -25.99,
     lng: 28.13,
@@ -275,6 +336,29 @@ export function TransContinental(): React.ReactElement {
             <p className="trans-panel-org">{active.org}</p>
             <p className="trans-panel-role">{active.role}</p>
             <p className="trans-panel-when">{active.when}</p>
+
+            <div className="trans-panel-body">
+              <div className="trans-panel-block">
+                <span className="trans-panel-label">Day to day</span>
+                <p className="trans-panel-day">{active.dayToDay}</p>
+              </div>
+              <div className="trans-panel-block">
+                <span className="trans-panel-label">Core</span>
+                <ul className="trans-panel-list">
+                  {active.core.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="trans-panel-block">
+                <span className="trans-panel-label">Deliverables</span>
+                <ul className="trans-panel-list">
+                  {active.deliverables.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </aside>
         </Reveal>
       </div>
