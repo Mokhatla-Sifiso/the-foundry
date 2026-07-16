@@ -5,7 +5,7 @@ jest.mock("next/image", () => ({
     <img src={src} alt={alt} {...rest} />
   ),
 }));
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
@@ -135,6 +135,29 @@ describe("AISection", () => {
     expect(container.querySelector(".tablet")).toBeNull();
     expect(container.querySelector(".watch")).not.toBeNull();
     expect(container.querySelector(".laptop")).not.toBeNull();
+  });
+  it("adds the peak modifier only while the section spans the viewport centre", () => {
+    beforeEachLocal();
+    let fire: ((entries: Array<{ isIntersecting: boolean }>) => void) | undefined;
+    const observe = jest.fn();
+    const disconnect = jest.fn();
+    class MockIO {
+      constructor(cb: (entries: Array<{ isIntersecting: boolean }>) => void) {
+        fire = cb;
+      }
+      observe = observe;
+      disconnect = disconnect;
+      unobserve = jest.fn();
+      takeRecords = jest.fn();
+    }
+    (globalThis as unknown as { IntersectionObserver: unknown }).IntersectionObserver = MockIO;
+    const { container } = render(<AISection />);
+    const section = container.querySelector("section#ai") as HTMLElement;
+    expect(section.classList.contains("ai--peak")).toBe(false);
+    act(() => fire?.([{ isIntersecting: true }]));
+    expect(section.classList.contains("ai--peak")).toBe(true);
+    act(() => fire?.([{ isIntersecting: false }]));
+    expect(section.classList.contains("ai--peak")).toBe(false);
   });
   function beforeEachLocal(): void {
     window.localStorage.clear();
