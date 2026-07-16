@@ -99,13 +99,3 @@ export const XP: ReadonlyArray<XpRow> = [
   },
   { role: "Junior Software Developer", org: "IST, Pretoria", when: "Jan 2021, Dec 2022" },
 ];
-export type Shift = Readonly<{ old: string; now: string }>;
-export const SHIFTS: ReadonlyArray<Shift> = [
-  { old: "Boilerplate & migrations by hand", now: "Generated, then reviewed line by line" },
-  {
-    old: "Prototype one direction, hope it lands",
-    now: "Three directions in an afternoon, keep what earns it",
-  },
-  { old: "Tests & docs written last, if ever", now: "Drafted alongside the code" },
-  { old: "Twenty tabs of research", now: "A briefed summary I verify" },
-];

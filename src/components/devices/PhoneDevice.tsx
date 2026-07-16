@@ -3,10 +3,10 @@ import { IconClaude } from "@/components/primitives/brandIcons";
 export function PhoneDevice(): React.ReactElement {
   return (
     <>
-      <div className="phone-notch" />
+      <span className="phone-island" aria-hidden="true" />
       <div className="phone-sb">
         <span>9:41</span>
-        <span>Claude Code · CLI</span>
+        <span>CLI</span>
       </div>
       <div className="phone-pad">
         <div className="cl-head">
