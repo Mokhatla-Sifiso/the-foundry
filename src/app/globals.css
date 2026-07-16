@@ -979,7 +979,7 @@ html[data-theme="dark"] .ai.ai--peak .ai-tools span {
 
   max-width: 880px;
   margin: 10px auto 56px;
-  min-height: 600px;
+  min-height: 560px;
   padding: 30px 0;
 }
 .dev-label {
@@ -1037,7 +1037,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .laptop {
   position: relative;
   z-index: 2;
-  width: min(540px, 84%);
+  width: min(500px, 72%);
   margin: 0 auto;
   filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55)) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.3));
 }
@@ -1234,8 +1234,8 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   position: absolute;
   z-index: 6;
   top: auto;
-  bottom: -26px;
-  left: -14px;
+  bottom: -18px;
+  left: 158px;
   right: auto;
   width: 168px;
   aspect-ratio: 9 / 19;
@@ -1354,9 +1354,9 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .watch {
   position: absolute;
   z-index: 7;
-  top: 2px;
-  bottom: auto;
-  left: -26px;
+  top: auto;
+  bottom: 24px;
+  left: 88px;
   width: 92px;
   height: 112px;
   overflow: visible;
@@ -1406,9 +1406,11 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .tablet {
   position: absolute;
-  z-index: 6;
-  bottom: -20px;
-  right: -18px;
+  z-index: 5;
+  top: auto;
+  bottom: 44px;
+  right: 70px;
+  left: auto;
   width: 232px;
   aspect-ratio: 4 / 3;
   background: #06090b;
