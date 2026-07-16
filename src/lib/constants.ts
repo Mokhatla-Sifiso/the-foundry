@@ -99,32 +99,27 @@ export const XP: ReadonlyArray<XpRow> = [
   },
   { role: "Junior Software Developer", org: "IST, Pretoria", when: "Jan 2021, Dec 2022" },
 ];
-export type AiItem = Readonly<{
-  t: string;
-  d: string;
-  tools: ReadonlyArray<string>;
-}>;
-export const AIITEMS: ReadonlyArray<AiItem> = [
+
+export type WorkflowStep = Readonly<{ n: string; title: string; line: string }>;
+export const AI_WORKFLOW: ReadonlyArray<WorkflowStep> = [
+  { n: "01", title: "Edit", line: "Agents draft and refactor in the editor. I set the direction." },
+  { n: "02", title: "Pair", line: "Claude on the hard parts: architecture, tricky refactors, edge cases." },
+  { n: "03", title: "Verify", line: "Tests and CI must be green. Nothing ships on vibes." },
+  { n: "04", title: "Ship", line: "Every diff reviewed by me, then merged and live." },
+];
+
+export type ValuePoint = Readonly<{ title: string; line: string }>;
+export const AI_VALUE: ReadonlyArray<ValuePoint> = [
   {
-    t: "AI pair-programming",
-    d: "Cursor and Copilot handle scaffolding, refactors, and the tedious parts of a migration, so I stay in flow while the boilerplate writes itself.",
-    tools: ["Cursor", "Copilot"],
+    title: "Production-grade, not prototypes",
+    line: "Every change is reviewed, tested, and gated by CI before it ships.",
   },
   {
-    t: "Rapid prototyping",
-    d: "I stand up UI prototypes and explore several directions in minutes with LLMs, then keep only what earns its place in the product.",
-    tools: ["LLM prompting", "Prototyping"],
+    title: "Velocity with judgment",
+    line: "Days of scope delivered in hours, without lowering the bar.",
   },
   {
-    t: "Tests & documentation",
-    d: "Generating unit and integration tests, surfacing edge cases, and drafting docs keeps the codebase understandable as it grows.",
-    tools: ["Test generation", "Docs"],
-  },
-  {
-    t: "Review & research",
-    d: "A second pass on pull requests, plus tracking new AI tooling and folding what genuinely works into the team's everyday practice.",
-    tools: ["PR review", "AI trends"],
+    title: "Fluent across the AI stack",
+    line: "Comfortable with the whole toolchain, and quick to adopt what is new.",
   },
 ];
-export const ASSISTANT_NAME = "Clerk";
-export const PEAK_COLOR = "#020202";
