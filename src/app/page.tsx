@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/primitives/SmoothScroll";
 import { AISection } from "@/components/sections/AISection";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
+import { Faq } from "@/components/sections/Faq";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Recruiters } from "@/components/sections/Recruiters";
@@ -26,6 +27,7 @@ export default function HomePage(): React.ReactElement {
         <AISection />
         <Recruiters />
         <Contact />
+        <Faq />
       </main>
       <Footer />
     </SmoothScroll>

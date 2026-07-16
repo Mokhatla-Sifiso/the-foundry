@@ -1,34 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Arrow } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { CONTACT_INTENTS, SITE, type ContactIntent } from "@/lib/constants";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-function useLocalTime(): string | null {
-  const [time, setTime] = useState<string | null>(null);
-  useEffect(() => {
-    const format = (): string =>
-      new Intl.DateTimeFormat("en-ZA", {
-        timeZone: "Africa/Johannesburg",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }).format(new Date());
-    const raf = window.requestAnimationFrame(() => setTime(format()));
-    const id = window.setInterval(() => setTime(format()), 30_000);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.clearInterval(id);
-    };
-  }, []);
-  return time;
-}
-
 export function Contact(): React.ReactElement {
-  const localTime = useLocalTime();
-  const [copied, setCopied] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [intent, setIntent] = useState<ContactIntent>("contract");
@@ -36,16 +14,6 @@ export function Contact(): React.ReactElement {
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
-
-  async function copyEmail(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(SITE.email);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable */
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
@@ -87,14 +55,6 @@ export function Contact(): React.ReactElement {
   return (
     <section id="contact" className="collab sec">
       <div className="wrap">
-        <Reveal as="div" className="collab-head">
-          <span className="eyebrow">Let&apos;s collaborate</span>
-          <span className="collab-status">
-            <span className="collab-dot" aria-hidden="true" />
-            Available for contract &amp; freelance
-          </span>
-        </Reveal>
-
         <div className="collab-grid">
           <div className="collab-info">
             <Reveal>
@@ -109,17 +69,12 @@ export function Contact(): React.ReactElement {
               </p>
             </Reveal>
             <Reveal delay={0.1}>
-              <div className="collab-direct">
-                <a className="collab-mail" href={`mailto:${SITE.email}`}>
-                  <span className="collab-mail-v">{SITE.email}</span>
-                  <span className="collab-mail-ar" aria-hidden="true">
-                    <Arrow />
-                  </span>
-                </a>
-                <button type="button" className="collab-copy" onClick={copyEmail}>
-                  {copied ? "Copied" : "Copy"}
-                </button>
-              </div>
+              <a className="collab-mail" href={`mailto:${SITE.email}`}>
+                <span className="collab-mail-v">{SITE.email}</span>
+                <span className="collab-mail-ar" aria-hidden="true">
+                  <Arrow />
+                </span>
+              </a>
             </Reveal>
             <Reveal delay={0.14}>
               <dl className="collab-meta">
@@ -131,10 +86,7 @@ export function Contact(): React.ReactElement {
                 </div>
                 <div>
                   <dt>Based in</dt>
-                  <dd>
-                    {SITE.location}
-                    {localTime ? <span className="collab-time"> · {localTime}</span> : null}
-                  </dd>
+                  <dd>{SITE.location}</dd>
                 </div>
               </dl>
             </Reveal>

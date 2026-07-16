@@ -7,6 +7,7 @@ jest.mock("next/image", () => ({
 }));
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
+import { Faq } from "@/components/sections/Faq";
 import { TransContinental } from "@/components/sections/TransContinental";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
@@ -16,7 +17,7 @@ import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
-import { NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { FAQS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("Recruiters", () => {
   it("renders three tier cards, each routed to its own access path, plus one email link", () => {
     const { container } = render(<Recruiters />);
@@ -184,11 +185,21 @@ describe("TransContinental", () => {
     expect(screen.getByText(/Time reporting, people and contract-management modules/)).toBeInTheDocument();
   });
 });
+describe("Faq", () => {
+  it("renders the FAQ accordion with every question as a details/summary", () => {
+    const { container } = render(<Faq />);
+    expect(container.querySelector("section#faq")).not.toBeNull();
+    for (const q of FAQS) {
+      expect(screen.getByText(q.q)).toBeInTheDocument();
+    }
+    expect(container.querySelectorAll("details.faq-item").length).toBe(FAQS.length);
+  });
+});
 describe("Contact", () => {
-  it("renders the collaboration section: availability, channels, and the form", () => {
+  it("renders the collaboration section: headline, channels, and the form", () => {
     render(<Contact />);
-    expect(screen.getByText(/Available for contract/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
+    expect(screen.getByText(/reply personally/i)).toBeInTheDocument();
     expect(screen.getByText(SITE.email)).toBeInTheDocument();
     expect(screen.getByText(SITE.phone)).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Your name")).toBeInTheDocument();

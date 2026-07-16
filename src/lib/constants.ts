@@ -15,6 +15,33 @@ export const CONTACT_INTENTS = [
   { value: "other", label: "Something else" },
 ] as const;
 export type ContactIntent = (typeof CONTACT_INTENTS)[number]["value"];
+export const FAQS = [
+  {
+    q: "What kind of work do you take on?",
+    a: "Full-stack product builds, microfrontend architecture, and taking an idea from first commit to something shipped and maintained. TypeScript, React and Next.js, Node, and PostgreSQL are home turf.",
+  },
+  {
+    q: "Are you available for full-time roles?",
+    a: "Right now I focus on contract and freelance engagements. For an exceptional long-term fit, start a conversation and we can talk.",
+  },
+  {
+    q: "Where are you based, and do you work remotely?",
+    a: "Pretoria, South Africa (UTC+2). I work remotely with teams anywhere, and I have delivered on-site internationally when a project called for it.",
+  },
+  {
+    q: "How do you use AI in your work?",
+    a: "Agents handle scaffolding, migrations, tests, and first drafts. I own the architecture, the review, and the call on what ships, so you get speed without lowering the bar.",
+  },
+  {
+    q: "How soon can you start?",
+    a: "It depends on scope and current load. Send a note and I reply within a day, so we can work out timing together.",
+  },
+  {
+    q: "How do you price an engagement?",
+    a: "Rates depend on scope and how long we work together. Tell me what you are building and I come back with a clear, honest proposal.",
+  },
+] as const;
+export type FaqItem = (typeof FAQS)[number];
 export type NavLink = Readonly<{
   n: string;
   t: string;

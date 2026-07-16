@@ -1508,64 +1508,9 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   background: #0a0d0f;
   color: #eaf1f4;
 }
-.collab::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -18%;
-  width: 72%;
-  height: 62%;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    ellipse 50% 50% at 50% 50%,
-    color-mix(in oklab, var(--candy) 10%, transparent),
-    transparent 70%
-  );
-  pointer-events: none;
-}
 .collab > .wrap {
   position: relative;
   z-index: 1;
-}
-.collab .eyebrow {
-  color: color-mix(in oklab, #eaf1f4 55%, transparent);
-}
-.collab-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-bottom: clamp(26px, 3.5vw, 44px);
-  margin-bottom: clamp(30px, 4.5vw, 60px);
-  border-bottom: 1px solid color-mix(in oklab, #eaf1f4 12%, transparent);
-}
-.collab-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  font-weight: 600;
-  color: color-mix(in oklab, #eaf1f4 72%, transparent);
-}
-.collab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #43d17f;
-  box-shadow: 0 0 0 0 color-mix(in oklab, #43d17f 60%, transparent);
-  animation: collab-pulse 2.4s ease-out infinite;
-}
-@keyframes collab-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, #43d17f 55%, transparent);
-  }
-  70% {
-    box-shadow: 0 0 0 9px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
 }
 .collab-grid {
   display: grid;
@@ -1594,13 +1539,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   max-width: 40ch;
   margin: 0 0 clamp(34px, 4vw, 48px);
 }
-.collab-direct {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: clamp(28px, 3.5vw, 40px);
-}
 .collab-mail {
   display: inline-flex;
   align-items: center;
@@ -1611,6 +1549,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   color: #eaf1f4;
   text-decoration: none;
   overflow-wrap: anywhere;
+  margin-bottom: clamp(28px, 3.5vw, 40px);
 }
 .collab-mail-v {
   background-image: linear-gradient(var(--candy), var(--candy));
@@ -1634,25 +1573,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .collab-mail-ar svg {
   width: 18px;
   height: 18px;
-}
-.collab-copy {
-  height: 30px;
-  padding: 0 13px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in oklab, #eaf1f4 18%, transparent);
-  background: transparent;
-  color: color-mix(in oklab, #eaf1f4 65%, transparent);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    color 0.18s ease,
-    border-color 0.18s ease;
-}
-.collab-copy:hover {
-  color: #eaf1f4;
-  border-color: var(--candy);
 }
 .collab-meta {
   display: flex;
@@ -1683,10 +1603,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .collab-meta dd a:hover {
   color: var(--candy);
-}
-.collab-time {
-  color: color-mix(in oklab, #eaf1f4 50%, transparent);
-  font-weight: 500;
 }
 .collab-formwrap {
   min-width: 0;
@@ -1887,22 +1803,96 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   .collab-line {
     grid-template-columns: 1fr;
   }
-  .collab-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .collab-dot {
-    animation: none;
-  }
   .collab-mail-v,
   .collab-mail-ar {
     transition: none;
   }
 }
 
+.faq {
+  position: relative;
+}
+.faq-h {
+  font-weight: 700;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 18px 0 clamp(34px, 4vw, 52px);
+}
+.faq-list {
+  max-width: 840px;
+  border-top: 1px solid var(--line);
+}
+.faq-item {
+  border-bottom: 1px solid var(--line);
+}
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  list-style: none;
+  cursor: pointer;
+  padding: clamp(18px, 2.4vw, 26px) 0;
+  font-size: clamp(17px, 1.9vw, 21px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.faq-q::-webkit-details-marker {
+  display: none;
+}
+.faq-ic {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.faq-item[open] .faq-ic {
+  color: var(--candy);
+}
+.faq-ic::before,
+.faq-ic::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+.faq-ic::before {
+  left: 0;
+  top: 6.5px;
+  width: 15px;
+  height: 2px;
+}
+.faq-ic::after {
+  left: 6.5px;
+  top: 0;
+  width: 2px;
+  height: 15px;
+}
+.faq-item[open] .faq-ic::after {
+  transform: scaleY(0);
+  opacity: 0;
+}
+.faq-a {
+  margin: 0;
+  padding: 0 0 clamp(20px, 2.6vw, 28px);
+  max-width: 62ch;
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.65;
+  color: color-mix(in oklab, var(--fg) 62%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-ic::before,
+  .faq-ic::after {
+    transition: none;
+  }
+}
 .btn {
   display: inline-flex;
   align-items: center;
