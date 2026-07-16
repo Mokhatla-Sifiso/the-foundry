@@ -2,6 +2,7 @@ export function Laptop(): React.ReactElement {
   return (
     <>
       <div className="laptop-lid">
+        <span className="laptop-cam" aria-hidden="true" />
         <div className="laptop-scr vsc">
           <div className="vsc-bar">
             <span className="vsc-tl r" />

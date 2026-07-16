@@ -3,6 +3,7 @@ import { IconGithub } from "@/components/primitives/brandIcons";
 export function TabletDevice(): React.ReactElement {
   return (
     <>
+      <span className="tablet-cam" aria-hidden="true" />
       <div className="tablet-scr gh">
         <div className="gh-top">
           <span className="gh-mark" aria-hidden="true">

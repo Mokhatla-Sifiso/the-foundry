@@ -15,7 +15,7 @@ import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
-import { SHIFTS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("Recruiters", () => {
   it("renders three tier cards, each routed to its own access path, plus one email link", () => {
     const { container } = render(<Recruiters />);
@@ -109,27 +109,18 @@ describe("Experience", () => {
   });
 });
 describe("AISection", () => {
-  it("renders the eyebrow, headline, the old-way/now shifts, and the tool lineup", () => {
+  it("renders the eyebrow, headline, and the grouped tool lineup with every group", () => {
     beforeEachLocal();
     render(<AISection />);
     expect(screen.getByText("In the workflow")).toBeInTheDocument();
     expect(screen.getByText(/My judgment stayed mine/)).toBeInTheDocument();
-    for (const s of SHIFTS) {
-      expect(screen.getByText(s.old)).toBeInTheDocument();
-      expect(screen.getByText(s.now)).toBeInTheDocument();
-    }
     expect(screen.getByText("The tools behind it")).toBeInTheDocument();
-    expect(screen.getByText("Claude Code")).toBeInTheDocument();
-    expect(screen.getByText("OpenClaw")).toBeInTheDocument();
-    expect(screen.getByText("Obsidian")).toBeInTheDocument();
-  });
-  it("includes the three dev-label captions in the showcase", () => {
-    beforeEachLocal();
-    const { container } = render(<AISection />);
-    const labels = container.querySelectorAll(".dev-label");
-    expect(labels.length).toBe(3);
-    const texts = Array.from(labels).map((l) => l.textContent);
-    expect(texts).toEqual(["VS Code", "Claude", "GitHub"]);
+    for (const label of ["Agents in the loop", "Think & capture", "Local AI & ops", "Edit & ship"]) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+    for (const tool of ["Claude Code", "Codex", "OpenClaw", "Obsidian", "VS Code", "GitHub"]) {
+      expect(screen.getByText(tool)).toBeInTheDocument();
+    }
   });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();

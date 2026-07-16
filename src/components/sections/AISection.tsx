@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AIToolkit } from "./AIToolkit";
-import { SHIFTS } from "@/lib/constants";
 type AISectionProps = Readonly<{
   showPhone?: boolean;
   showDesktop?: boolean;
@@ -67,40 +66,7 @@ export function AISection({
               <TabletDevice />
             </Reveal>
           ) : null}
-
-          <span className="dev-label" style={{ top: -8, left: 56 }}>
-            VS Code
-          </span>
-          <span className="dev-label" style={{ bottom: 22, left: -28 }}>
-            Claude
-          </span>
-          <span className="dev-label" style={{ bottom: -2, right: -14 }}>
-            GitHub
-          </span>
         </div>
-
-        <Reveal>
-          <div className="ai-shift" role="table" aria-label="How my workflow changed">
-            <div className="ai-shift-row ai-shift-head" role="row">
-              <span className="ai-shift-then" role="columnheader">
-                The old way
-              </span>
-              <span className="ai-shift-now" role="columnheader">
-                Now
-              </span>
-            </div>
-            {SHIFTS.map((s) => (
-              <div key={s.now} className="ai-shift-row" role="row">
-                <span className="ai-shift-then" role="cell">
-                  {s.old}
-                </span>
-                <span className="ai-shift-now" role="cell">
-                  {s.now}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
 
         <Reveal delay={0.05}>
           <AIToolkit />
