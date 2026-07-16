@@ -48,7 +48,8 @@ export function ConsentBanner(): React.ReactElement | null {
                   <h2 id="consent-title">Your privacy</h2>
                   <p>
                     I use cookies to keep you signed in to <strong>/recruiter</strong> and remember
-                    your preferences. Read the <Link href="/legal/cookies">Cookie Policy</Link> and{" "}
+                    your preferences. With your consent, Google Analytics also measures how the site
+                    is used. Read the <Link href="/legal/cookies">Cookie Policy</Link> and{" "}
                     <Link href="/legal/privacy">Privacy Policy</Link> for details. You can change
                     your mind anytime.
                   </p>
