@@ -1711,34 +1711,63 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   color: #e9eaec;
   border-top: 1px solid color-mix(in oklab, #e9eaec 8%, transparent);
 }
-.faq-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
-  gap: clamp(36px, 5vw, 84px);
-  align-items: start;
-}
-.faq-aside {
-  position: sticky;
-  top: 120px;
+.faq .eyebrow {
+  color: color-mix(in oklab, #e9eaec 52%, transparent);
 }
 .faq-h {
-  font-size: clamp(26px, 3vw, 40px);
+  font-size: clamp(28px, 3.4vw, 46px);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.025em;
-  margin: 0 0 14px;
-  max-width: 12ch;
+  margin: 16px 0 clamp(34px, 4vw, 52px);
 }
-.faq-sub {
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.faq-card {
+  position: relative;
+  background: #101317;
+  border: 1px solid color-mix(in oklab, #e9eaec 9%, transparent);
+  border-radius: 14px;
+  padding: clamp(22px, 2.4vw, 30px);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+.faq-card:hover {
+  border-color: color-mix(in oklab, #e9eaec 18%, transparent);
+  background: #12161b;
+}
+.faq-n {
+  display: block;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, #e9eaec 36%, transparent);
+  margin-bottom: 16px;
+}
+.faq-q {
+  font-size: clamp(16px, 1.7vw, 18px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  color: #f1f2f3;
+}
+.faq-a {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: color-mix(in oklab, #e9eaec 56%, transparent);
+}
+.faq-foot {
+  margin: clamp(30px, 3.5vw, 44px) 0 0;
   font-size: 15px;
-  line-height: 1.55;
   color: color-mix(in oklab, #e9eaec 55%, transparent);
-  margin: 0 0 20px;
-  max-width: 32ch;
 }
-.faq-ask {
-  font-size: 14px;
-  color: color-mix(in oklab, #e9eaec 80%, transparent);
+.faq-foot a {
+  color: color-mix(in oklab, #e9eaec 88%, transparent);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in oklab, #e9eaec 25%, transparent);
   padding-bottom: 1px;
@@ -1746,43 +1775,13 @@ html[data-theme="light"] .ai-showcase .bg-fade {
     color 0.18s ease,
     border-color 0.18s ease;
 }
-.faq-ask:hover {
+.faq-foot a:hover {
   color: #fff;
   border-bottom-color: color-mix(in oklab, #e9eaec 55%, transparent);
 }
-.faq-list {
-  display: flex;
-  flex-direction: column;
-}
-.faq-item {
-  padding: clamp(20px, 2.4vw, 28px) 0;
-  border-top: 1px solid color-mix(in oklab, #e9eaec 10%, transparent);
-}
-.faq-item:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.faq-q {
-  font-size: clamp(16px, 1.7vw, 18px);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 0 0 10px;
-  color: #f0f1f2;
-}
-.faq-a {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: color-mix(in oklab, #e9eaec 58%, transparent);
-  max-width: 62ch;
-}
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .faq-grid {
     grid-template-columns: 1fr;
-    gap: clamp(26px, 6vw, 40px);
-  }
-  .faq-aside {
-    position: static;
   }
 }
 

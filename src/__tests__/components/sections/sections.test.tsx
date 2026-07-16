@@ -193,7 +193,7 @@ describe("Faq", () => {
       expect(screen.getByText(item.q)).toBeInTheDocument();
       expect(screen.getByText(item.a)).toBeInTheDocument();
     }
-    expect(container.querySelectorAll(".faq-item").length).toBe(FAQS.length);
+    expect(container.querySelectorAll(".faq-card").length).toBe(FAQS.length);
   });
 });
 describe("Contact", () => {
