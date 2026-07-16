@@ -9,6 +9,12 @@ export const SITE = {
   cvFileName: "Mzwakhe_Sifiso_Mokhatla_CV.pdf",
   portrait: "/img/Potrait.png",
 } as const;
+export const CONTACT_INTENTS = [
+  { value: "contract", label: "Contract" },
+  { value: "freelance", label: "Freelance" },
+  { value: "other", label: "Something else" },
+] as const;
+export type ContactIntent = (typeof CONTACT_INTENTS)[number]["value"];
 export type NavLink = Readonly<{
   n: string;
   t: string;

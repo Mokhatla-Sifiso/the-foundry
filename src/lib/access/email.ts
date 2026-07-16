@@ -174,3 +174,24 @@ export async function sendExecutiveReceipt(
   );
   await send(to, subject, html, text);
 }
+
+export async function sendContactToOwner(args: {
+  name: string;
+  email: string;
+  intent: string;
+  message: string;
+}): Promise<void> {
+  const subject = `New enquiry from ${args.name} (${args.intent})`;
+  const text =
+    `${args.name} (${args.email}) reached out through the site.\n\n` +
+    `About: ${args.intent}\n\n` +
+    `${args.message}\n`;
+  const html = shell(
+    `<h2 style="margin:0 0 8px;">New enquiry</h2>` +
+      `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
+      `<p style="margin:0 0 4px;color:#555;">About: <b>${esc(args.intent)}</b></p>` +
+      `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;white-space:pre-wrap;">${esc(args.message)}</p>` +
+      `<p style="margin:20px 0 0;"><a href="mailto:${esc(args.email)}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Reply to ${esc(args.name)}</a></p>`,
+  );
+  await send(SITE.email, subject, html, text);
+}

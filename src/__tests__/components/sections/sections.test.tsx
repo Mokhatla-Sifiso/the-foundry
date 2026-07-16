@@ -185,24 +185,46 @@ describe("TransContinental", () => {
   });
 });
 describe("Contact", () => {
-  it("renders the Don't be shy headline and both action buttons", () => {
+  it("renders the collaboration section: availability, channels, and the form", () => {
     render(<Contact />);
-    expect(screen.getByText(/Don't/)).toBeInTheDocument();
-    expect(screen.getByText("shy.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Start a conversation/i })).toHaveAttribute(
-      "href",
-      `mailto:${SITE.email}`,
-    );
-    expect(screen.getByRole("link", { name: /Download CV/i })).toHaveAttribute(
-      "href",
-      "/recruiter",
-    );
-  });
-  it("renders the email, phone, and location meta values", () => {
-    render(<Contact />);
+    expect(screen.getByText(/Available for contract/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
     expect(screen.getByText(SITE.email)).toBeInTheDocument();
     expect(screen.getByText(SITE.phone)).toBeInTheDocument();
-    expect(screen.getByText(SITE.location)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Your name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("you@company.com")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Contract" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Send message/i })).toBeInTheDocument();
+  });
+  it("posts to /api/contact and shows the sent confirmation on success", async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    global.fetch = fetchMock as unknown as typeof fetch;
+    render(<Contact />);
+    fireEvent.change(screen.getByPlaceholderText("Your name"), {
+      target: { value: "Jane Recruiter" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("you@company.com"), {
+      target: { value: "jane@acme.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/A sentence on the project/), {
+      target: { value: "We need a contractor for a three-month build." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Send message/i }));
+    expect(await screen.findByText("Message sent.")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/contact",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+  it("shows a validation message and does not post when fields are empty", () => {
+    const fetchMock = jest.fn();
+    global.fetch = fetchMock as unknown as typeof fetch;
+    render(<Contact />);
+    fireEvent.click(screen.getByRole("button", { name: /Send message/i }));
+    expect(screen.getByRole("alert")).toHaveTextContent(/Add your name/i);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 describe("Footer", () => {
