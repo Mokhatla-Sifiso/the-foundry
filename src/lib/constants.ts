@@ -99,3 +99,27 @@ export const XP: ReadonlyArray<XpRow> = [
   },
   { role: "Junior Software Developer", org: "IST, Pretoria", when: "Jan 2021, Dec 2022" },
 ];
+
+export type WorkflowStep = Readonly<{ n: string; title: string; line: string }>;
+export const AI_WORKFLOW: ReadonlyArray<WorkflowStep> = [
+  { n: "01", title: "Edit", line: "Agents draft and refactor in the editor. I set the direction." },
+  { n: "02", title: "Pair", line: "Claude on the hard parts: architecture, tricky refactors, edge cases." },
+  { n: "03", title: "Verify", line: "Tests and CI must be green. Nothing ships on vibes." },
+  { n: "04", title: "Ship", line: "Every diff reviewed by me, then merged and live." },
+];
+
+export type ValuePoint = Readonly<{ title: string; line: string }>;
+export const AI_VALUE: ReadonlyArray<ValuePoint> = [
+  {
+    title: "Production-grade, not prototypes",
+    line: "Every change is reviewed, tested, and gated by CI before it ships.",
+  },
+  {
+    title: "Velocity with judgment",
+    line: "Days of scope delivered in hours, without lowering the bar.",
+  },
+  {
+    title: "Fluent across the AI stack",
+    line: "Comfortable with the whole toolchain, and quick to adopt what is new.",
+  },
+];

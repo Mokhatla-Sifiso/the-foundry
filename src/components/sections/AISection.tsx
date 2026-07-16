@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AIToolkit } from "./AIToolkit";
+import { AI_WORKFLOW, AI_VALUE } from "@/lib/constants";
 type AISectionProps = Readonly<{
   showPhone?: boolean;
   showDesktop?: boolean;
@@ -67,6 +68,35 @@ export function AISection({
             </Reveal>
           ) : null}
         </div>
+
+        <Reveal delay={0.05}>
+          <ol className="ai-flow" aria-label="How I work with AI, step by step">
+            {AI_WORKFLOW.map((s) => (
+              <li key={s.n} className="ai-flow-step">
+                <span className="ai-flow-n">{s.n}</span>
+                <span className="ai-flow-t">{s.title}</span>
+                <span className="ai-flow-l">{s.line}</span>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <div className="ai-value">
+            {AI_VALUE.map((v) => (
+              <div key={v.title} className="ai-value-item">
+                <h3 className="ai-value-t">{v.title}</h3>
+                <p className="ai-value-l">{v.line}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <p className="ai-proof">
+            Not a demo: this site&apos;s own access system, its <b>329 tests</b>, and its{" "}
+            <b>CI pipeline</b> were built exactly this way.
+          </p>
+        </Reveal>
 
         <Reveal delay={0.05}>
           <AIToolkit />

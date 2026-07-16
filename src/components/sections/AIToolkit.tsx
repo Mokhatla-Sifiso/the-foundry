@@ -8,6 +8,7 @@ export function AIToolkit(): React.ReactElement {
         {AI_TOOLS.map((group) => (
           <div key={group.label} className="ai-tk-grp">
             <p className="ai-tk-gl">{group.label}</p>
+            <p className="ai-tk-gd">{group.desc}</p>
             <ul className="ai-tk-row">
               {group.tools.map((tool) => (
                 <li key={tool.name} className="ai-tk-tool">

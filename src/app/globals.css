@@ -2487,3 +2487,88 @@ html[data-theme="light"] .ai-showcase .bg-fade {
     grid-template-columns: 1fr;
   }
 }
+
+.ai-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px 28px;
+  margin: 4px 0 clamp(48px, 6vw, 76px);
+  list-style: none;
+  border-top: 1px solid color-mix(in oklab, currentColor 15%, transparent);
+  padding-top: 28px;
+}
+.ai-flow-step {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.ai-flow-n {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, currentColor 52%, transparent);
+}
+.ai-flow-t {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ai-flow-l {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: color-mix(in oklab, currentColor 68%, transparent);
+}
+
+.ai-value {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0 0 18px;
+}
+.ai-value-t {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-bottom: 9px;
+}
+.ai-value-l {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: color-mix(in oklab, currentColor 70%, transparent);
+}
+
+.ai-proof {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: color-mix(in oklab, currentColor 60%, transparent);
+  margin: 0 0 clamp(48px, 6vw, 76px);
+  max-width: 62ch;
+}
+.ai-proof b {
+  font-weight: 700;
+  color: color-mix(in oklab, currentColor 94%, transparent);
+}
+
+.ai-tk-gd {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: color-mix(in oklab, currentColor 60%, transparent);
+  margin: -4px 0 4px;
+  max-width: 24ch;
+}
+
+@media (max-width: 820px) {
+  .ai-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ai-value {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .ai-flow {
+    grid-template-columns: 1fr;
+  }
+}
