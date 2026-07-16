@@ -114,7 +114,6 @@ describe("AISection", () => {
     render(<AISection />);
     expect(screen.getByText("In the workflow")).toBeInTheDocument();
     expect(screen.getByText(/My judgment stayed mine/)).toBeInTheDocument();
-    expect(screen.getByText("The tools behind it")).toBeInTheDocument();
     for (const tool of ["Claude Code", "Codex", "OpenClaw", "Obsidian", "VS Code", "GitHub"]) {
       expect(screen.getByText(tool)).toBeInTheDocument();
     }

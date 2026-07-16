@@ -28,6 +28,7 @@ export function AISection({
   }, [threshold]);
   return (
     <section ref={sectionRef} id="ai" className={`ai sec${peakActive ? " ai--peak" : ""}`}>
+      <AILattice />
       <div className="wrap">
         <Reveal as="span" className="eyebrow">
           In the workflow
@@ -46,8 +47,6 @@ export function AISection({
         </Reveal>
 
         <div className="ai-showcase">
-          <div className="bg-fade" />
-
           <Reveal className="laptop">
             <Laptop />
           </Reveal>
@@ -98,12 +97,6 @@ export function AISection({
           </p>
         </Reveal>
 
-        <Reveal delay={0.05}>
-          <p className="ai-tk-eyebrow">The tools behind it</p>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <AILattice />
-        </Reveal>
       </div>
     </section>
   );
