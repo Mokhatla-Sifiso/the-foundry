@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 export default function CookiePage(): React.ReactElement {
   return (
-    <LegalLayout title="Cookie Policy" version={COOKIE_POLICY_VERSION} updatedAt="23 June 2026">
+    <LegalLayout title="Cookie Policy" version={COOKIE_POLICY_VERSION} updatedAt="16 July 2026">
       <h2>About this list</h2>
       <p>
         Every cookie and browser-storage key this site sets is listed below. The list is rendered
