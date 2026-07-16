@@ -5,7 +5,7 @@ jest.mock("next/image", () => ({
     <img src={src} alt={alt} {...rest} />
   ),
 }));
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
@@ -15,7 +15,7 @@ import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
-import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("Recruiters", () => {
   it("renders three tier cards, each routed to its own access path, plus one email link", () => {
     const { container } = render(<Recruiters />);
@@ -109,25 +109,24 @@ describe("Experience", () => {
   });
 });
 describe("AISection", () => {
-  it("renders the eyebrow, headline, and all four AIITEMS with their tools", () => {
+  it("renders the eyebrow, headline, and the grouped tool lineup with every group", () => {
     beforeEachLocal();
     render(<AISection />);
-    expect(screen.getByText("AI in the workflow")).toBeInTheDocument();
-    expect(screen.getByText(/AI is part of/)).toBeInTheDocument();
-    for (const item of AIITEMS) {
-      expect(screen.getByRole("heading", { level: 3, name: item.t })).toBeInTheDocument();
-      for (const tool of item.tools) {
-        expect(screen.getByText(tool)).toBeInTheDocument();
-      }
+    expect(screen.getByText("In the workflow")).toBeInTheDocument();
+    expect(screen.getByText(/My judgment stayed mine/)).toBeInTheDocument();
+    for (const tool of ["Claude Code", "Codex", "OpenClaw", "Obsidian", "VS Code", "GitHub"]) {
+      expect(screen.getByText(tool)).toBeInTheDocument();
     }
   });
-  it("includes the three dev-label captions in the showcase", () => {
+  it("shows the workflow steps, recruiter value points, and the real proof line", () => {
     beforeEachLocal();
-    const { container } = render(<AISection />);
-    const labels = container.querySelectorAll(".dev-label");
-    expect(labels.length).toBe(3);
-    const texts = Array.from(labels).map((l) => l.textContent);
-    expect(texts).toEqual(["AI Briefings", "On your wrist", "Full reporting"]);
+    render(<AISection />);
+    for (const step of ["Edit", "Pair", "Verify", "Ship"]) {
+      expect(screen.getByText(step)).toBeInTheDocument();
+    }
+    expect(screen.getByText("Production-grade, not prototypes")).toBeInTheDocument();
+    expect(screen.getByText("Velocity with judgment")).toBeInTheDocument();
+    expect(screen.getByText("329 tests")).toBeInTheDocument();
   });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();
@@ -136,6 +135,29 @@ describe("AISection", () => {
     expect(container.querySelector(".tablet")).toBeNull();
     expect(container.querySelector(".watch")).not.toBeNull();
     expect(container.querySelector(".laptop")).not.toBeNull();
+  });
+  it("adds the peak modifier only while the section spans the viewport centre", () => {
+    beforeEachLocal();
+    let fire: ((entries: Array<{ isIntersecting: boolean }>) => void) | undefined;
+    const observe = jest.fn();
+    const disconnect = jest.fn();
+    class MockIO {
+      constructor(cb: (entries: Array<{ isIntersecting: boolean }>) => void) {
+        fire = cb;
+      }
+      observe = observe;
+      disconnect = disconnect;
+      unobserve = jest.fn();
+      takeRecords = jest.fn();
+    }
+    (globalThis as unknown as { IntersectionObserver: unknown }).IntersectionObserver = MockIO;
+    const { container } = render(<AISection />);
+    const section = container.querySelector("section#ai") as HTMLElement;
+    expect(section.classList.contains("ai--peak")).toBe(false);
+    act(() => fire?.([{ isIntersecting: true }]));
+    expect(section.classList.contains("ai--peak")).toBe(true);
+    act(() => fire?.([{ isIntersecting: false }]));
+    expect(section.classList.contains("ai--peak")).toBe(false);
   });
   function beforeEachLocal(): void {
     window.localStorage.clear();

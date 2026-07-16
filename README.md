@@ -24,6 +24,23 @@ Priority order:
 5. Redeploy. Visit `/sitemap.xml` and `/robots.txt` — they should now
    reference the custom domain.
 
+## Visitor analytics (optional, consent-gated)
+
+Daily visitors and page views run on Google Analytics 4, gated behind the
+cookie banner. It is off until you supply a Measurement ID — no script, no
+cookies, and the CSP stays fully locked down.
+
+1. In **Google Analytics → Admin → Data streams**, create a Web stream for the
+   domain and copy the **Measurement ID** (`G-XXXXXXXXXX`).
+2. In **Vercel → Settings → Environment Variables**, set
+   `NEXT_PUBLIC_GA_MEASUREMENT_ID` = that ID (all environments), then redeploy.
+3. GA now loads **only** for visitors who accept the "Analytics" cookie
+   category. Withdrawing consent disables it and clears its cookies. Read the
+   numbers in the GA dashboard (Reports → Realtime / Engagement → Pages).
+
+To verify: set the ID, open the site, click **Accept all** — a `_ga` cookie
+appears and the visit shows up in GA Realtime within a few seconds.
+
 ## Recruiter auth setup
 
 The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.

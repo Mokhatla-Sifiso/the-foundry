@@ -1,90 +1,85 @@
-import { ASSISTANT_NAME } from "@/lib/constants";
-type LaptopProps = Readonly<{
-  assistantName?: string;
-}>;
-export function Laptop({ assistantName = ASSISTANT_NAME }: LaptopProps = {}): React.ReactElement {
+export function Laptop(): React.ReactElement {
   return (
     <>
       <div className="laptop-lid">
-        <div className="laptop-scr">
-          <aside className="ldash-side">
-            <div className="ldash-logo">
-              <span className="ld" />
-              {assistantName}
+        <span className="laptop-cam" aria-hidden="true" />
+        <div className="laptop-scr vsc">
+          <div className="vsc-bar">
+            <span className="vsc-tl r" />
+            <span className="vsc-tl y" />
+            <span className="vsc-tl g" />
+            <span className="vsc-fn">guest.ts — the-foundry</span>
+          </div>
+          <div className="vsc-body">
+            <div className="vsc-act" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="on" fill="currentColor">
+                <path d="M3 5h18v2H3zm0 6h18v2H3zm0 6h12v2H3z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 2 3 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z" />
+              </svg>
             </div>
-            <nav className="ldash-nav" aria-hidden="true">
-              <a className="on">
-                <span className="dot" />
-                Dashboard
-              </a>
-              <a>Code Review</a>
-              <a>Deployments</a>
-              <a>Analytics</a>
-              <a>Settings</a>
-            </nav>
-          </aside>
-
-          <main className="ldash-main">
-            <div className="ldash-head">
-              <h4>Today&apos;s overview</h4>
-              <span className="badge">
-                <i />
-                {assistantName} monitoring
-              </span>
+            <div className="vsc-tree" aria-hidden="true">
+              <div className="vsc-tt">Access</div>
+              <div className="vsc-f">email.ts</div>
+              <div className="vsc-f sel">guest.ts</div>
+              <div className="vsc-f">executive.ts</div>
+              <div className="vsc-f">otp.ts</div>
+              <div className="vsc-f">entitlement.ts</div>
             </div>
-
-            <div className="ldash-stats">
-              <div className="ldash-stat">
-                <div className="sl">PRs Reviewed</div>
-                <div className="sv">24</div>
-                <div className="sd">↑ 12%</div>
+            <div className="vsc-code" aria-hidden="true">
+              <div className="vsc-ln">
+                <span className="g">18</span>
+                <span>
+                  <span className="kw">export async function</span>{" "}
+                  <span className="fn">createGuestRequest</span>(<span className="var">args</span>) {"{"}
+                </span>
               </div>
-              <div className="ldash-stat">
-                <div className="sl">Deploys</div>
-                <div className="sv">12</div>
-                <div className="sd">↑ 8%</div>
+              <div className="vsc-ln">
+                <span className="g">19</span>
+                <span>
+                  {"  "}
+                  <span className="kw">const</span> <span className="var">token</span> ={" "}
+                  <span className="fn">newReviewToken</span>()
+                </span>
               </div>
-              <div className="ldash-stat">
-                <div className="sl">Uptime</div>
-                <div className="sv">99.8%</div>
-                <div className="sd">↑ 0.3%</div>
+              <div className="vsc-ln">
+                <span className="g">20</span>
+                <span>
+                  {"  "}
+                  <span className="kw">await</span> <span className="var">db</span>.accessRequest.
+                  <span className="fn">create</span>({"{"}
+                </span>
               </div>
-              <div className="ldash-stat">
-                <div className="sl">Tests</div>
-                <div className="sv">847</div>
-                <div className="sd">↑ 5%</div>
+              <div className="vsc-ln">
+                <span className="g">21</span>
+                <span>
+                  {"    "}
+                  data: {"{"} tier: <span className="str">&quot;guest&quot;</span>, token {"}"},
+                </span>
               </div>
-            </div>
-
-            <div className="ldash-chart">
-              <div className="ldash-ch">
-                <div className="ct">Deploys, 7 days</div>
-                <svg viewBox="0 0 200 50" width="100%" height={40} aria-hidden="true">
-                  <polyline
-                    points="0,42 28,38 56,40 84,30 112,32 140,22 168,15 200,8"
-                    stroke="var(--candy)"
-                    strokeWidth={1.5}
-                    fill="none"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <div className="vsc-ln ghost">
+                <span className="g">22</span>
+                <span>
+                  {"    "}
+                  <span className="cm">{"// notify owner + send receipt"}</span>
+                  <span className="tab">Tab ⇥</span>
+                </span>
               </div>
-              <div className="ldash-ch ldash-ins">
-                <div className="it">{assistantName} Insights</div>
-                <div className="ib">
-                  <span className="id" />
-                  Sprint velocity up 15%, consider tighter cycles
-                </div>
-                <div className="ib">
-                  <span className="id" />3 PRs need attention before merge
-                </div>
-                <div className="ib">
-                  <span className="id" />
-                  API latency spike at 02:14, auto-resolved
-                </div>
+              <div className="vsc-ln">
+                <span className="g">23</span>
+                <span>{"  })"}</span>
               </div>
             </div>
-          </main>
+          </div>
+          <div className="vsc-status">
+            <span className="br">feat/v1-access-system</span>
+            <span>✓ 0 problems</span>
+            <span className="sp">TypeScript · Prettier</span>
+          </div>
         </div>
       </div>
       <div className="laptop-base">
