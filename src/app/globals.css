@@ -1014,31 +1014,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
     rgba(2, 2, 2, 0.08) 100%
   );
 }
-@media (max-width: 860px) {
-  .ai-showcase {
-    min-height: auto;
-  }
-  .laptop,
-  .phone,
-  .watch,
-  .tablet {
-    position: static;
-    left: auto;
-    bottom: auto;
-    margin: 22px auto 0;
-  }
-  .laptop {
-    width: 100%;
-    margin-top: 0;
-  }
-  .phone {
-    width: min(230px, 66%);
-  }
-  .tablet {
-    width: min(340px, 86%);
-  }
-}
-
 .laptop {
   position: absolute;
   z-index: 3;
@@ -2055,31 +2030,36 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 
 @media (max-width: 860px) {
   .ai-showcase {
-    padding: 16px 0 0;
+    padding: 8px 0 0;
     min-height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
   }
+  .ai-showcase::after {
+    display: none;
+  }
   .ai-showcase .bg-fade,
   .dev-label {
     display: none;
   }
 
-  .laptop,
+  .phone,
   .tablet,
   .watch {
     display: none;
   }
-  .phone {
+  .laptop {
     position: relative;
     top: auto;
     left: auto;
     right: auto;
     bottom: auto;
-    margin: 0;
-    width: min(260px, 70%);
+    margin: 0 auto;
+    width: 100%;
+    max-width: 440px;
+    filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.5));
   }
 }
 
@@ -2674,6 +2654,18 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   }
   to {
     --lat-a: 360deg;
+  }
+}
+@media (max-width: 620px) {
+  .ai-lattice {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .lat-in svg {
+    width: 34px;
+    height: 34px;
+  }
+  .lat-mono {
+    font-size: 18px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
