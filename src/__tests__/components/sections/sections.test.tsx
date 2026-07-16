@@ -15,7 +15,7 @@ import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
-import { AIITEMS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { SHIFTS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("Recruiters", () => {
   it("renders three tier cards, each routed to its own access path, plus one email link", () => {
     const { container } = render(<Recruiters />);
@@ -109,17 +109,19 @@ describe("Experience", () => {
   });
 });
 describe("AISection", () => {
-  it("renders the eyebrow, headline, and all four AIITEMS with their tools", () => {
+  it("renders the eyebrow, headline, the old-way/now shifts, and the tool lineup", () => {
     beforeEachLocal();
     render(<AISection />);
-    expect(screen.getByText("AI in the workflow")).toBeInTheDocument();
-    expect(screen.getByText(/AI is part of/)).toBeInTheDocument();
-    for (const item of AIITEMS) {
-      expect(screen.getByRole("heading", { level: 3, name: item.t })).toBeInTheDocument();
-      for (const tool of item.tools) {
-        expect(screen.getByText(tool)).toBeInTheDocument();
-      }
+    expect(screen.getByText("In the workflow")).toBeInTheDocument();
+    expect(screen.getByText(/My judgment stayed mine/)).toBeInTheDocument();
+    for (const s of SHIFTS) {
+      expect(screen.getByText(s.old)).toBeInTheDocument();
+      expect(screen.getByText(s.now)).toBeInTheDocument();
     }
+    expect(screen.getByText("The tools behind it")).toBeInTheDocument();
+    expect(screen.getByText("Claude Code")).toBeInTheDocument();
+    expect(screen.getByText("OpenClaw")).toBeInTheDocument();
+    expect(screen.getByText("Obsidian")).toBeInTheDocument();
   });
   it("includes the three dev-label captions in the showcase", () => {
     beforeEachLocal();
@@ -127,7 +129,7 @@ describe("AISection", () => {
     const labels = container.querySelectorAll(".dev-label");
     expect(labels.length).toBe(3);
     const texts = Array.from(labels).map((l) => l.textContent);
-    expect(texts).toEqual(["AI Briefings", "On your wrist", "Full reporting"]);
+    expect(texts).toEqual(["VS Code", "Claude", "GitHub"]);
   });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();

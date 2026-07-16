@@ -99,32 +99,13 @@ export const XP: ReadonlyArray<XpRow> = [
   },
   { role: "Junior Software Developer", org: "IST, Pretoria", when: "Jan 2021, Dec 2022" },
 ];
-export type AiItem = Readonly<{
-  t: string;
-  d: string;
-  tools: ReadonlyArray<string>;
-}>;
-export const AIITEMS: ReadonlyArray<AiItem> = [
+export type Shift = Readonly<{ old: string; now: string }>;
+export const SHIFTS: ReadonlyArray<Shift> = [
+  { old: "Boilerplate & migrations by hand", now: "Generated, then reviewed line by line" },
   {
-    t: "AI pair-programming",
-    d: "Cursor and Copilot handle scaffolding, refactors, and the tedious parts of a migration, so I stay in flow while the boilerplate writes itself.",
-    tools: ["Cursor", "Copilot"],
+    old: "Prototype one direction, hope it lands",
+    now: "Three directions in an afternoon, keep what earns it",
   },
-  {
-    t: "Rapid prototyping",
-    d: "I stand up UI prototypes and explore several directions in minutes with LLMs, then keep only what earns its place in the product.",
-    tools: ["LLM prompting", "Prototyping"],
-  },
-  {
-    t: "Tests & documentation",
-    d: "Generating unit and integration tests, surfacing edge cases, and drafting docs keeps the codebase understandable as it grows.",
-    tools: ["Test generation", "Docs"],
-  },
-  {
-    t: "Review & research",
-    d: "A second pass on pull requests, plus tracking new AI tooling and folding what genuinely works into the team's everyday practice.",
-    tools: ["PR review", "AI trends"],
-  },
+  { old: "Tests & docs written last, if ever", now: "Drafted alongside the code" },
+  { old: "Twenty tabs of research", now: "A briefed summary I verify" },
 ];
-export const ASSISTANT_NAME = "Clerk";
-export const PEAK_COLOR = "#020202";
