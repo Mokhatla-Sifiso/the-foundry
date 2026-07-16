@@ -1,36 +1,36 @@
-import { ASSISTANT_NAME } from "@/lib/constants";
-type PhoneProps = Readonly<{
-  assistantName?: string;
-}>;
-export function PhoneDevice({
-  assistantName = ASSISTANT_NAME,
-}: PhoneProps = {}): React.ReactElement {
+import { IconClaude } from "@/components/primitives/brandIcons";
+
+export function PhoneDevice(): React.ReactElement {
   return (
     <>
-      <div className="phone-notch" />
+      <span className="phone-island" aria-hidden="true" />
       <div className="phone-sb">
         <span>9:41</span>
-        <span>AI · live</span>
+        <span>CLI</span>
       </div>
       <div className="phone-pad">
-        <div className="ph-card">
-          <div className="h">
-            Daily PR review
-            <span className="ai">{assistantName}</span>
-          </div>
-          <div className="ph-bul">
-            <span className="d">›</span>3 PRs summarised, 1 needs your eyes
-          </div>
-          <div className="ph-bul">
-            <span className="d">›</span>
-            Flagged null-check in auth.ts
-          </div>
-          <div className="ph-bul">
-            <span className="d">›</span>
-            Tests drafted for session hook
-          </div>
-          <div className="ph-btn">Open review</div>
+        <div className="cl-head">
+          <span className="cl-mark" aria-hidden="true">
+            <IconClaude />
+          </span>
+          <span className="cl-nm">Claude</span>
+          <span className="cl-st">pairing</span>
         </div>
+        <div className="cl-conv">
+          <div className="cl-bub u">
+            Pull OTP send/verify out of the guest &amp; executive routes into one shared helper.
+          </div>
+          <div className="cl-bub a">
+            Done — extracted <b>startOtp</b> / <b>verifyOtp</b> into <code>lib/access/otp.ts</code>;
+            both routes call it now.
+            <span className="cl-snip">
+              + src/lib/access/otp.ts
+              <br />~ api/guest · api/executive
+            </span>
+          </div>
+          <div className="cl-bub u">Good. Now add tests to clear the coverage gate.</div>
+        </div>
+        <div className="cl-foot">I read every diff before it lands.</div>
       </div>
     </>
   );
