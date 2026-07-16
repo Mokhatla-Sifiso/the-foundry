@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Laptop, PhoneDevice, TabletDevice, WatchDevice } from "@/components/devices";
 import { Reveal } from "@/components/primitives/Reveal";
-import { AIToolkit } from "./AIToolkit";
+import { AILattice } from "./AILattice";
 import { AI_WORKFLOW, AI_VALUE } from "@/lib/constants";
 type AISectionProps = Readonly<{
   showPhone?: boolean;
@@ -99,7 +99,10 @@ export function AISection({
         </Reveal>
 
         <Reveal delay={0.05}>
-          <AIToolkit />
+          <p className="ai-tk-eyebrow">The tools behind it</p>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <AILattice />
         </Reveal>
       </div>
     </section>

@@ -115,9 +115,6 @@ describe("AISection", () => {
     expect(screen.getByText("In the workflow")).toBeInTheDocument();
     expect(screen.getByText(/My judgment stayed mine/)).toBeInTheDocument();
     expect(screen.getByText("The tools behind it")).toBeInTheDocument();
-    for (const label of ["Agents in the loop", "Think & capture", "Local AI & ops", "Edit & ship"]) {
-      expect(screen.getByText(label)).toBeInTheDocument();
-    }
     for (const tool of ["Claude Code", "Codex", "OpenClaw", "Obsidian", "VS Code", "GitHub"]) {
       expect(screen.getByText(tool)).toBeInTheDocument();
     }
