@@ -21,7 +21,7 @@ describe("HomePage composition", () => {
   it("renders the Statement, Contact, and Footer signatures", () => {
     render(<HomePage />);
     expect(screen.getByText(/I'm a full-stack engineer/)).toBeInTheDocument();
-    expect(screen.getByText(/Don't/)).toBeInTheDocument();
+    expect(screen.getByText(/worth shipping/i)).toBeInTheDocument();
     expect(screen.getByText(/Software Engineer · Full-Stack · Tech Lead/)).toHaveTextContent(
       SITE.location,
     );

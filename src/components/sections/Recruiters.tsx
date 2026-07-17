@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/primitives/Reveal";
 import { IconLock } from "@/components/primitives/icons";
 import { SITE } from "@/lib/constants";
@@ -20,7 +20,7 @@ const TIERS: ReadonlyArray<Tier> = [
     tier: "Silver",
     audience: "Guests",
     desc: "Request access to what you need.",
-    unlocks: ["The CV and resources, on request", "Approved by me", "A 30-day access window"],
+    unlocks: ["The CV and resources, on request", "Approved by me", "A 24-hour access window"],
   },
   {
     key: "platinum",
@@ -42,6 +42,27 @@ const TIERS: ReadonlyArray<Tier> = [
 
 export function Recruiters(): React.ReactElement {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [gridSeen, setGridSeen] = useState(false);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (typeof IntersectionObserver === "undefined") {
+      const raf = window.requestAnimationFrame(() => setGridSeen(true));
+      return () => window.cancelAnimationFrame(raf);
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setGridSeen(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -18% 0px" },
+    );
+    io.observe(grid);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const grid = gridRef.current;
@@ -95,7 +116,9 @@ export function Recruiters(): React.ReactElement {
           <span>By verification</span>
         </Reveal>
         <Reveal delay={0.06}>
-          <h2 className="rec-h">Which brings you here?</h2>
+          <h2 className="rec-h">
+            Which brings <span className="em">you here?</span>
+          </h2>
         </Reveal>
         <Reveal delay={0.12}>
           <p className="rec-lead">
@@ -104,15 +127,14 @@ export function Recruiters(): React.ReactElement {
           </p>
         </Reveal>
 
-        <Reveal delay={0.16}>
-          <div ref={gridRef} className="rec-tiers">
-            {TIERS.map((t) => (
-              <a
-                key={t.key}
-                className={`pass pass--${t.key}`}
-                href={t.path}
-                aria-label={`${t.audience}: ${t.desc}`}
-              >
+        <div ref={gridRef} className={`rec-tiers${gridSeen ? " rec-tiers--in" : ""}`}>
+          {TIERS.map((t) => (
+            <a
+              key={t.key}
+              className={`pass pass--${t.key}`}
+              href={t.path}
+              aria-label={`${t.audience}: ${t.desc}`}
+            >
                 <span className="pass-sheen" aria-hidden="true" />
                 <div className="pass-head">
                   <span className="pass-kicker">{t.tier}</span>
@@ -137,10 +159,9 @@ export function Recruiters(): React.ReactElement {
                     Get access <span aria-hidden="true">&rarr;</span>
                   </span>
                 </div>
-              </a>
-            ))}
-          </div>
-        </Reveal>
+            </a>
+          ))}
+        </div>
 
         <Reveal delay={0.24}>
           <a className="rec-textlink" href={`mailto:${SITE.email}`}>

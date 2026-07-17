@@ -1,7 +1,8 @@
 import {
-  GUEST_GRANT_DAYS,
+  GUEST_GRANT_HOURS,
   GUEST_RESOURCE_KEYS,
   GUEST_RESOURCES,
+  formatGrantExpiry,
   resourceLabel,
 } from "@/lib/access/resources";
 
@@ -25,9 +26,15 @@ describe("GUEST_RESOURCE_KEYS", () => {
   });
 });
 
-describe("GUEST_GRANT_DAYS", () => {
-  it("is the 30-day grant window", () => {
-    expect(GUEST_GRANT_DAYS).toBe(30);
+describe("GUEST_GRANT_HOURS", () => {
+  it("is the 24-hour grant window", () => {
+    expect(GUEST_GRANT_HOURS).toBe(24);
+  });
+});
+
+describe("formatGrantExpiry", () => {
+  it("spells out the minute and the timezone, since a 24h window turns on the time", () => {
+    expect(formatGrantExpiry(new Date("2026-07-18T21:17:52.999Z"))).toBe("2026-07-18 21:17 UTC");
   });
 });
 
