@@ -85,7 +85,7 @@ export const CATEGORY_META: Readonly<
   analytics: {
     label: "Analytics",
     description:
-      "Loads Google Analytics so I can see aggregate visits and which pages are useful. Nothing loads and no analytics cookies are set unless you turn this on.",
+      "Loads Google Analytics (so I can see aggregate visits and which pages are useful) and Vercel Speed Insights (anonymous page-load performance). Google Analytics sets the cookies below; Speed Insights is cookieless. Nothing loads unless you turn this on.",
     alwaysOn: false,
   },
 };

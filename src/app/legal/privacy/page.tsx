@@ -43,6 +43,12 @@ export default function PrivacyPage(): React.ReactElement {
           Analytics so I can see how the site is used. Advertising and cross-site signals are
           switched off.
         </li>
+        <li>
+          <strong>Performance metrics</strong>, only if you accept analytics cookies: anonymous
+          page-load timings (Core Web Vitals) and the page&apos;s route, collected through Vercel
+          Speed Insights so I can see how fast the site is. This is cookieless and is not tied to
+          your identity.
+        </li>
       </ul>
       <p>
         I do <strong>not</strong> sell data, run advertising, or share data with social networks.
@@ -74,7 +80,9 @@ export default function PrivacyPage(): React.ReactElement {
           <strong>Resend</strong>, delivers the one-time verification code to your inbox.
         </li>
         <li>
-          <strong>Vercel</strong>, hosts the site and routes traffic.
+          <strong>Vercel</strong> (Vercel Inc.), hosts the site and routes traffic, and processes
+          anonymous performance metrics through Speed Insights when you consent to analytics. This
+          data is transferred to the United States.
         </li>
         <li>
           <strong>Google</strong> (Google Analytics, Google Ireland Ltd / Google LLC), processes
