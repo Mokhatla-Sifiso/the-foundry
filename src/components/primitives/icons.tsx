@@ -273,3 +273,20 @@ export function IconDown({ className }: IconProps): React.ReactElement {
     </svg>
   );
 }
+export function IconAsterisk({ className }: IconProps): React.ReactElement {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      {...ROUND}
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3 6.3 17.7" />
+    </svg>
+  );
+}
