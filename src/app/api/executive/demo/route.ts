@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { NotifyError } from "@/lib/access/notify";
+import { SITE } from "@/lib/constants";
 import { headers } from "next/headers";
 import { getSessionContext } from "@/lib/auth/admin";
 import { createDemoRequest } from "@/lib/access/executive";
@@ -22,10 +24,7 @@ export async function POST(request: Request): Promise<Response> {
     const topic = typeof body?.topic === "string" ? body.topic.trim().slice(0, 500) : "";
     const message = typeof body?.message === "string" ? body.message.trim().slice(0, 1000) : "";
     if (!slot) {
-      return NextResponse.json(
-        { message: "Tell me a preferred day and time." },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "Tell me a preferred day and time." }, { status: 400 });
     }
     await createDemoRequest({
       email: ctx.email,
@@ -39,6 +38,14 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[executive/demo]", err);
+    if (err instanceof NotifyError) {
+      return NextResponse.json(
+        {
+          message: `Your demo request is saved, but the confirmation email failed. Email ${SITE.email} directly and I'll pick it up.`,
+        },
+        { status: 502 },
+      );
+    }
     return NextResponse.json({ message: "Could not submit your request." }, { status: 500 });
   }
 }

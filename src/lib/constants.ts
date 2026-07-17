@@ -9,6 +9,39 @@ export const SITE = {
   cvFileName: "Mzwakhe_Sifiso_Mokhatla_CV.pdf",
   portrait: "/img/Potrait.png",
 } as const;
+export const CONTACT_INTENTS = [
+  { value: "contract", label: "Contract" },
+  { value: "freelance", label: "Freelance" },
+  { value: "other", label: "Something else" },
+] as const;
+export type ContactIntent = (typeof CONTACT_INTENTS)[number]["value"];
+export const FAQS = [
+  {
+    q: "What kind of work do you take on?",
+    a: "Full-stack product builds, microfrontend architecture, and taking an idea from first commit to something shipped and maintained. TypeScript, React and Next.js, Node, and PostgreSQL are home turf.",
+  },
+  {
+    q: "Which working model do you prefer: onsite, remote, or hybrid?",
+    a: "All three can work. I am set up for remote and collaborate with teams across regions, and hybrid or onsite is open for the right engagement around Gauteng. What matters more is your team's rhythm, so tell me what yours looks like.",
+  },
+  {
+    q: "Where are you based, and do you work remotely?",
+    a: "Pretoria, South Africa (UTC+2). I work remotely with teams anywhere, and I have delivered on-site internationally when a project called for it.",
+  },
+  {
+    q: "How do you use AI in your work?",
+    a: "Agents handle scaffolding, migrations, tests, and first drafts. I own the architecture, the review, and the call on what ships, so you get speed without lowering the bar.",
+  },
+  {
+    q: "How soon can you start?",
+    a: "It depends on scope and current load. Send a note with your timeline and we can work out the timing together.",
+  },
+  {
+    q: "How do you price an engagement?",
+    a: "Rates depend on scope and how long we work together. Tell me what you are building and I come back with a clear, honest proposal.",
+  },
+] as const;
+export type FaqItem = (typeof FAQS)[number];
 export type NavLink = Readonly<{
   n: string;
   t: string;

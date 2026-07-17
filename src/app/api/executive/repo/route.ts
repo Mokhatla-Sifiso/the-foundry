@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { NotifyError } from "@/lib/access/notify";
+import { SITE } from "@/lib/constants";
 import { headers } from "next/headers";
 import { getSessionContext } from "@/lib/auth/admin";
 import { createRepoRequest } from "@/lib/access/executive";
@@ -39,6 +41,14 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[executive/repo]", err);
+    if (err instanceof NotifyError) {
+      return NextResponse.json(
+        {
+          message: `Your repo access request is saved, but the confirmation email failed. Email ${SITE.email} directly and I'll pick it up.`,
+        },
+        { status: 502 },
+      );
+    }
     return NextResponse.json({ message: "Could not submit your request." }, { status: 500 });
   }
 }

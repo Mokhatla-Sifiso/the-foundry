@@ -7,6 +7,7 @@ jest.mock("next/image", () => ({
 }));
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { AISection } from "@/components/sections/AISection";
+import { Faq } from "@/components/sections/Faq";
 import { TransContinental } from "@/components/sections/TransContinental";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
@@ -16,7 +17,7 @@ import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { Work } from "@/components/sections/Work";
-import { NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
+import { FAQS, NAVLINKS, SERVICES, SITE, WORK, XP } from "@/lib/constants";
 describe("Recruiters", () => {
   it("renders three tier cards, each routed to its own access path, plus one email link", () => {
     const { container } = render(<Recruiters />);
@@ -184,25 +185,67 @@ describe("TransContinental", () => {
     expect(screen.getByText(/Time reporting, people and contract-management modules/)).toBeInTheDocument();
   });
 });
+describe("Faq", () => {
+  it("renders an accordion: a toggle button per question and the answers present", () => {
+    const { container } = render(<Faq />);
+    expect(container.querySelector("section#faq")).not.toBeNull();
+    for (const item of FAQS) {
+      expect(screen.getByRole("button", { name: new RegExp(item.q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) })).toBeInTheDocument();
+      expect(screen.getByText(item.a)).toBeInTheDocument();
+    }
+    expect(container.querySelectorAll(".faq-item").length).toBe(FAQS.length);
+  });
+  it("opens the first item by default and toggles on click", () => {
+    const { container } = render(<Faq />);
+    const items = container.querySelectorAll(".faq-item");
+    expect(items[0].classList.contains("faq-item--open")).toBe(true);
+    expect(items[1].classList.contains("faq-item--open")).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(FAQS[1].q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }));
+    expect(container.querySelectorAll(".faq-item")[1].classList.contains("faq-item--open")).toBe(true);
+    expect(container.querySelectorAll(".faq-item")[0].classList.contains("faq-item--open")).toBe(false);
+  });
+});
 describe("Contact", () => {
-  it("renders the Don't be shy headline and both action buttons", () => {
+  it("renders the collaboration section: headline, channels, and the form", () => {
     render(<Contact />);
-    expect(screen.getByText(/Don't/)).toBeInTheDocument();
-    expect(screen.getByText("shy.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Start a conversation/i })).toHaveAttribute(
-      "href",
-      `mailto:${SITE.email}`,
-    );
-    expect(screen.getByRole("link", { name: /Download CV/i })).toHaveAttribute(
-      "href",
-      "/recruiter",
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
+    expect(screen.getByText(/considered reply/i)).toBeInTheDocument();
+    expect(screen.getByText(SITE.email)).toBeInTheDocument();
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Contract" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Send message/i })).toBeInTheDocument();
+  });
+  it("posts to /api/contact and shows the sent confirmation on success", async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    global.fetch = fetchMock as unknown as typeof fetch;
+    render(<Contact />);
+    fireEvent.change(screen.getByLabelText("Name"), {
+      target: { value: "Jane Recruiter" },
+    });
+    fireEvent.change(screen.getByLabelText("Email"), {
+      target: { value: "jane@acme.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/A sentence on the project/), {
+      target: { value: "We need a contractor for a three-month build." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Send message/i }));
+    expect(await screen.findByText("Message sent.")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/contact",
+      expect.objectContaining({ method: "POST" }),
     );
   });
-  it("renders the email, phone, and location meta values", () => {
+  it("shows a validation message and does not post when fields are empty", () => {
+    const fetchMock = jest.fn();
+    global.fetch = fetchMock as unknown as typeof fetch;
     render(<Contact />);
-    expect(screen.getByText(SITE.email)).toBeInTheDocument();
-    expect(screen.getByText(SITE.phone)).toBeInTheDocument();
-    expect(screen.getByText(SITE.location)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Send message/i }));
+    expect(screen.getByRole("alert")).toHaveTextContent(/Add your name/i);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 describe("Footer", () => {
