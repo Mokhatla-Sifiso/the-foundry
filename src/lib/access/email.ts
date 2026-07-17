@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { SITE } from "@/lib/constants";
 import { SITE_URL } from "@/lib/site-url";
-import { resourceLabel } from "./resources";
+import { GUEST_GRANT_HOURS, formatGrantExpiry, resourceLabel } from "./resources";
 
 const FROM = process.env.RESEND_FROM ?? "Mzwakhe Mokhatla <noreply@example.com>";
 
@@ -66,7 +66,7 @@ export async function sendGuestRequestToOwner(args: {
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
         : "") +
       `<p style="margin:20px 0 0;"><a href="${link}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Review this request</a></p>` +
-      `<p style="margin:12px 0 0;color:#888;font-size:12px;">Approving grants ${esc(args.name)} 30 days of access.</p>`,
+      `<p style="margin:12px 0 0;color:#888;font-size:12px;">Approving grants ${esc(args.name)} ${GUEST_GRANT_HOURS} hours of access.</p>`,
   );
   await send(SITE.email, subject, html, text);
 }
@@ -88,12 +88,12 @@ export async function sendGuestDecision(
   expiresAt?: Date,
 ): Promise<void> {
   if (approved) {
-    const until = expiresAt ? expiresAt.toISOString().slice(0, 10) : "";
+    const until = expiresAt ? formatGrantExpiry(expiresAt) : "";
     const subject = "Access approved";
-    const text = `Hi ${name}, your access is approved for 30 days${until ? ` (until ${until})` : ""}. Head back to ${SITE_URL}/guest and verify the same email to view it.`;
+    const text = `Hi ${name}, your access is approved for the next ${GUEST_GRANT_HOURS} hours${until ? `, closing ${until}` : ""}. Head back to ${SITE_URL}/guest and verify the same email to view it. The window is short, so grab what you need now.`;
     const html = shell(
       `<h2 style="margin:0 0 8px;">You're in</h2>` +
-        `<p style="margin:0 0 16px;color:#333;line-height:1.6;">Hi ${esc(name)}, your access is approved for the next 30 days${until ? ` (until <b>${until}</b>)` : ""}.</p>` +
+        `<p style="margin:0 0 16px;color:#333;line-height:1.6;">Hi ${esc(name)}, your access is approved for the next <b>${GUEST_GRANT_HOURS} hours</b>${until ? `, closing <b>${until}</b>` : ""}. The window is short, so grab what you need now.</p>` +
         `<p style="margin:0;"><a href="${SITE_URL}/guest" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">View your access</a></p>`,
     );
     await send(to, subject, html, text);
@@ -151,7 +151,9 @@ export async function sendExecutiveRepoToOwner(args: {
     `<h2 style="margin:0 0 8px;">New repo access request</h2>` +
       `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
       `<p style="margin:0 0 4px;color:#555;">Repositories: <b>${esc(args.repos)}</b></p>` +
-      (args.purpose ? `<p style="margin:0 0 4px;color:#555;">Purpose: ${esc(args.purpose)}</p>` : "") +
+      (args.purpose
+        ? `<p style="margin:0 0 4px;color:#555;">Purpose: ${esc(args.purpose)}</p>`
+        : "") +
       (args.message
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
         : "") +
@@ -173,4 +175,25 @@ export async function sendExecutiveReceipt(
       `<p style="margin:0;color:#333;line-height:1.6;">Hi ${esc(name)}, your ${what} is in. I'll come back to you personally by email shortly.</p>`,
   );
   await send(to, subject, html, text);
+}
+
+export async function sendContactToOwner(args: {
+  name: string;
+  email: string;
+  intent: string;
+  message: string;
+}): Promise<void> {
+  const subject = `New enquiry from ${args.name} (${args.intent})`;
+  const text =
+    `${args.name} (${args.email}) reached out through the site.\n\n` +
+    `About: ${args.intent}\n\n` +
+    `${args.message}\n`;
+  const html = shell(
+    `<h2 style="margin:0 0 8px;">New enquiry</h2>` +
+      `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
+      `<p style="margin:0 0 4px;color:#555;">About: <b>${esc(args.intent)}</b></p>` +
+      `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;white-space:pre-wrap;">${esc(args.message)}</p>` +
+      `<p style="margin:20px 0 0;"><a href="mailto:${esc(args.email)}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Reply to ${esc(args.name)}</a></p>`,
+  );
+  await send(SITE.email, subject, html, text);
 }

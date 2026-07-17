@@ -1,9 +1,6 @@
 import { db } from "@/lib/db";
-import {
-  sendExecutiveDemoToOwner,
-  sendExecutiveRepoToOwner,
-  sendExecutiveReceipt,
-} from "./email";
+import { sendExecutiveDemoToOwner, sendExecutiveRepoToOwner, sendExecutiveReceipt } from "./email";
+import { notifyOwner } from "./notify";
 
 export type ExecutiveRequests = Readonly<{
   demo: boolean;
@@ -32,7 +29,9 @@ export async function createDemoRequest(args: {
       userAgent: args.ua,
     },
   });
-  await Promise.all([
+  await notifyOwner(
+    "executive/demo",
+    args.email,
     sendExecutiveDemoToOwner({
       name: args.name,
       email: args.email,
@@ -41,7 +40,7 @@ export async function createDemoRequest(args: {
       message: args.message,
     }),
     sendExecutiveReceipt(args.email, args.name, "demo"),
-  ]);
+  );
 }
 
 export async function createRepoRequest(args: {
@@ -66,7 +65,9 @@ export async function createRepoRequest(args: {
       userAgent: args.ua,
     },
   });
-  await Promise.all([
+  await notifyOwner(
+    "executive/repo",
+    args.email,
     sendExecutiveRepoToOwner({
       name: args.name,
       email: args.email,
@@ -75,7 +76,7 @@ export async function createRepoRequest(args: {
       message: args.message,
     }),
     sendExecutiveReceipt(args.email, args.name, "repo"),
-  ]);
+  );
 }
 
 export async function executiveRequestsForEmail(email: string): Promise<ExecutiveRequests> {

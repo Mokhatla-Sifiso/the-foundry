@@ -46,7 +46,7 @@ export async function GET(request: Request): Promise<Response> {
       `<p>Resources: <span class="res">${items}</span></p>` +
       (req.message ? `<p class="msg">${esc(req.message)}</p>` : "") +
       `<div class="row">` +
-      `<form method="POST"><input type="hidden" name="token" value="${esc(token)}"><input type="hidden" name="action" value="approve"><button class="approve" type="submit">Approve · 30 days</button></form>` +
+      `<form method="POST"><input type="hidden" name="token" value="${esc(token)}"><input type="hidden" name="action" value="approve"><button class="approve" type="submit">Approve · 24 hours</button></form>` +
       `<form method="POST"><input type="hidden" name="token" value="${esc(token)}"><input type="hidden" name="action" value="reject"><button class="reject" type="submit">Reject</button></form>` +
       `</div>`,
   );

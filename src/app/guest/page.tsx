@@ -33,6 +33,7 @@ export default function GuestPage(): React.ReactElement {
   const [picked, setPicked] = useState<ReadonlyArray<string>>([]);
   const [message, setMessage] = useState("");
   const [resumed, setResumed] = useState(false);
+  const [nudging, setNudging] = useState(false);
   const [grant, setGrant] = useState<GuestState | null>(null);
 
   useEffect(() => {
@@ -106,14 +107,28 @@ export default function GuestPage(): React.ReactElement {
     setStep("pending");
   }, [picked, message]);
 
+  const nudge = useCallback(async (): Promise<void> => {
+    setNudging(true);
+    // No payload: the pending request already holds the resources it was made with.
+    const res = await apiFetch<{ ok: true; status: string }>("/api/guest/request", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+    setNudging(false);
+    if (res.ok) toast.success("Nudge sent. Your original request still stands.");
+  }, []);
+
   const toggle = (key: string): void =>
     setPicked((p) => (p.includes(key) ? p.filter((k) => k !== key) : [...p, key]));
 
+  // Time, not just the date: a 24-hour window closes mid-day, so "18 Jul" alone
+  // would read as end-of-day and overpromise.
   const grantUntil = grant?.expiresAt
-    ? new Date(grant.expiresAt).toLocaleDateString(undefined, {
+    ? new Date(grant.expiresAt).toLocaleString(undefined, {
         day: "numeric",
         month: "short",
-        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       })
     : null;
   const grantedKeys = grant?.resources ?? [];
@@ -153,11 +168,11 @@ export default function GuestPage(): React.ReactElement {
                     Guest access
                   </span>
                   <h1 className="t">
-                    Request what you need, <span className="em">granted for 30 days.</span>
+                    Request what you need, <span className="em">granted for 24 hours.</span>
                   </h1>
                   <p className="sub">
                     Verify your email, tell me what you would like access to, and I will approve it
-                    personally. Approved guests get a 30-day access window.
+                    personally. Approved guests get a 24-hour access window.
                   </p>
                   <div style={{ display: "grid", gap: 12 }}>
                     <Field
@@ -188,13 +203,20 @@ export default function GuestPage(): React.ReactElement {
               ) : null}
 
               {step === "otp" ? (
-                <Otp email={email} error={otpError} onVerify={(o) => void verify(o)} onResend={() => void resend()} />
+                <Otp
+                  email={email}
+                  error={otpError}
+                  onVerify={(o) => void verify(o)}
+                  onResend={() => void resend()}
+                />
               ) : null}
 
               {step === "form" ? (
                 <>
                   <h1 className="t">What would you like access to?</h1>
-                  <p className="sub">Pick anything relevant. I will review and approve it by email.</p>
+                  <p className="sub">
+                    Pick anything relevant. I will review and approve it by email.
+                  </p>
                   <div className="gpick">
                     {GUEST_RESOURCES.map((r) => (
                       <label key={r.key} className={picked.includes(r.key) ? "on" : ""}>
@@ -241,14 +263,25 @@ export default function GuestPage(): React.ReactElement {
                     You are on the list, <span className="em">give me a moment.</span>
                   </h1>
                   <p className="sub">
-                    I review every request personally, so you will get an email at <b>{email}</b> the
-                    moment it is approved. Approved access lasts 30 days.
+                    I review every request personally, so you will get an email at <b>{email}</b>{" "}
+                    the moment it is approved. Approved access lasts 24 hours.
                   </p>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={nudge}
+                    disabled={nudging}
+                  >
+                    {nudging ? "Sending" : "Resend my request"}
+                  </button>
                   <div className="note">
                     <span className="b">Prefer to talk</span>
                     <div>
                       Reach me any time at{" "}
-                      <a href={`mailto:${SITE.email}`} style={{ color: "var(--candy)", fontWeight: 700 }}>
+                      <a
+                        href={`mailto:${SITE.email}`}
+                        style={{ color: "var(--candy)", fontWeight: 700 }}
+                      >
                         {SITE.email}
                       </a>
                       .
@@ -288,7 +321,10 @@ export default function GuestPage(): React.ReactElement {
                         <Arrow />
                       </a>
                     ) : null}
-                    <a className={hasCv ? "btn btn-ghost" : "btn btn-primary"} href={`mailto:${SITE.email}`}>
+                    <a
+                      className={hasCv ? "btn btn-ghost" : "btn btn-primary"}
+                      href={`mailto:${SITE.email}`}
+                    >
                       Email me
                     </a>
                   </div>

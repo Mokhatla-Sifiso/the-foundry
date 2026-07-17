@@ -311,6 +311,40 @@ describe("sendExecutiveReceipt", () => {
   });
 });
 
+describe("sendContactToOwner", () => {
+  it("emails the owner with a subject naming the sender and intent", async () => {
+    const mod = await loadModule();
+    await mod.sendContactToOwner({
+      name: "Dana Client",
+      email: "dana@studio.io",
+      intent: "Contract",
+      message: "We have a three-month React build.",
+    });
+    const payload = lastPayload();
+    expect(payload.to).toBe(SITE.email);
+    expect(payload.subject).toBe("New enquiry from Dana Client (Contract)");
+    expect(payload.text).toContain("dana@studio.io");
+    expect(payload.text).toContain("About: Contract");
+    expect(payload.text).toContain("We have a three-month React build.");
+    expect(payload.html).toContain("mailto:dana@studio.io");
+  });
+
+  it("HTML-escapes hostile name, email and message", async () => {
+    const mod = await loadModule();
+    await mod.sendContactToOwner({
+      name: "<b>x</b>",
+      email: "a&b@x.io",
+      intent: "Freelance",
+      message: '<script>alert("hi")</script>',
+    });
+    const { html } = lastPayload();
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain("&lt;b&gt;x&lt;/b&gt;");
+    expect(html).toContain("&amp;");
+  });
+});
+
 describe("missing RESEND_API_KEY (dev fallback)", () => {
   beforeEach(() => {
     delete process.env.RESEND_API_KEY;

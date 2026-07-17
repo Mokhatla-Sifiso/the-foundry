@@ -2,14 +2,12 @@ import {
   createGuestRequest,
   guestStateForEmail,
   pendingRequestByToken,
+  renotifyPendingRequest,
   reviewGuestRequest,
 } from "@/lib/access/guest";
+import { NotifyError } from "@/lib/access/notify";
 import { db } from "@/lib/db";
-import {
-  sendGuestDecision,
-  sendGuestReceipt,
-  sendGuestRequestToOwner,
-} from "@/lib/access/email";
+import { sendGuestDecision, sendGuestReceipt, sendGuestRequestToOwner } from "@/lib/access/email";
 
 jest.mock("@/lib/db", () => ({
   db: {
@@ -200,7 +198,7 @@ describe("reviewGuestRequest", () => {
     expect(accessRequest.update).not.toHaveBeenCalled();
   });
 
-  it("approves a pending request, sets a 30-day expiry, and clears the token", async () => {
+  it("approves a pending request, sets a 24-hour expiry, and clears the token", async () => {
     accessRequest.findUnique.mockResolvedValue({
       id: "req-2",
       email: "gina@acme.co",
@@ -210,7 +208,7 @@ describe("reviewGuestRequest", () => {
 
     const result = await reviewGuestRequest("tok", "approve");
 
-    expect(result).toEqual({ ok: true, message: "Approved. Gina now has 30-day access." });
+    expect(result).toEqual({ ok: true, message: "Approved. Gina now has 24-hour access." });
     const updateArg = accessRequest.update.mock.calls[0][0];
     expect(updateArg.where).toEqual({ id: "req-2" });
     expect(updateArg.data.status).toBe("approved");
@@ -218,7 +216,7 @@ describe("reviewGuestRequest", () => {
     expect(updateArg.data.decidedAt).toBeInstanceOf(Date);
     expect(updateArg.data.expiresAt).toBeInstanceOf(Date);
     const grantMs = updateArg.data.expiresAt.getTime() - updateArg.data.decidedAt.getTime();
-    expect(Math.round(grantMs / DAY_MS)).toBe(30);
+    expect(grantMs).toBe(24 * 60 * 60 * 1000);
 
     expect(sendGuestDecision).toHaveBeenCalledWith(
       "gina@acme.co",
@@ -290,5 +288,62 @@ describe("pendingRequestByToken", () => {
       resources: [],
       message: null,
     });
+  });
+});
+
+describe("notification resilience", () => {
+  const base = {
+    email: "guest@acme.co",
+    name: "Guest User",
+    resources: ["cv"] as ReadonlyArray<string>,
+    message: "",
+    ip: null,
+    ua: null,
+  };
+
+  it("still notifies the owner when the guest's receipt fails to send", async () => {
+    (sendGuestReceipt as jest.Mock).mockRejectedValueOnce(new Error("recipient not allowed"));
+
+    await expect(createGuestRequest(base)).resolves.toBeUndefined();
+    expect(sendGuestRequestToOwner).toHaveBeenCalledTimes(1);
+  });
+
+  it("raises NotifyError when the owner cannot be told the request exists", async () => {
+    (sendGuestRequestToOwner as jest.Mock).mockRejectedValueOnce(new Error("domain not verified"));
+
+    await expect(createGuestRequest(base)).rejects.toBeInstanceOf(NotifyError);
+    // The row is still written: the request is real even when the email is not.
+    expect(accessRequest.create).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("renotifyPendingRequest", () => {
+  it("re-sends the owner notification for a pending request, reusing its review token", async () => {
+    accessRequest.findFirst.mockResolvedValue({
+      email: "gina@acme.co",
+      name: "Gina",
+      detail: { resources: ["cv", "references"] },
+      message: "still waiting",
+      reviewToken: "tok-existing",
+      status: "pending",
+    });
+
+    await renotifyPendingRequest("gina@acme.co");
+
+    expect(sendGuestRequestToOwner).toHaveBeenCalledWith({
+      name: "Gina",
+      email: "gina@acme.co",
+      resources: ["cv", "references"],
+      message: "still waiting",
+      token: "tok-existing",
+    });
+  });
+
+  it("does nothing when there is no pending request to re-notify", async () => {
+    accessRequest.findFirst.mockResolvedValue(null);
+
+    await renotifyPendingRequest("nobody@acme.co");
+
+    expect(sendGuestRequestToOwner).not.toHaveBeenCalled();
   });
 });
