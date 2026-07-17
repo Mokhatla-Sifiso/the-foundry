@@ -58,7 +58,9 @@ export function Contact(): React.ReactElement {
         <div className="collab-grid">
           <div className="collab-intro">
             <Reveal>
-              <h2 className="collab-h">Let&apos;s build something worth shipping.</h2>
+              <h2 className="collab-h">
+                Let&apos;s build something <span className="em">worth shipping.</span>
+              </h2>
             </Reveal>
             <Reveal delay={0.05}>
               <ul className="collab-points">
@@ -107,7 +109,6 @@ export function Contact(): React.ReactElement {
                     type="text"
                     name="name"
                     autoComplete="name"
-                    placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -120,7 +121,6 @@ export function Contact(): React.ReactElement {
                     type="email"
                     name="email"
                     autoComplete="email"
-                    placeholder="you@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required

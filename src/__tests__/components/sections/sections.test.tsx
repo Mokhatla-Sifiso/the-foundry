@@ -211,8 +211,8 @@ describe("Contact", () => {
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
     expect(screen.getByText(/considered reply/i)).toBeInTheDocument();
     expect(screen.getByText(SITE.email)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Your name")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("you@company.com")).toBeInTheDocument();
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByRole("combobox")).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Contract" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Send message/i })).toBeInTheDocument();
@@ -223,10 +223,10 @@ describe("Contact", () => {
       .mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
     global.fetch = fetchMock as unknown as typeof fetch;
     render(<Contact />);
-    fireEvent.change(screen.getByPlaceholderText("Your name"), {
+    fireEvent.change(screen.getByLabelText("Name"), {
       target: { value: "Jane Recruiter" },
     });
-    fireEvent.change(screen.getByPlaceholderText("you@company.com"), {
+    fireEvent.change(screen.getByLabelText("Email"), {
       target: { value: "jane@acme.com" },
     });
     fireEvent.change(screen.getByPlaceholderText(/A sentence on the project/), {

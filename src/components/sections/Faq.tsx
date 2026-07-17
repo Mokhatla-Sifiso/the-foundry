@@ -13,7 +13,9 @@ export function Faq(): React.ReactElement {
           FAQ
         </Reveal>
         <Reveal>
-          <h2 className="faq-h">Questions, answered.</h2>
+          <h2 className="faq-h">
+            Questions, <span className="em">answered.</span>
+          </h2>
         </Reveal>
         <Reveal delay={0.05}>
           <div className="faq-acc">
