@@ -8,35 +8,21 @@ export function useInView<T extends HTMLElement = HTMLElement>(
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    let done = false;
-    const check = (): void => {
-      if (done) return;
-      const r = el.getBoundingClientRect();
-      const h = window.innerHeight || document.documentElement.clientHeight;
-      if (r.top < h * (1 - margin) && r.bottom > 0) {
-        done = true;
-        setSeen(true);
-        cleanup();
-      }
-    };
-    const cleanup = (): void => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-    const onScroll = (): void => check();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    check();
-    const t = window.setTimeout(() => {
-      if (!done) {
-        setSeen(true);
-        cleanup();
-      }
-    }, 1500);
-    return () => {
-      cleanup();
-      window.clearTimeout(t);
-    };
+    if (typeof IntersectionObserver === "undefined") {
+      const raf = window.requestAnimationFrame(() => setSeen(true));
+      return () => window.cancelAnimationFrame(raf);
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: `0px 0px -${Math.round(margin * 100)}% 0px` },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [margin]);
   return [ref, seen] as const;
 }
