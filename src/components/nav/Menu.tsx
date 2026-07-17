@@ -64,7 +64,7 @@ export function Menu({ open, onClose }: MenuProps): React.ReactElement {
           </nav>
 
           <div className="menu-foot">
-            <a href="/recruiter" onClick={onClose}>
+            <a href="#recruiters" onClick={onClose}>
               Download CV
             </a>
             <a href={`mailto:${SITE.email}`} onClick={onClose}>

@@ -19,7 +19,10 @@ describe("Menu", () => {
   });
   it("includes the footer row: Download CV, mailto, tel, theme toggle", () => {
     render(<Menu open={true} onClose={() => {}} />);
-    expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute("href", "/recruiter");
+    expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute(
+      "href",
+      "#recruiters",
+    );
     expect(screen.getByRole("link", { name: SITE.email })).toHaveAttribute(
       "href",
       `mailto:${SITE.email}`,
