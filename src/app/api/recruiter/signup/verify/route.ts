@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { fetchAccount } from "@/lib/auth/profile";
 import { validateSignup } from "@/lib/auth/validation";
+import { recruiterBypassAllows } from "@/lib/auth/bypass";
 import { logConsent } from "@/lib/privacy/log";
 import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
@@ -24,8 +25,10 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
     const email = typeof payload?.email === "string" ? payload.email.trim().toLowerCase() : "";
-    const adminGate = email ? await isWhitelisted(email) : false;
-    const validation = validateSignup(payload, { isAdmin: adminGate });
+    const allowPersonalEmail = email
+      ? (await isWhitelisted(email)) || recruiterBypassAllows(email)
+      : false;
+    const validation = validateSignup(payload, { allowPersonalEmail });
     if (!validation.ok) {
       return NextResponse.json(
         { message: validation.error.message, field: validation.error.field },

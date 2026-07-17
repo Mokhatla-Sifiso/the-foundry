@@ -105,7 +105,11 @@ export async function reviewGuestRequest(
   action: "approve" | "reject",
 ): Promise<{ ok: boolean; message: string }> {
   const req = await db.accessRequest.findUnique({ where: { reviewToken: token } });
-  if (!req) return { ok: false, message: "This link is invalid or has already been used." };
+  // Tier-checked: every tier mints tokens into the same unique column, so without
+  // this an executive token posted here would be granted 24h of guest access.
+  if (!req || req.tier !== "guest") {
+    return { ok: false, message: "This link is invalid or has already been used." };
+  }
   if (req.status !== "pending") {
     return { ok: false, message: `This request was already ${req.status}.` };
   }
@@ -132,12 +136,19 @@ export async function pendingRequestByToken(token: string): Promise<{
   email: string;
   resources: ReadonlyArray<string>;
   message: string | null;
+  createdAt: Date;
 } | null> {
   const req = await db.accessRequest.findUnique({ where: { reviewToken: token } });
-  if (!req || req.status !== "pending") return null;
+  if (!req || req.tier !== "guest" || req.status !== "pending") return null;
   const detail = (req.detail ?? {}) as { resources?: unknown };
   const resources = Array.isArray(detail.resources)
     ? detail.resources.filter((r): r is string => typeof r === "string")
     : [];
-  return { name: req.name, email: req.email, resources, message: req.message };
+  return {
+    name: req.name,
+    email: req.email,
+    resources,
+    message: req.message,
+    createdAt: req.createdAt,
+  };
 }

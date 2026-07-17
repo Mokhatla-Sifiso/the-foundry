@@ -55,7 +55,7 @@ describe("validateSignup — success", () => {
   it("accepts a fully valid work-email payload and normalizes the email", () => {
     const result = validateSignup(
       { ...goodInput, email: "  Jordan@Acme.CO  " },
-      { isAdmin: false },
+      { allowPersonalEmail: false },
     );
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -82,7 +82,7 @@ describe("validateSignup — success", () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       },
-      { isAdmin: false },
+      { allowPersonalEmail: false },
     );
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -95,7 +95,7 @@ describe("validateSignup — success", () => {
   it("allows a free/personal domain when isAdmin is true", () => {
     const result = validateSignup(
       { ...goodInput, email: "me@gmail.com" },
-      { isAdmin: true },
+      { allowPersonalEmail: true },
     );
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -106,26 +106,29 @@ describe("validateSignup — success", () => {
 
 describe("validateSignup — rejection branches", () => {
   it("rejects a null body", () => {
-    const result = validateSignup(null, { isAdmin: false });
+    const result = validateSignup(null, { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "email", message: "Invalid request." },
     });
   });
   it("rejects a non-object body", () => {
-    const result = validateSignup("not-an-object", { isAdmin: false });
+    const result = validateSignup("not-an-object", { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "email", message: "Invalid request." },
     });
   });
   it("rejects undefined", () => {
-    const result = validateSignup(undefined, { isAdmin: false });
+    const result = validateSignup(undefined, { allowPersonalEmail: false });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.field).toBe("email");
   });
   it("rejects an invalid email format", () => {
-    const result = validateSignup({ ...goodInput, email: "no-at-sign" }, { isAdmin: false });
+    const result = validateSignup(
+      { ...goodInput, email: "no-at-sign" },
+      { allowPersonalEmail: false },
+    );
     expect(result).toEqual({
       ok: false,
       error: { field: "email", message: "Enter a valid email address." },
@@ -142,14 +145,14 @@ describe("validateSignup — rejection branches", () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       },
-      { isAdmin: false },
+      { allowPersonalEmail: false },
     );
     // email is valid, so it falls through to the first empty text field: name.
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.field).toBe("name");
   });
   it("treats a non-string email as empty and rejects it", () => {
-    const result = validateSignup({ ...goodInput, email: 12345 }, { isAdmin: false });
+    const result = validateSignup({ ...goodInput, email: 12345 }, { allowPersonalEmail: false });
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.field).toBe("email");
@@ -157,7 +160,10 @@ describe("validateSignup — rejection branches", () => {
     }
   });
   it("rejects a free/personal domain when not admin", () => {
-    const result = validateSignup({ ...goodInput, email: "me@gmail.com" }, { isAdmin: false });
+    const result = validateSignup(
+      { ...goodInput, email: "me@gmail.com" },
+      { allowPersonalEmail: false },
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.field).toBe("email");
@@ -165,35 +171,38 @@ describe("validateSignup — rejection branches", () => {
     }
   });
   it("rejects when name is too short", () => {
-    const result = validateSignup({ ...goodInput, name: "J" }, { isAdmin: false });
+    const result = validateSignup({ ...goodInput, name: "J" }, { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "name", message: "Please enter your full name." },
     });
   });
   it("rejects when company is too short", () => {
-    const result = validateSignup({ ...goodInput, company: "A" }, { isAdmin: false });
+    const result = validateSignup({ ...goodInput, company: "A" }, { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "company", message: "Which company are you with?" },
     });
   });
   it("rejects when role is too short", () => {
-    const result = validateSignup({ ...goodInput, role: "X" }, { isAdmin: false });
+    const result = validateSignup({ ...goodInput, role: "X" }, { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "role", message: "What role are you hiring for?" },
     });
   });
   it("rejects when url is too short", () => {
-    const result = validateSignup({ ...goodInput, url: "ab" }, { isAdmin: false });
+    const result = validateSignup({ ...goodInput, url: "ab" }, { allowPersonalEmail: false });
     expect(result).toEqual({
       ok: false,
       error: { field: "url", message: "Company website or LinkedIn helps verify you." },
     });
   });
   it("rejects when terms are not accepted", () => {
-    const result = validateSignup({ ...goodInput, acceptedTerms: false }, { isAdmin: false });
+    const result = validateSignup(
+      { ...goodInput, acceptedTerms: false },
+      { allowPersonalEmail: false },
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.field).toBe("consent");
@@ -201,14 +210,17 @@ describe("validateSignup — rejection branches", () => {
     }
   });
   it("rejects when privacy is not accepted", () => {
-    const result = validateSignup({ ...goodInput, acceptedPrivacy: false }, { isAdmin: false });
+    const result = validateSignup(
+      { ...goodInput, acceptedPrivacy: false },
+      { allowPersonalEmail: false },
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.field).toBe("consent");
   });
   it("rejects when acceptedTerms is a truthy non-true value (must be strictly true)", () => {
     const result = validateSignup(
       { ...goodInput, acceptedTerms: "yes" },
-      { isAdmin: false },
+      { allowPersonalEmail: false },
     );
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.field).toBe("consent");
