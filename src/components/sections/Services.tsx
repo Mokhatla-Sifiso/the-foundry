@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/primitives/Reveal";
 import { StackScaleEffect } from "@/components/primitives/StackScaleEffect";
+import { IconAsterisk } from "@/components/primitives/icons";
 import { SERVICES } from "@/lib/constants";
 const TOTAL = SERVICES.length;
 export function Services(): React.ReactElement {
@@ -50,7 +51,7 @@ export function Services(): React.ReactElement {
               </div>
               <div className="svc-desc">
                 <span className="ast" aria-hidden="true">
-                  ✳
+                  <IconAsterisk />
                 </span>
                 <p>{s.d}</p>
               </div>
