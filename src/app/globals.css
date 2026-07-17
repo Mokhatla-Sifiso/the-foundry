@@ -192,6 +192,14 @@ html[data-theme="dark"] {
   font-weight: 800;
   font-size: 26px;
   letter-spacing: -0.04em;
+  color: var(--fg);
+  transition: color 0.25s var(--ease);
+}
+.nav--on-dark .brand {
+  color: #eef5f8;
+}
+.nav--on-light .brand {
+  color: #06090b;
 }
 .brand .d {
   color: var(--candy);
@@ -1504,8 +1512,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 
 .collab {
   position: relative;
-  background: #0a0c0e;
-  color: #e9eaec;
 }
 .collab-grid {
   display: grid;
@@ -1523,6 +1529,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   letter-spacing: -0.025em;
   margin: 0 0 clamp(26px, 3vw, 38px);
   max-width: 14ch;
+  color: var(--fg);
 }
 .collab-points {
   list-style: none;
@@ -1537,7 +1544,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   padding-left: 26px;
   font-size: 15.5px;
   line-height: 1.5;
-  color: color-mix(in oklab, #e9eaec 72%, transparent);
+  color: var(--fg-2);
 }
 .collab-points li::before {
   content: "";
@@ -1546,27 +1553,26 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   top: 7px;
   width: 11px;
   height: 6px;
-  border-left: 1.5px solid color-mix(in oklab, #e9eaec 52%, transparent);
-  border-bottom: 1.5px solid color-mix(in oklab, #e9eaec 52%, transparent);
+  border-left: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
   transform: rotate(-45deg);
 }
 .collab-alt {
   font-size: 14px;
-  color: color-mix(in oklab, #e9eaec 50%, transparent);
+  color: var(--muted);
   margin: 0;
 }
 .collab-alt a {
-  color: color-mix(in oklab, #e9eaec 82%, transparent);
+  color: var(--fg);
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in oklab, #e9eaec 22%, transparent);
+  border-bottom: 1px solid var(--line);
   padding-bottom: 1px;
   transition:
     color 0.18s ease,
     border-color 0.18s ease;
 }
 .collab-alt a:hover {
-  color: #fff;
-  border-bottom-color: color-mix(in oklab, #e9eaec 55%, transparent);
+  border-bottom-color: var(--fg);
 }
 .collab-formwrap {
   min-width: 0;
@@ -1592,7 +1598,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .collab-label {
   font-size: 13px;
   font-weight: 500;
-  color: color-mix(in oklab, #e9eaec 55%, transparent);
+  color: var(--muted);
 }
 .collab-form input,
 .collab-form select,
@@ -1600,9 +1606,9 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   width: 100%;
   font: inherit;
   font-size: 15px;
-  color: #e9eaec;
-  background: #131619;
-  border: 1px solid color-mix(in oklab, #e9eaec 10%, transparent);
+  color: var(--fg);
+  background: var(--pill);
+  border: 1px solid var(--pill-line);
   border-radius: 9px;
   padding: 13px 14px;
   transition:
@@ -1616,7 +1622,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   line-height: 1.5;
 }
 .collab-form select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888c92' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23949ca1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 38px;
@@ -1624,18 +1630,20 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .collab-form input::placeholder,
 .collab-form textarea::placeholder {
-  color: color-mix(in oklab, #e9eaec 32%, transparent);
+  color: var(--muted);
 }
 .collab-form input:focus,
 .collab-form select:focus,
 .collab-form textarea:focus {
   outline: none;
-  border-color: color-mix(in oklab, #e9eaec 34%, transparent);
-  background: #171a1e;
+  border-color: var(--fg-2);
 }
 .collab-error {
   margin: 0;
   font-size: 13.5px;
+  color: #b3261e;
+}
+html[data-theme="dark"] .collab-error {
   color: #ff9b9b;
 }
 .collab-send {
@@ -1645,18 +1653,18 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   padding: 0 22px;
   border: 0;
   border-radius: 999px;
-  background: #f2f3f4;
-  color: #0a0c0e;
+  background: var(--btn);
+  color: var(--btn-fg);
   font: inherit;
   font-size: 14.5px;
   font-weight: 600;
   cursor: pointer;
   transition:
-    background 0.18s ease,
+    filter 0.18s ease,
     opacity 0.18s ease;
 }
 .collab-send:hover {
-  background: #fff;
+  filter: brightness(1.1);
 }
 .collab-send:disabled {
   opacity: 0.55;
@@ -1675,11 +1683,12 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   font-weight: 600;
   letter-spacing: -0.02em;
   margin: 0;
+  color: var(--fg);
 }
 .collab-done-p {
   font-size: 15px;
   line-height: 1.6;
-  color: color-mix(in oklab, #e9eaec 60%, transparent);
+  color: var(--fg-2);
   margin: 0;
   max-width: 36ch;
 }
@@ -1688,7 +1697,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   background: transparent;
   border: 0;
   padding: 0;
-  color: #e9eaec;
+  color: var(--fg);
   font: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -1707,12 +1716,6 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .faq {
   position: relative;
-  background: #0a0c0e;
-  color: #e9eaec;
-  border-top: 1px solid color-mix(in oklab, #e9eaec 8%, transparent);
-}
-.faq .eyebrow {
-  color: color-mix(in oklab, #e9eaec 52%, transparent);
 }
 .faq-h {
   font-size: clamp(28px, 3.4vw, 46px);
@@ -1720,16 +1723,18 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   line-height: 1.1;
   letter-spacing: -0.025em;
   margin: 16px 0 clamp(34px, 4vw, 52px);
+  color: var(--fg);
 }
 .faq-acc {
-  max-width: 900px;
-  border: 1px solid color-mix(in oklab, #e9eaec 11%, transparent);
+  max-width: 1080px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
   border-radius: 16px;
-  background: #0c0f13;
+  background: var(--pill);
   overflow: hidden;
 }
 .faq-item + .faq-item {
-  border-top: 1px solid color-mix(in oklab, #e9eaec 8%, transparent);
+  border-top: 1px solid var(--line);
 }
 .faq-qh {
   margin: 0;
@@ -1744,13 +1749,13 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   border: 0;
   cursor: pointer;
   text-align: left;
-  color: #f1f2f3;
+  color: var(--fg);
   font: inherit;
   padding: clamp(18px, 2vw, 23px) clamp(20px, 2.4vw, 28px);
   transition: background 0.18s ease;
 }
 .faq-q:hover {
-  background: color-mix(in oklab, #e9eaec 4%, transparent);
+  background: color-mix(in oklab, var(--fg) 5%, transparent);
 }
 .faq-n {
   flex-shrink: 0;
@@ -1758,10 +1763,10 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: color-mix(in oklab, #e9eaec 36%, transparent);
+  color: var(--muted);
 }
 .faq-item--open .faq-n {
-  color: color-mix(in oklab, #e9eaec 60%, transparent);
+  color: var(--fg-2);
 }
 .faq-qt {
   flex: 1;
@@ -1775,10 +1780,10 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  color: color-mix(in oklab, #e9eaec 45%, transparent);
+  color: var(--muted);
 }
 .faq-item--open .faq-ic {
-  color: #fff;
+  color: var(--fg);
 }
 .faq-ic span {
   position: absolute;
@@ -1820,31 +1825,27 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   padding: 0 clamp(20px, 2.4vw, 28px) clamp(20px, 2.2vw, 26px) calc(clamp(20px, 2.4vw, 28px) + 42px);
   font-size: 15px;
   line-height: 1.62;
-  color: color-mix(in oklab, #e9eaec 58%, transparent);
+  color: var(--fg-2);
   max-width: 74ch;
 }
 .faq-foot {
   margin: clamp(28px, 3vw, 40px) 0 0;
   font-size: 15px;
-  color: color-mix(in oklab, #e9eaec 55%, transparent);
+  color: var(--muted);
+  text-align: center;
 }
 .faq-foot a {
-  color: color-mix(in oklab, #e9eaec 88%, transparent);
+  color: var(--fg);
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in oklab, #e9eaec 25%, transparent);
+  border-bottom: 1px solid var(--line);
   padding-bottom: 1px;
-  transition:
-    color 0.18s ease,
-    border-color 0.18s ease;
+  transition: border-color 0.18s ease;
 }
 .faq-foot a:hover {
-  color: #fff;
-  border-bottom-color: color-mix(in oklab, #e9eaec 55%, transparent);
+  border-bottom-color: var(--fg);
 }
 @media (prefers-reduced-motion: reduce) {
-  .faq-panel {
-    transition: none;
-  }
+  .faq-panel,
   .faq-ic span {
     transition: none;
   }

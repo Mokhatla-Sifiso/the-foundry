@@ -21,8 +21,8 @@ export const FAQS = [
     a: "Full-stack product builds, microfrontend architecture, and taking an idea from first commit to something shipped and maintained. TypeScript, React and Next.js, Node, and PostgreSQL are home turf.",
   },
   {
-    q: "Are you available for full-time roles?",
-    a: "Right now I focus on contract and freelance engagements. For an exceptional long-term fit, start a conversation and we can talk.",
+    q: "Which working model do you prefer: onsite, remote, or hybrid?",
+    a: "All three can work. I am set up for remote and collaborate with teams across regions, and hybrid or onsite is open for the right engagement around Gauteng. What matters more is your team's rhythm, so tell me what yours looks like.",
   },
   {
     q: "Where are you based, and do you work remotely?",
@@ -34,7 +34,7 @@ export const FAQS = [
   },
   {
     q: "How soon can you start?",
-    a: "It depends on scope and current load. Send a note and I reply within a day, so we can work out timing together.",
+    a: "It depends on scope and current load. Send a note with your timeline and we can work out the timing together.",
   },
   {
     q: "How do you price an engagement?",

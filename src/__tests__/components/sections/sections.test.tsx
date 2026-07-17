@@ -209,7 +209,7 @@ describe("Contact", () => {
   it("renders the collaboration section: headline, channels, and the form", () => {
     render(<Contact />);
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/worth shipping/i);
-    expect(screen.getByText(/reply within a day/i)).toBeInTheDocument();
+    expect(screen.getByText(/considered reply/i)).toBeInTheDocument();
     expect(screen.getByText(SITE.email)).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Your name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("you@company.com")).toBeInTheDocument();

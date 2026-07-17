@@ -63,7 +63,7 @@ export function Contact(): React.ReactElement {
               <ul className="collab-points">
                 <li>Contract and freelance engagements</li>
                 <li>Full-stack builds, microfrontends, and architecture</li>
-                <li>A reply within a day, from me directly</li>
+                <li>A considered reply, from me directly</li>
               </ul>
             </Reveal>
             <Reveal delay={0.1}>
@@ -79,8 +79,8 @@ export function Contact(): React.ReactElement {
               <div className="collab-done" role="status">
                 <h3 className="collab-done-h">Message sent.</h3>
                 <p className="collab-done-p">
-                  Thanks, {name.split(" ")[0] || "there"}. It&apos;s in my inbox and I&apos;ll reply
-                  personally, usually within a day.
+                  Thanks, {name.split(" ")[0] || "there"}. It&apos;s in my inbox and I&apos;ll get
+                  back to you personally.
                 </p>
                 <button type="button" className="collab-textbtn" onClick={reset}>
                   Send another
