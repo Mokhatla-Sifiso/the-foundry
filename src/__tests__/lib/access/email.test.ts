@@ -219,6 +219,7 @@ describe("sendExecutiveDemoToOwner", () => {
       slot: "Tue 14:00",
       topic: "Platform strategy",
       message: "Looking forward to it.",
+      token: "exec-tok",
     });
     const payload = lastPayload();
     expect(payload.to).toBe(SITE.email);
@@ -236,6 +237,7 @@ describe("sendExecutiveDemoToOwner", () => {
       slot: "Tue 14:00",
       topic: "",
       message: "",
+      token: "exec-tok",
     });
     const payload = lastPayload();
     expect(payload.text).not.toContain("Focus:");
@@ -251,6 +253,7 @@ describe("sendExecutiveDemoToOwner", () => {
       slot: "<script>x</script>",
       topic: "a & b",
       message: "",
+      token: "exec-tok",
     });
     const { html } = lastPayload();
     expect(html).not.toContain("<script>x</script>");
@@ -268,6 +271,7 @@ describe("sendExecutiveRepoToOwner", () => {
       repos: "acme/api, acme/web",
       purpose: "Due diligence",
       message: "Thanks!",
+      token: "exec-tok",
     });
     const payload = lastPayload();
     expect(payload.to).toBe(SITE.email);
@@ -285,6 +289,7 @@ describe("sendExecutiveRepoToOwner", () => {
       repos: "acme/api",
       purpose: "",
       message: "",
+      token: "exec-tok",
     });
     const payload = lastPayload();
     expect(payload.text).not.toContain("Purpose:");

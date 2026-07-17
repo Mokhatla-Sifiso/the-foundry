@@ -46,7 +46,7 @@ export function isFreeDomain(email: string): boolean {
 export function validateSignup(
   raw: unknown,
   options: {
-    isAdmin: boolean;
+    allowPersonalEmail: boolean;
   },
 ):
   | {
@@ -71,7 +71,7 @@ export function validateSignup(
   if (!EMAIL_RE.test(email)) {
     return { ok: false, error: { field: "email", message: "Enter a valid email address." } };
   }
-  if (!options.isAdmin && isFreeDomain(email)) {
+  if (!options.allowPersonalEmail && isFreeDomain(email)) {
     return {
       ok: false,
       error: {

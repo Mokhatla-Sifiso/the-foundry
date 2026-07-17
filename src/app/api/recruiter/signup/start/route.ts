@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { isWhitelisted } from "@/lib/auth/admin";
 import { validateSignup } from "@/lib/auth/validation";
+import { recruiterBypassAllows } from "@/lib/auth/bypass";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -19,8 +20,10 @@ export async function POST(request: Request): Promise<Response> {
         { status: 429 },
       );
     }
-    const adminGate = email ? await isWhitelisted(email) : false;
-    const result = validateSignup(payload, { isAdmin: adminGate });
+    const allowPersonalEmail = email
+      ? (await isWhitelisted(email)) || recruiterBypassAllows(email)
+      : false;
+    const result = validateSignup(payload, { allowPersonalEmail });
     if (!result.ok) {
       return NextResponse.json(
         { message: result.error.message, field: result.error.field },
