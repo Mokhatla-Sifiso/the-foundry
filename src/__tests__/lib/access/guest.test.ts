@@ -187,6 +187,7 @@ describe("reviewGuestRequest", () => {
   it("refuses to re-decide a request that is no longer pending", async () => {
     accessRequest.findUnique.mockResolvedValue({
       id: "req-1",
+      tier: "guest",
       email: "g@acme.co",
       name: "Gina",
       status: "approved",
@@ -201,6 +202,7 @@ describe("reviewGuestRequest", () => {
   it("approves a pending request, sets a 24-hour expiry, and clears the token", async () => {
     accessRequest.findUnique.mockResolvedValue({
       id: "req-2",
+      tier: "guest",
       email: "gina@acme.co",
       name: "Gina",
       status: "pending",
@@ -229,6 +231,7 @@ describe("reviewGuestRequest", () => {
   it("rejects a pending request without granting an expiry", async () => {
     accessRequest.findUnique.mockResolvedValue({
       id: "req-3",
+      tier: "guest",
       email: "rob@acme.co",
       name: "Rob",
       status: "pending",
@@ -260,33 +263,39 @@ describe("pendingRequestByToken", () => {
 
   it("summarises a pending request with its parsed resource list", async () => {
     accessRequest.findUnique.mockResolvedValue({
+      tier: "guest",
       status: "pending",
       name: "Priya",
       email: "priya@acme.co",
       message: "Evaluating for a role",
       detail: { resources: ["cv", 1, "references"] },
+      createdAt: new Date("2026-07-17T13:42:00Z"),
     });
     await expect(pendingRequestByToken("tok")).resolves.toEqual({
       name: "Priya",
       email: "priya@acme.co",
       resources: ["cv", "references"],
       message: "Evaluating for a role",
+      createdAt: new Date("2026-07-17T13:42:00Z"),
     });
   });
 
   it("defaults resources to an empty list when detail is absent", async () => {
     accessRequest.findUnique.mockResolvedValue({
+      tier: "guest",
       status: "pending",
       name: "Sam",
       email: "sam@acme.co",
       message: null,
       detail: null,
+      createdAt: new Date("2026-07-17T13:42:00Z"),
     });
     await expect(pendingRequestByToken("tok")).resolves.toEqual({
       name: "Sam",
       email: "sam@acme.co",
       resources: [],
       message: null,
+      createdAt: new Date("2026-07-17T13:42:00Z"),
     });
   });
 });
@@ -321,6 +330,7 @@ describe("renotifyPendingRequest", () => {
   it("re-sends the owner notification for a pending request, reusing its review token", async () => {
     accessRequest.findFirst.mockResolvedValue({
       email: "gina@acme.co",
+      tier: "guest",
       name: "Gina",
       detail: { resources: ["cv", "references"] },
       message: "still waiting",

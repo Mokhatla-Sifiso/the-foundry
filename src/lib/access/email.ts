@@ -120,13 +120,16 @@ export async function sendExecutiveDemoToOwner(args: {
   slot: string;
   topic: string;
   message: string;
+  token: string;
 }): Promise<void> {
+  const link = `${SITE_URL}/api/executive/review?token=${args.token}`;
   const subject = `Demo request from ${args.name}`;
   const text =
     `${args.name} (${args.email}) would like to book a demo.\n\n` +
     `Preferred slot: ${args.slot}\n` +
     (args.topic ? `Focus: ${args.topic}\n` : "") +
-    (args.message ? `Notes: ${args.message}\n` : "");
+    (args.message ? `Notes: ${args.message}\n` : "") +
+    `\nReview: ${link}`;
   const html = shell(
     `<h2 style="margin:0 0 8px;">New demo request</h2>` +
       `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
@@ -134,7 +137,8 @@ export async function sendExecutiveDemoToOwner(args: {
       (args.topic ? `<p style="margin:0 0 4px;color:#555;">Focus: ${esc(args.topic)}</p>` : "") +
       (args.message
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
-        : ""),
+        : "") +
+      `<p style="margin:20px 0 0;"><a href="${link}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Review this request</a></p>`,
   );
   await send(SITE.email, subject, html, text, args.email);
 }
@@ -145,13 +149,16 @@ export async function sendExecutiveRepoToOwner(args: {
   repos: string;
   purpose: string;
   message: string;
+  token: string;
 }): Promise<void> {
+  const link = `${SITE_URL}/api/executive/review?token=${args.token}`;
   const subject = `Repo access request from ${args.name}`;
   const text =
     `${args.name} (${args.email}) is requesting repository access.\n\n` +
     `Repositories / projects: ${args.repos}\n` +
     (args.purpose ? `Purpose: ${args.purpose}\n` : "") +
-    (args.message ? `Notes: ${args.message}\n` : "");
+    (args.message ? `Notes: ${args.message}\n` : "") +
+    `\nReview: ${link}`;
   const html = shell(
     `<h2 style="margin:0 0 8px;">New repo access request</h2>` +
       `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
@@ -161,7 +168,8 @@ export async function sendExecutiveRepoToOwner(args: {
         : "") +
       (args.message
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
-        : ""),
+        : "") +
+      `<p style="margin:20px 0 0;"><a href="${link}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Review this request</a></p>`,
   );
   await send(SITE.email, subject, html, text, args.email);
 }
