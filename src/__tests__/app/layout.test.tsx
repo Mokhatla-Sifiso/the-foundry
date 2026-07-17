@@ -1,3 +1,5 @@
+jest.mock("@vercel/speed-insights/next", () => ({ SpeedInsights: () => null }));
+
 import { metadata } from "@/app/layout";
 describe("RootLayout metadata", () => {
   it("publishes the spec title with a templated suffix", () => {
