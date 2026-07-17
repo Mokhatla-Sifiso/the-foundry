@@ -18,6 +18,7 @@ type SendPayload = {
   subject: string;
   text: string;
   html: string;
+  replyTo: string;
 };
 
 type AccessEmailModule = typeof import("@/lib/access/email");
@@ -224,7 +225,7 @@ describe("sendExecutiveDemoToOwner", () => {
     expect(payload.subject).toBe("Demo request from Sam Exec");
     expect(payload.text).toContain("Preferred slot: Tue 14:00");
     expect(payload.text).toContain("Focus: Platform strategy");
-    expect(payload.html).toContain("mailto:sam@corp.com");
+    expect(payload.replyTo).toBe("sam@corp.com");
   });
 
   it("omits the optional topic and message blocks when empty", async () => {
@@ -273,7 +274,7 @@ describe("sendExecutiveRepoToOwner", () => {
     expect(payload.subject).toBe("Repo access request from Sam");
     expect(payload.text).toContain("Repositories / projects: acme/api, acme/web");
     expect(payload.text).toContain("Purpose: Due diligence");
-    expect(payload.html).toContain("Reply to Sam");
+    expect(payload.replyTo).toBe("sam@corp.com");
   });
 
   it("omits optional purpose and message blocks when empty", async () => {
@@ -326,7 +327,7 @@ describe("sendContactToOwner", () => {
     expect(payload.text).toContain("dana@studio.io");
     expect(payload.text).toContain("About: Contract");
     expect(payload.text).toContain("We have a three-month React build.");
-    expect(payload.html).toContain("mailto:dana@studio.io");
+    expect(payload.replyTo).toBe("dana@studio.io");
   });
 
   it("HTML-escapes hostile name, email and message", async () => {
@@ -353,13 +354,9 @@ describe("missing RESEND_API_KEY (dev fallback)", () => {
 
   it("resolves without throwing and never calls the transport", async () => {
     const mod = await loadModule();
-    await expect(
-      mod.sendGuestReceipt("jordan@acme.co", "Jordan"),
-    ).resolves.toBeUndefined();
+    await expect(mod.sendGuestReceipt("jordan@acme.co", "Jordan")).resolves.toBeUndefined();
     expect(mockSend).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("RESEND_API_KEY missing"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("RESEND_API_KEY missing"));
   });
 });
 
@@ -383,9 +380,7 @@ describe("transport error handling", () => {
     mockSend.mockResolvedValue({ data: null, error: { message: "boom" } });
     (process.env as Record<string, string>).NODE_ENV = "test";
     const mod = await loadModule();
-    await expect(
-      mod.sendGuestReceipt("jordan@acme.co", "Jordan"),
-    ).resolves.toBeUndefined();
+    await expect(mod.sendGuestReceipt("jordan@acme.co", "Jordan")).resolves.toBeUndefined();
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("boom"));
   });
 
@@ -393,9 +388,7 @@ describe("transport error handling", () => {
     mockSend.mockResolvedValue({ data: null, error: { message: "boom" } });
     (process.env as Record<string, string>).NODE_ENV = "production";
     const mod = await loadModule();
-    await expect(mod.sendGuestReceipt("jordan@acme.co", "Jordan")).rejects.toThrow(
-      "boom",
-    );
+    await expect(mod.sendGuestReceipt("jordan@acme.co", "Jordan")).rejects.toThrow("boom");
   });
 });
 
@@ -409,5 +402,47 @@ describe("client caching", () => {
     await mod.sendGuestReceipt("b@acme.co", "B");
     expect(mockSend).toHaveBeenCalledTimes(2);
     expect(ResendMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Reply-To routing", () => {
+  it("replies to the guest on the owner's copy, so hitting reply reaches them", async () => {
+    const mod = await loadModule();
+    await mod.sendGuestRequestToOwner({
+      name: "Jordan",
+      email: "jordan@acme.co",
+      resources: ["cv"],
+      message: "",
+      token: "tok",
+    });
+    const p = lastPayload();
+    expect(p.to).toBe(SITE.email);
+    expect(p.replyTo).toBe("jordan@acme.co");
+  });
+
+  it("replies to the owner on guest-facing mail", async () => {
+    const mod = await loadModule();
+    await mod.sendGuestReceipt("jordan@acme.co", "Jordan");
+    expect(lastPayload().replyTo).toBe(SITE.email);
+
+    await mod.sendGuestDecision("jordan@acme.co", "Jordan", true, new Date("2026-07-18T21:17:00Z"));
+    expect(lastPayload().replyTo).toBe(SITE.email);
+
+    await mod.sendGuestDecision("jordan@acme.co", "Jordan", false);
+    expect(lastPayload().replyTo).toBe(SITE.email);
+  });
+
+  it("never sends a no-reply sender: every mail carries a Reply-To", async () => {
+    const mod = await loadModule();
+    await mod.sendContactToOwner({
+      name: "Dana",
+      email: "dana@studio.io",
+      intent: "Contract",
+      message: "hi",
+    });
+    await mod.sendExecutiveReceipt("dana@studio.io", "Dana", "demo");
+    for (const call of mockSend.mock.calls) {
+      expect((call[0] as SendPayload).replyTo).toBeTruthy();
+    }
   });
 });
