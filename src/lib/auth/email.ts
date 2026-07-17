@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { SITE } from "@/lib/constants";
 const FROM = process.env.RESEND_FROM ?? "Mzwakhe Mokhatla <noreply@example.com>";
 let resend: Resend | null = null;
 function getResend(): Resend | null {
@@ -27,7 +28,14 @@ export async function sendOtpEmail(to: string, otp: string): Promise<void> {
       <p style="color: #6b7280; font-size: 13px;">Expires in 5 minutes. If you didn't request this, ignore this email.</p>
     </div>
   `;
-  const result = await client.emails.send({ from: FROM, to, subject, text, html });
+  const result = await client.emails.send({
+    from: FROM,
+    to,
+    subject,
+    text,
+    html,
+    replyTo: SITE.email,
+  });
   if (result.error) {
     if (process.env.NODE_ENV !== "production") {
       console.warn(
