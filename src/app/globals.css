@@ -1982,18 +1982,12 @@ html[data-theme="dark"] .collab-error {
   opacity: 1;
   translate: 0 0;
 }
+
 .rec-tiers .pass:nth-child(2) {
   --in-delay: 0.12s;
 }
 .rec-tiers .pass:nth-child(3) {
   --in-delay: 0.24s;
-}
-@media (prefers-reduced-motion: reduce) {
-  .pass {
-    opacity: 1;
-    translate: 0 0;
-    transition: none;
-  }
 }
 .pass {
   --rx: 0deg;
@@ -2034,6 +2028,15 @@ html[data-theme="dark"] .collab-error {
     0 28px 56px -34px rgba(0, 0, 0, 0.55);
   cursor: pointer;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .pass {
+    opacity: 1;
+    translate: 0 0;
+    transition: none;
+  }
+}
+
 .pass:hover {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.08) inset,
@@ -2516,8 +2519,7 @@ html[data-theme="dark"] .collab-error {
   flex-direction: column;
   justify-content: center;
   background:
-    radial-gradient(80% 60% at 50% 50%, rgba(178, 213, 229, 0.06), transparent 70%),
-    var(--pill);
+    radial-gradient(80% 60% at 50% 50%, rgba(178, 213, 229, 0.06), transparent 70%), var(--pill);
   border: 1px solid var(--line);
   border-radius: 28px;
   padding: 18px;

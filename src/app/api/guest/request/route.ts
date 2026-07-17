@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { getSessionContext } from "@/lib/auth/admin";
-import {
-  GuestNotifyError,
-  createGuestRequest,
-  guestStateForEmail,
-  renotifyPendingRequest,
-} from "@/lib/access/guest";
+import { createGuestRequest, guestStateForEmail, renotifyPendingRequest } from "@/lib/access/guest";
+import { NotifyError } from "@/lib/access/notify";
 import { GUEST_RESOURCE_KEYS } from "@/lib/access/resources";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { SITE } from "@/lib/constants";
@@ -57,7 +53,7 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ ok: true, status: "pending" });
   } catch (err) {
     console.error("[guest/request]", err);
-    if (err instanceof GuestNotifyError) {
+    if (err instanceof NotifyError) {
       return NextResponse.json(
         {
           message: `Your request is saved, but the confirmation email failed. Email ${SITE.email} directly and I'll pick it up.`,

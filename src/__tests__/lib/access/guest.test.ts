@@ -1,11 +1,11 @@
 import {
-  GuestNotifyError,
   createGuestRequest,
   guestStateForEmail,
   pendingRequestByToken,
   renotifyPendingRequest,
   reviewGuestRequest,
 } from "@/lib/access/guest";
+import { NotifyError } from "@/lib/access/notify";
 import { db } from "@/lib/db";
 import { sendGuestDecision, sendGuestReceipt, sendGuestRequestToOwner } from "@/lib/access/email";
 
@@ -308,10 +308,10 @@ describe("notification resilience", () => {
     expect(sendGuestRequestToOwner).toHaveBeenCalledTimes(1);
   });
 
-  it("raises GuestNotifyError when the owner cannot be told the request exists", async () => {
+  it("raises NotifyError when the owner cannot be told the request exists", async () => {
     (sendGuestRequestToOwner as jest.Mock).mockRejectedValueOnce(new Error("domain not verified"));
 
-    await expect(createGuestRequest(base)).rejects.toBeInstanceOf(GuestNotifyError);
+    await expect(createGuestRequest(base)).rejects.toBeInstanceOf(NotifyError);
     // The row is still written: the request is real even when the email is not.
     expect(accessRequest.create).toHaveBeenCalledTimes(1);
   });

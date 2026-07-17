@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { newReviewToken } from "./token";
 import { GUEST_GRANT_HOURS } from "./resources";
+import { notifyOwner } from "./notify";
 import { sendGuestRequestToOwner, sendGuestReceipt, sendGuestDecision } from "./email";
 
 export type GuestStatus = "none" | "pending" | "approved" | "rejected" | "expired";
@@ -11,14 +12,6 @@ export type GuestState = Readonly<{
   resources: ReadonlyArray<string>;
 }>;
 
-/** The request row was saved, but the owner could not be told it exists. */
-export class GuestNotifyError extends Error {
-  constructor() {
-    super("Your request was saved, but the notification email failed to send.");
-    this.name = "GuestNotifyError";
-  }
-}
-
 async function notify(args: {
   email: string;
   name: string;
@@ -26,7 +19,9 @@ async function notify(args: {
   message: string;
   token: string;
 }): Promise<void> {
-  const [owner, receipt] = await Promise.allSettled([
+  await notifyOwner(
+    "guest",
+    args.email,
     sendGuestRequestToOwner({
       name: args.name,
       email: args.email,
@@ -35,16 +30,7 @@ async function notify(args: {
       token: args.token,
     }),
     sendGuestReceipt(args.email, args.name),
-  ]);
-  // The receipt is a courtesy. Losing it must never cost us the owner notification,
-  // which is the only thing that surfaces a pending request for review.
-  if (receipt.status === "rejected") {
-    console.error(`[guest] receipt to ${args.email} failed:`, receipt.reason);
-  }
-  if (owner.status === "rejected") {
-    console.error(`[guest] owner notification for ${args.email} failed:`, owner.reason);
-    throw new GuestNotifyError();
-  }
+  );
 }
 
 export async function createGuestRequest(args: {
