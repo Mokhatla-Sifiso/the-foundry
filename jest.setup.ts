@@ -1,4 +1,10 @@
 import "@testing-library/jest-dom";
+
+// Mock Vercel Analytics
+jest.mock("@vercel/analytics/next", () => ({
+  Analytics: () => null,
+}));
+
 if (typeof window !== "undefined") {
   if (!window.matchMedia) {
     window.matchMedia = (query: string): MediaQueryList => ({

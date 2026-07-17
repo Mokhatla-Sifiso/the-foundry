@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { Onest } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Loader } from "@/components/Loader";
 import { ThemeScript } from "@/components/ThemeScript";
 import { Toaster } from "@/components/primitives/Toaster";
@@ -183,6 +184,7 @@ export default async function RootLayout({
           <GoogleAnalytics nonce={nonce} />
         </ConsentProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
