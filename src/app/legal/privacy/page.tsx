@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default function PrivacyPage(): React.ReactElement {
   return (
-    <LegalLayout title="Privacy Policy" version={PRIVACY_POLICY_VERSION} updatedAt="16 July 2026">
+    <LegalLayout title="Privacy Policy" version={PRIVACY_POLICY_VERSION} updatedAt="17 July 2026">
       <h2>Who I am</h2>
       <p>
         This site is operated personally by <strong>{DATA_CONTROLLER.name}</strong>, based in{" "}
@@ -18,7 +18,8 @@ export default function PrivacyPage(): React.ReactElement {
       <h2>What I collect, and why</h2>
       <p>
         Most of what I collect powers the recruiter verification flow on <code>/recruiter</code>.
-        With your consent, I also collect anonymous usage analytics across the whole site.
+        With your consent, I also collect anonymous usage analytics across the whole site, plus
+        cookieless, anonymous page-load performance metrics that need no consent.
       </p>
       <ul>
         <li>
@@ -44,10 +45,10 @@ export default function PrivacyPage(): React.ReactElement {
           switched off.
         </li>
         <li>
-          <strong>Performance metrics</strong>, only if you accept analytics cookies: anonymous
-          page-load timings (Core Web Vitals) and the page&apos;s route, collected through Vercel
-          Speed Insights so I can see how fast the site is. This is cookieless and is not tied to
-          your identity.
+          <strong>Performance metrics</strong>: anonymous page-load timings (Core Web Vitals) and
+          the page&apos;s route, collected through Vercel Speed Insights so I can see how fast the
+          site is. This is cookieless, sets nothing on your device, is not tied to your identity,
+          and runs under legitimate interest rather than consent.
         </li>
       </ul>
       <p>
@@ -62,8 +63,8 @@ export default function PrivacyPage(): React.ReactElement {
           take a step toward a hiring conversation.
         </li>
         <li>
-          <strong>Legitimate interest</strong> (Art. 6(1)(f)), fraud prevention and audit logs of
-          who accessed the CV.
+          <strong>Legitimate interest</strong> (Art. 6(1)(f)), fraud prevention, audit logs of who
+          accessed the CV, and anonymous cookieless performance monitoring (Vercel Speed Insights).
         </li>
         <li>
           <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies and Google Analytics.
@@ -81,8 +82,8 @@ export default function PrivacyPage(): React.ReactElement {
         </li>
         <li>
           <strong>Vercel</strong> (Vercel Inc.), hosts the site and routes traffic, and processes
-          anonymous performance metrics through Speed Insights when you consent to analytics. This
-          data is transferred to the United States.
+          anonymous, cookieless performance metrics through Speed Insights under legitimate
+          interest. This data is transferred to the United States.
         </li>
         <li>
           <strong>Google</strong> (Google Analytics, Google Ireland Ltd / Google LLC), processes
