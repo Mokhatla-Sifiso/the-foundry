@@ -13,7 +13,13 @@ function client(): Resend | null {
   return resend;
 }
 
-async function send(to: string, subject: string, html: string, text: string): Promise<void> {
+async function send(
+  to: string,
+  subject: string,
+  html: string,
+  text: string,
+  replyTo: string,
+): Promise<void> {
   const c = client();
   if (!c) {
     if (process.env.NODE_ENV !== "production") {
@@ -22,7 +28,7 @@ async function send(to: string, subject: string, html: string, text: string): Pr
     }
     throw new Error("RESEND_API_KEY missing");
   }
-  const result = await c.emails.send({ from: FROM, to, subject, text, html });
+  const result = await c.emails.send({ from: FROM, to, subject, text, html, replyTo });
   if (result.error) {
     if (process.env.NODE_ENV !== "production") {
       console.warn(`[access-email] send to ${to} failed: ${result.error.message}`);
@@ -68,7 +74,7 @@ export async function sendGuestRequestToOwner(args: {
       `<p style="margin:20px 0 0;"><a href="${link}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Review this request</a></p>` +
       `<p style="margin:12px 0 0;color:#888;font-size:12px;">Approving grants ${esc(args.name)} ${GUEST_GRANT_HOURS} hours of access.</p>`,
   );
-  await send(SITE.email, subject, html, text);
+  await send(SITE.email, subject, html, text, args.email);
 }
 
 export async function sendGuestReceipt(to: string, name: string): Promise<void> {
@@ -78,7 +84,7 @@ export async function sendGuestReceipt(to: string, name: string): Promise<void> 
     `<h2 style="margin:0 0 8px;">Request received</h2>` +
       `<p style="margin:0;color:#333;line-height:1.6;">Hi ${esc(name)}, your access request is in. I review these personally, so you'll get an email the moment it's approved.</p>`,
   );
-  await send(to, subject, html, text);
+  await send(to, subject, html, text, SITE.email);
 }
 
 export async function sendGuestDecision(
@@ -96,7 +102,7 @@ export async function sendGuestDecision(
         `<p style="margin:0 0 16px;color:#333;line-height:1.6;">Hi ${esc(name)}, your access is approved for the next <b>${GUEST_GRANT_HOURS} hours</b>${until ? `, closing <b>${until}</b>` : ""}. The window is short, so grab what you need now.</p>` +
         `<p style="margin:0;"><a href="${SITE_URL}/guest" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">View your access</a></p>`,
     );
-    await send(to, subject, html, text);
+    await send(to, subject, html, text, SITE.email);
     return;
   }
   const subject = "About your access request";
@@ -105,7 +111,7 @@ export async function sendGuestDecision(
     `<h2 style="margin:0 0 8px;">Thanks for reaching out</h2>` +
       `<p style="margin:0;color:#333;line-height:1.6;">Hi ${esc(name)}, I wasn't able to approve this request this time. You're welcome to reach me directly at <a href="mailto:${SITE.email}">${SITE.email}</a>.</p>`,
   );
-  await send(to, subject, html, text);
+  await send(to, subject, html, text, SITE.email);
 }
 
 export async function sendExecutiveDemoToOwner(args: {
@@ -128,10 +134,9 @@ export async function sendExecutiveDemoToOwner(args: {
       (args.topic ? `<p style="margin:0 0 4px;color:#555;">Focus: ${esc(args.topic)}</p>` : "") +
       (args.message
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
-        : "") +
-      `<p style="margin:20px 0 0;"><a href="mailto:${esc(args.email)}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Reply to ${esc(args.name)}</a></p>`,
+        : ""),
   );
-  await send(SITE.email, subject, html, text);
+  await send(SITE.email, subject, html, text, args.email);
 }
 
 export async function sendExecutiveRepoToOwner(args: {
@@ -156,10 +161,9 @@ export async function sendExecutiveRepoToOwner(args: {
         : "") +
       (args.message
         ? `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;">${esc(args.message)}</p>`
-        : "") +
-      `<p style="margin:20px 0 0;"><a href="mailto:${esc(args.email)}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Reply to ${esc(args.name)}</a></p>`,
+        : ""),
   );
-  await send(SITE.email, subject, html, text);
+  await send(SITE.email, subject, html, text, args.email);
 }
 
 export async function sendExecutiveReceipt(
@@ -174,7 +178,7 @@ export async function sendExecutiveReceipt(
     `<h2 style="margin:0 0 8px;">Request received</h2>` +
       `<p style="margin:0;color:#333;line-height:1.6;">Hi ${esc(name)}, your ${what} is in. I'll come back to you personally by email shortly.</p>`,
   );
-  await send(to, subject, html, text);
+  await send(to, subject, html, text, SITE.email);
 }
 
 export async function sendContactToOwner(args: {
@@ -192,8 +196,7 @@ export async function sendContactToOwner(args: {
     `<h2 style="margin:0 0 8px;">New enquiry</h2>` +
       `<p style="margin:0 0 4px;"><b>${esc(args.name)}</b> &lt;${esc(args.email)}&gt;</p>` +
       `<p style="margin:0 0 4px;color:#555;">About: <b>${esc(args.intent)}</b></p>` +
-      `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;white-space:pre-wrap;">${esc(args.message)}</p>` +
-      `<p style="margin:20px 0 0;"><a href="mailto:${esc(args.email)}" style="display:inline-block;background:#0a0a0a;color:#fff;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;">Reply to ${esc(args.name)}</a></p>`,
+      `<p style="margin:8px 0;padding:10px 12px;background:#f4f4f5;border-radius:8px;white-space:pre-wrap;">${esc(args.message)}</p>`,
   );
-  await send(SITE.email, subject, html, text);
+  await send(SITE.email, subject, html, text, args.email);
 }
