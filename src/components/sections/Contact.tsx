@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Chat } from "@/components/primitives/icons";
 import { Reveal } from "@/components/primitives/Reveal";
 import { CONTACT_INTENTS, SITE, type ContactIntent } from "@/lib/constants";
 
@@ -155,8 +156,15 @@ export function Contact(): React.ReactElement {
                   </p>
                 ) : null}
 
-                <button type="submit" className="collab-send" disabled={status === "sending"}>
+                <button
+                  type="submit"
+                  className="btn btn-primary collab-send"
+                  disabled={status === "sending"}
+                >
                   {status === "sending" ? "Sending" : "Send message"}
+                  <span className="ic">
+                    <Chat />
+                  </span>
                 </button>
               </form>
             )}

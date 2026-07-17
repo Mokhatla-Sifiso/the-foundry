@@ -1523,10 +1523,10 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   min-width: 0;
 }
 .collab-h {
-  font-size: clamp(30px, 3.6vw, 50px);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   margin: 0 0 clamp(26px, 3vw, 38px);
   max-width: 14ch;
   color: var(--fg);
@@ -1576,6 +1576,11 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .collab-formwrap {
   min-width: 0;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(20px);
+  border-radius: var(--r);
+  padding: clamp(24px, 2.8vw, 40px);
 }
 .collab-hp {
   position: absolute;
@@ -1609,11 +1614,12 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   color: var(--fg);
   background: var(--pill);
   border: 1px solid var(--pill-line);
-  border-radius: 9px;
-  padding: 13px 14px;
+  border-radius: 16px;
+  padding: 15px 18px;
+  backdrop-filter: blur(14px);
   transition:
-    border-color 0.18s ease,
-    background 0.18s ease;
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
   appearance: none;
 }
 .collab-form textarea {
@@ -1636,7 +1642,8 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .collab-form select:focus,
 .collab-form textarea:focus {
   outline: none;
-  border-color: var(--fg-2);
+  border-color: var(--candy);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 26%, transparent);
 }
 .collab-error {
   margin: 0;
@@ -1648,27 +1655,12 @@ html[data-theme="dark"] .collab-error {
 }
 .collab-send {
   align-self: flex-start;
-  margin-top: 4px;
-  height: 44px;
-  padding: 0 22px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--btn);
-  color: var(--btn-fg);
-  font: inherit;
-  font-size: 14.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    filter 0.18s ease,
-    opacity 0.18s ease;
-}
-.collab-send:hover {
-  filter: brightness(1.1);
+  margin-top: 6px;
 }
 .collab-send:disabled {
   opacity: 0.55;
   cursor: progress;
+  transform: none;
 }
 .collab-done {
   display: flex;
@@ -1718,19 +1710,18 @@ html[data-theme="dark"] .collab-error {
   position: relative;
 }
 .faq-h {
-  font-size: clamp(28px, 3.4vw, 46px);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   margin: 16px 0 clamp(34px, 4vw, 52px);
   color: var(--fg);
 }
 .faq-acc {
-  max-width: 1080px;
-  margin: 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 1px solid var(--pill-line);
+  border-radius: var(--r);
   background: var(--pill);
+  backdrop-filter: blur(14px);
   overflow: hidden;
 }
 .faq-item + .faq-item {
@@ -1930,10 +1921,10 @@ html[data-theme="dark"] .collab-error {
   color: var(--muted);
 }
 .rec-h {
-  font-weight: 500;
-  font-size: clamp(34px, 4.6vw, 66px);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   max-width: 20ch;
   margin-bottom: clamp(22px, 3.5vh, 38px);
 }
