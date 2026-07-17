@@ -7,6 +7,7 @@ import { Toaster } from "@/components/primitives/Toaster";
 import { ConsentProvider } from "@/components/privacy/ConsentProvider";
 import { ConsentBanner } from "@/components/privacy/ConsentBanner";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { SpeedInsights } from "@/components/analytics/SpeedInsights";
 import { SITE } from "@/lib/constants";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
@@ -181,6 +182,7 @@ export default async function RootLayout({
           {children}
           <ConsentBanner />
           <GoogleAnalytics nonce={nonce} />
+          <SpeedInsights />
         </ConsentProvider>
         <Toaster />
       </body>
