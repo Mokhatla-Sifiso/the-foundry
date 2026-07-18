@@ -19,7 +19,7 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 14,
     updateAge: 60 * 60 * 24,
-    cookieCache: { enabled: true, maxAge: 60 * 5 },
+    cookieCache: { enabled: false },
   },
   plugins: [
     emailOTP({
