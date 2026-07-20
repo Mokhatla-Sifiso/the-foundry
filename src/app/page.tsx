@@ -2,6 +2,7 @@ import { NavMenu } from "@/components/nav/NavMenu";
 import { Progress } from "@/components/primitives/Progress";
 import { SmoothScroll } from "@/components/primitives/SmoothScroll";
 import { AISection } from "@/components/sections/AISection";
+import { ArchitecturePatterns } from "@/components/sections/ArchitecturePatterns";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Faq } from "@/components/sections/Faq";
@@ -21,6 +22,7 @@ export default function HomePage(): React.ReactElement {
         <Hero />
         <Statement />
         <Services />
+        <ArchitecturePatterns />
         <Work />
         <Experience />
         <TransContinental />

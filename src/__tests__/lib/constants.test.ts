@@ -15,20 +15,22 @@ describe("SITE", () => {
   });
 });
 describe("NAVLINKS", () => {
-  it("is the six entries in order with the right numbering", () => {
+  it("is the seven entries in order with the right numbering", () => {
     expect(NAVLINKS.map((l) => `${l.n} ${l.t} ${l.href}`)).toEqual([
       "01 Work #work",
       "02 Services #services",
-      "03 AI Workflow #ai",
-      "04 Experience #experience",
-      "05 For recruiters #recruiters",
-      "06 Contact #contact",
+      "03 Architecture #architecture",
+      "04 AI Workflow #ai",
+      "05 Experience #experience",
+      "06 For recruiters #recruiters",
+      "07 Contact #contact",
     ]);
   });
   it("every in-page nav href targets a section id that exists on the home page", () => {
     const HOME_SECTION_IDS = new Set([
       "work",
       "services",
+      "architecture",
       "ai",
       "experience",
       "recruiters",

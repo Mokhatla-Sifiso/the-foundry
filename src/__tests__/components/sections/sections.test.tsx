@@ -265,7 +265,7 @@ describe("Footer", () => {
   });
 });
 describe("NAVLINKS shape (re-asserted at section level)", () => {
-  it("has exactly 6 entries and the order matches what Menu renders", () => {
-    expect(NAVLINKS.length).toBe(6);
+  it("has exactly 7 entries and the order matches what Menu renders", () => {
+    expect(NAVLINKS.length).toBe(7);
   });
 });
