@@ -6,47 +6,48 @@ import { Reveal } from "@/components/primitives/Reveal";
  * a readable min-width. An illustrative, generic engagement — not a
  * specific client project.
  * ------------------------------------------------------------------ */
-const TOTAL = 110; // days (~3.5 months, with trailing buffer)
-const NOW = 18;
+const TOTAL = 21; // weeks on the axis (~4 months of delivery + trailing buffer)
+const NOW = 5;
 const ROWS = 8;
 
+// Industry-standard enterprise delivery lifecycle (SDLC): discovery →
+// requirements → design → build → QA → UAT → release → hypercare.
+// Development is the longest phase; discovery / release are the shortest.
 type Variant = "fill" | "glass" | "accent" | "accent-solid";
-type Task = Readonly<{ name: string; days: number; start: number; row: number; variant: Variant }>;
-// one lane per phase, in logical delivery order
+type Task = Readonly<{ name: string; weeks: number; start: number; row: number; variant: Variant }>;
 const TASKS: readonly Task[] = [
-  { name: "Research", days: 4, start: 0, row: 0, variant: "fill" },
-  { name: "Business Analysis", days: 25, start: 4, row: 1, variant: "glass" },
-  { name: "Wireframes, proto", days: 12, start: 12, row: 2, variant: "fill" },
-  { name: "WF Testing", days: 4, start: 24, row: 3, variant: "fill" },
-  { name: "UI design", days: 15, start: 28, row: 4, variant: "glass" },
-  { name: "Sync", days: 2, start: 32, row: 5, variant: "accent-solid" },
-  { name: "Development", days: 45, start: 34, row: 6, variant: "accent" },
-  { name: "Feedback", days: 2, start: 80, row: 7, variant: "glass" },
+  { name: "Discovery", weeks: 2, start: 0, row: 0, variant: "fill" },
+  { name: "Requirements Analysis", weeks: 2, start: 2, row: 1, variant: "glass" },
+  { name: "Architecture & Design", weeks: 3, start: 4, row: 2, variant: "fill" },
+  { name: "Development", weeks: 7, start: 6, row: 3, variant: "accent" },
+  { name: "QA & Testing", weeks: 3, start: 10, row: 4, variant: "glass" },
+  { name: "UAT", weeks: 2, start: 13, row: 5, variant: "fill" },
+  { name: "Release", weeks: 1, start: 15, row: 6, variant: "accent-solid" },
+  { name: "Hypercare", weeks: 2, start: 16, row: 7, variant: "glass" },
 ];
 
-type Milestone = Readonly<{ name: string; day: number }>;
+type Milestone = Readonly<{ name: string; week: number }>;
 const MILESTONES: readonly Milestone[] = [
-  { name: "Kickoff", day: 0 },
-  { name: "Dev Start", day: 34 },
-  { name: "Ship", day: 82 },
+  { name: "Kickoff", week: 0 },
+  { name: "Build start", week: 6 },
+  { name: "Go-live", week: 16 },
 ];
 
-type Tick = Readonly<{ label: string; day: number }>;
+type Tick = Readonly<{ label: string; week: number }>;
 const TICKS: readonly Tick[] = [
-  { label: "Feb 15", day: 0 },
-  { label: "Mar 1", day: 15 },
-  { label: "Mar 15", day: 30 },
-  { label: "Apr 1", day: 45 },
-  { label: "Apr 15", day: 60 },
-  { label: "May 1", day: 75 },
-  { label: "May 15", day: 90 },
-  { label: "May 30", day: 105 },
+  { label: "Wk 0", week: 0 },
+  { label: "Wk 4", week: 4 },
+  { label: "Wk 8", week: 8 },
+  { label: "Wk 12", week: 12 },
+  { label: "Wk 16", week: 16 },
+  { label: "Wk 20", week: 20 },
 ];
 
-const pct = (day: number): string => `${(day / TOTAL) * 100}%`;
+const pct = (week: number): string => `${(week / TOTAL) * 100}%`;
+const dur = (weeks: number): string => `${weeks} ${weeks === 1 ? "week" : "weeks"}`;
 
 const ORDERED: readonly Task[] = [...TASKS].sort((a, b) => a.start - b.start);
-const MAX_DAYS = Math.max(...TASKS.map((t) => t.days));
+const MAX_WEEKS = Math.max(...TASKS.map((t) => t.weeks));
 
 export function WorkflowPlan(): React.ReactElement {
   return (
@@ -66,12 +67,12 @@ export function WorkflowPlan(): React.ReactElement {
           <div className="wfp-chart" style={{ ["--rows" as string]: ROWS }}>
             <div className="wfp-top">
               <span className="wfp-top-title">Workflow plan</span>
-              <span className="wfp-top-dur">≈ 3.5 months</span>
+              <span className="wfp-top-dur">≈ 4 months</span>
             </div>
 
             <div className="wfp-axis">
               {TICKS.map((t) => (
-                <span key={t.label} className="wfp-tick" style={{ left: pct(t.day) }}>
+                <span key={t.label} className="wfp-tick" style={{ left: pct(t.week) }}>
                   {t.label}
                 </span>
               ))}
@@ -83,7 +84,7 @@ export function WorkflowPlan(): React.ReactElement {
 
             <div className="wfp-plot">
               {TICKS.map((t) => (
-                <span key={t.label} className="wfp-grid" style={{ left: pct(t.day) }} aria-hidden="true" />
+                <span key={t.label} className="wfp-grid" style={{ left: pct(t.week) }} aria-hidden="true" />
               ))}
               <span className="wfp-now-line" style={{ left: pct(NOW) }} aria-hidden="true" />
 
@@ -91,15 +92,15 @@ export function WorkflowPlan(): React.ReactElement {
                 <div
                   key={t.name}
                   className={`wfp-bar wfp-bar--${t.variant}`}
-                  style={{ left: pct(t.start), width: pct(t.days), top: `calc(${t.row} * var(--lane))` }}
+                  style={{ left: pct(t.start), width: pct(t.weeks), top: `calc(${t.row} * var(--lane))` }}
                 >
                   <span className="wfp-bar-name">{t.name}</span>
-                  <span className="wfp-bar-days">{t.days} days</span>
+                  <span className="wfp-bar-days">{dur(t.weeks)}</span>
                 </div>
               ))}
 
               {MILESTONES.map((m) => (
-                <div key={m.name} className="wfp-ms" style={{ left: pct(m.day) }}>
+                <div key={m.name} className="wfp-ms" style={{ left: pct(m.week) }}>
                   <span className="wfp-ms-dot" aria-hidden="true" />
                   <span className="wfp-ms-label">{m.name}</span>
                 </div>
@@ -112,17 +113,17 @@ export function WorkflowPlan(): React.ReactElement {
         <Reveal delay={0.1} className="wfp-mobile">
           <div className="wfp-m-head">
             <span className="wfp-m-title">Workflow plan</span>
-            <span className="wfp-m-dur">≈ 3.5 months</span>
+            <span className="wfp-m-dur">≈ 4 months</span>
           </div>
           <div className="wfp-m-list">
             {ORDERED.map((t) => (
               <div key={t.name} className={`wfp-m-row wfp-m-row--${t.variant}`}>
                 <div className="wfp-m-top">
                   <span className="wfp-m-name">{t.name}</span>
-                  <span className="wfp-m-days">{t.days} days</span>
+                  <span className="wfp-m-days">{dur(t.weeks)}</span>
                 </div>
                 <span className="wfp-m-track" aria-hidden="true">
-                  <span className="wfp-m-bar" style={{ width: `${(t.days / MAX_DAYS) * 100}%` }} />
+                  <span className="wfp-m-bar" style={{ width: `${(t.weeks / MAX_WEEKS) * 100}%` }} />
                 </span>
               </div>
             ))}

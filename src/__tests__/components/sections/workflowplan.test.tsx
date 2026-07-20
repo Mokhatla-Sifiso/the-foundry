@@ -8,41 +8,48 @@ describe("WorkflowPlan", () => {
     render(<WorkflowPlan />);
     expect(screen.getByRole("heading", { name: /how i deliver/i })).toBeInTheDocument();
     expect(screen.getAllByText(/workflow plan/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/3\.5 months/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/4 months/i).length).toBeGreaterThan(0);
   });
 
-  it("shows every phase with its duration", () => {
+  it("uses the industry-standard enterprise SDLC phases with week durations", () => {
     render(<WorkflowPlan />);
     for (const phase of [
-      "Research",
-      "Business Analysis",
-      "Wireframes, proto",
-      "UI design",
+      "Discovery",
+      "Requirements Analysis",
+      "Architecture & Design",
       "Development",
-      "Sync",
-      "WF Testing",
-      "Feedback",
+      "QA & Testing",
+      "UAT",
+      "Release",
+      "Hypercare",
     ]) {
       expect(screen.getAllByText(phase).length).toBeGreaterThan(0);
     }
-    // duration chips render (e.g. the long Development phase)
-    expect(screen.getAllByText("45 days").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("4 days").length).toBeGreaterThan(0);
+    // durations are in weeks, not calendar dates
+    expect(screen.getAllByText("7 weeks").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("1 week").length).toBeGreaterThan(0);
   });
 
-  it("carries the timeline axis, the Now marker and milestones", () => {
+  it("uses a relative week axis — no specific calendar dates", () => {
     render(<WorkflowPlan />);
-    expect(screen.getByText("Feb 15")).toBeInTheDocument();
+    expect(screen.getByText("Wk 0")).toBeInTheDocument();
+    expect(screen.getByText("Wk 16")).toBeInTheDocument();
+    // no month/day calendar labels leak in
+    expect(screen.queryByText(/feb|mar|apr|may/i)).toBeNull();
+  });
+
+  it("carries the Now marker and delivery milestones", () => {
+    render(<WorkflowPlan />);
     expect(screen.getByText("Now")).toBeInTheDocument();
-    expect(screen.getByText("Dev Start")).toBeInTheDocument();
-    expect(screen.getByText("Ship")).toBeInTheDocument();
+    expect(screen.getByText("Kickoff")).toBeInTheDocument();
+    expect(screen.getByText("Build start")).toBeInTheDocument();
+    expect(screen.getByText("Go-live")).toBeInTheDocument();
   });
 
   it("renders both a desktop timeline and a stacked mobile layout", () => {
     render(<WorkflowPlan />);
     expect(document.querySelector(".wfp-scroll")).not.toBeNull();
     expect(document.querySelector(".wfp-mobile")).not.toBeNull();
-    // eight positioned bars on the desktop timeline
     expect(document.querySelectorAll(".wfp-bar").length).toBe(8);
   });
 });
