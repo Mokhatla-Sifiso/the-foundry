@@ -3072,18 +3072,23 @@ html[data-theme="dark"] .collab-error {
 }
 /* ===== Architecture — three-zone routing story ===== */
 .arch-scroll {
+  display: flex;
+  justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
-  margin-top: clamp(20px, 3.5vh, 40px);
-  padding: 6px 2px 16px;
+  margin-top: clamp(18px, 3vh, 30px);
+  padding: 6px 2px 14px;
   scrollbar-width: thin;
 }
 .arch-stage {
   position: relative;
+  flex: 0 0 auto;
   width: 100%;
-  min-width: 1000px;
-  aspect-ratio: 1640 / 1040;
+  max-width: 1080px;
+  min-width: 940px;
+  aspect-ratio: 1640 / 760;
   container-type: inline-size;
+  margin-inline: auto;
 }
 
 /* wire layer */
@@ -3109,7 +3114,29 @@ html[data-theme="dark"] .collab-error {
   stroke: var(--arch-teal-a);
   stroke-width: 2;
   stroke-dasharray: 6 7;
-  opacity: 0.8;
+  opacity: 0.75;
+}
+/* a slow travelling pulse rides each wire, always on */
+.wire-pulse {
+  fill: none;
+  stroke: var(--arch-accent);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-dasharray: 14 2000;
+  stroke-dashoffset: 14;
+  opacity: 0.9;
+  animation: arch-comet 3.6s linear infinite;
+}
+.wire-pulse--tag {
+  stroke: var(--arch-teal-a);
+}
+@keyframes arch-comet {
+  from {
+    stroke-dashoffset: 14;
+  }
+  to {
+    stroke-dashoffset: -1000;
+  }
 }
 
 /* group boxes + zone labels */
@@ -3134,7 +3161,7 @@ html[data-theme="dark"] .collab-error {
   position: absolute;
   transform: translateY(-50%);
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.86cqw;
+  font-size: 0.98cqw;
   letter-spacing: 0.08em;
   color: var(--muted);
   font-weight: 600;
@@ -3154,7 +3181,7 @@ html[data-theme="dark"] .collab-error {
   background: var(--arch-node-bg);
   color: var(--arch-node-fg);
   font-weight: 700;
-  font-size: 1.02cqw;
+  font-size: 1.18cqw;
   letter-spacing: -0.01em;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow:
@@ -3179,7 +3206,7 @@ html[data-theme="dark"] .collab-error {
   color: var(--arch-panel-fg);
   border: 1px solid var(--arch-line);
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.82cqw;
+  font-size: 0.95cqw;
   font-weight: 600;
   box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
   z-index: 3;
@@ -3196,7 +3223,7 @@ html[data-theme="dark"] .collab-error {
   border-radius: 0.85em;
   color: #fff;
   font-weight: 700;
-  font-size: 1.0cqw;
+  font-size: 1.15cqw;
   white-space: nowrap;
   background: linear-gradient(180deg, var(--arch-teal-a), var(--arch-teal-b));
   box-shadow:
@@ -3252,7 +3279,7 @@ html[data-theme="dark"] .collab-error {
   background: linear-gradient(180deg, #0e1d33, #060d18);
   color: #fff;
   font-weight: 800;
-  font-size: 1.38cqw;
+  font-size: 1.55cqw;
   letter-spacing: -0.01em;
   white-space: nowrap;
   box-shadow:
@@ -3274,7 +3301,7 @@ html[data-theme="dark"] .collab-error {
   gap: 0.5em;
   color: var(--fg);
   font-weight: 800;
-  font-size: 1.08cqw;
+  font-size: 1.22cqw;
   white-space: nowrap;
 }
 .arch-brand-mark {
@@ -3294,7 +3321,7 @@ html[data-theme="dark"] .collab-error {
   background: var(--arch-panel);
   color: var(--arch-panel-fg);
   border: 1px solid var(--arch-line);
-  font-size: 0.8cqw;
+  font-size: 0.92cqw;
   font-weight: 600;
   white-space: nowrap;
   box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
@@ -3314,7 +3341,7 @@ html[data-theme="dark"] .collab-error {
   gap: 0.45em;
   color: var(--fg);
   font-weight: 700;
-  font-size: 0.96cqw;
+  font-size: 1.08cqw;
   white-space: nowrap;
   z-index: 2;
 }
@@ -3323,72 +3350,44 @@ html[data-theme="dark"] .collab-error {
   flex: 0 0 auto;
 }
 
-/* ---- trace animation ---- */
-.arch-stage.is-live .wire--in,
-.arch-stage.is-live .wire--out,
-.arch-stage.is-live .wire--trunk {
-  stroke: var(--arch-accent);
-  stroke-dasharray: 10 12;
-  animation: arch-dash 0.7s linear infinite;
+/* ---- gateway breathes gently, always on ---- */
+.arch-gw-glow {
+  animation: arch-breathe 3.8s ease-in-out infinite;
 }
-.arch-stage.is-live .wire--tag {
-  animation: arch-dash 0.7s linear infinite;
+.arch-gw-pill {
+  animation: arch-gw-breathe 3.8s ease-in-out infinite;
 }
-.arch-stage.is-live .arch-gw-pill {
-  animation: arch-gw-pulse 1.2s ease-in-out infinite;
-}
-.arch-stage.is-live .arch-gw-glow {
-  animation: arch-glow 1.2s ease-in-out infinite;
-}
-.arch-stage.is-live .arch-node--target,
-.arch-stage.is-live .arch-node--client {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--arch-accent) 42%, transparent),
-    0 0.9em 1.9em -0.7em var(--arch-node-shadow);
-}
-@keyframes arch-dash {
-  to {
-    stroke-dashoffset: -22;
+@keyframes arch-breathe {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
   }
 }
-@keyframes arch-gw-pulse {
+@keyframes arch-gw-breathe {
   0%,
   100% {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.03);
-  }
-}
-@keyframes arch-glow {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0.9;
+    transform: scale(1.018);
   }
 }
 
-/* controls + toolchain strip */
-.arch-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: clamp(20px, 3vh, 32px);
-  padding-top: clamp(18px, 3vh, 26px);
-  border-top: 1px solid var(--line);
-}
-.arch-trace {
-  min-width: 200px;
-}
+/* cross-cutting toolchain strip (centred under the diagram) */
 .arch-foundation {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
+  margin-top: clamp(18px, 2.5vh, 28px);
+  padding-top: clamp(16px, 2.5vh, 24px);
+  border-top: 1px solid var(--line);
 }
 .arch-foundation-label {
   font-size: 11px;
@@ -3408,18 +3407,13 @@ html[data-theme="dark"] .collab-error {
   display: inline-flex;
 }
 
-@media (max-width: 640px) {
-  .arch-scroll::after {
-    content: "";
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .arch-stage.is-live .wire--in,
-  .arch-stage.is-live .wire--out,
-  .arch-stage.is-live .wire--trunk,
-  .arch-stage.is-live .wire--tag,
-  .arch-stage.is-live .arch-gw-pill,
-  .arch-stage.is-live .arch-gw-glow {
+  .wire-pulse,
+  .arch-gw-glow,
+  .arch-gw-pill {
     animation: none;
+  }
+  .wire-pulse {
+    display: none;
   }
 }
