@@ -8,7 +8,7 @@ describe("WorkflowPlan", () => {
     expect(screen.getAllByText(/workflow plan/i).length).toBeGreaterThan(0);
   });
 
-  it("lists the industry-standard enterprise SDLC phases in order", () => {
+  it("shows the enterprise SDLC phases and the Now / milestone markers", () => {
     render(<WorkflowPlan />);
     for (const phase of [
       "Discovery",
@@ -22,24 +22,23 @@ describe("WorkflowPlan", () => {
     ]) {
       expect(screen.getAllByText(phase).length).toBeGreaterThan(0);
     }
-    expect(screen.getAllByText("01").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("08").length).toBeGreaterThan(0);
+    expect(screen.getByText("Now")).toBeInTheDocument();
+    expect(screen.getByText("Kickoff")).toBeInTheDocument();
+    expect(screen.getByText("Go-live")).toBeInTheDocument();
+    expect(document.querySelectorAll(".wfp-bar").length).toBe(8);
   });
 
-  it("shows no time: no durations, dates, week axis, Now or milestones", () => {
+  it("shows no specific times: no durations, week numbers, dates or total", () => {
     render(<WorkflowPlan />);
-    expect(screen.queryByText(/weeks?/i)).toBeNull();
+    expect(screen.queryByText(/\d+\s*weeks?/i)).toBeNull();
     expect(screen.queryByText(/months?/i)).toBeNull();
     expect(screen.queryByText(/\bWk\b/)).toBeNull();
-    expect(screen.queryByText(/^now$/i)).toBeNull();
-    expect(screen.queryByText(/kickoff|go-live|build start/i)).toBeNull();
     expect(screen.queryByText(/feb|mar|apr|may/i)).toBeNull();
   });
 
-  it("renders both a desktop cascade and a stacked mobile layout", () => {
+  it("renders both a desktop timeline and a stacked mobile layout", () => {
     render(<WorkflowPlan />);
     expect(document.querySelector(".wfp-scroll")).not.toBeNull();
     expect(document.querySelector(".wfp-mobile")).not.toBeNull();
-    expect(document.querySelectorAll(".wfp-bar").length).toBe(8);
   });
 });
