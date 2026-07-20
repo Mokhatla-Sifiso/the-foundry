@@ -3053,7 +3053,7 @@ html[data-theme="dark"] .collab-error {
 }
 
 /* ============================================================
-   Workflow plan — delivery timeline (Gantt)
+   Workflow plan — enterprise delivery phases (no schedule)
    ============================================================ */
 .wfp {
   overflow: hidden;
@@ -3069,121 +3069,51 @@ html[data-theme="dark"] .collab-error {
 .wfp-h .em {
   color: var(--candy);
 }
+.wfp-top-title {
+  display: block;
+  margin: clamp(22px, 3.5vh, 40px) 0 clamp(10px, 2vh, 18px);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
 
-/* the chart shows on wider screens; mobile gets the stacked list */
+/* the cascade shows on wider screens; mobile gets the stacked list */
 .wfp-scroll {
   display: none;
   overflow-x: auto;
   overflow-y: hidden;
-  margin-top: clamp(20px, 3.5vh, 40px);
-  padding: 4px 2px 12px;
+  padding: 2px 2px 10px;
   scrollbar-width: thin;
 }
 @media (min-width: 860px) {
   .wfp-scroll {
     display: block;
   }
+  .wfp-mobile {
+    display: none;
+  }
 }
 .wfp-chart {
   position: relative;
   width: 100%;
-  min-width: 800px;
-  --lane: 56px;
+  min-width: 560px;
+  --lane: 58px;
 }
-.wfp-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-.wfp-top-title {
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--fg);
-}
-.wfp-top-dur {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-/* date axis */
-.wfp-axis {
-  position: relative;
-  height: 30px;
-  margin-bottom: 6px;
-}
-.wfp-tick {
-  position: absolute;
-  top: 6px;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.wfp-now-head {
-  position: absolute;
-  top: -18px;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  z-index: 3;
-}
-.wfp-now-tri {
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid var(--wfp-3);
-}
-.wfp-now-pill {
-  padding: 4px 10px;
-  border-radius: 8px;
-  background: var(--wfp-2);
-  color: #04140f;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-/* plot area */
 .wfp-plot {
   position: relative;
-  height: calc(var(--rows) * var(--lane) + 66px);
-}
-.wfp-grid {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1px dashed var(--line);
-  transform: translateX(-50%);
-}
-.wfp-now-line {
-  position: absolute;
-  top: 0;
-  bottom: 40px;
-  width: 0;
-  border-left: 1.5px solid color-mix(in oklab, var(--wfp-3) 80%, transparent);
-  transform: translateX(-50%);
-  z-index: 1;
+  height: calc(var(--rows) * var(--lane));
 }
 
-/* task bars */
+/* phase pills */
 .wfp-bar {
   position: absolute;
   height: 46px;
-  min-width: max-content; /* never truncate the phase name */
+  min-width: max-content;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 0 15px;
+  gap: 12px;
+  padding: 0 16px;
   border-radius: 13px;
   z-index: 2;
   transition: transform 0.25s var(--ease);
@@ -3191,39 +3121,29 @@ html[data-theme="dark"] .collab-error {
 .wfp-bar:hover {
   transform: translateY(-2px);
 }
+.wfp-bar-num {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  opacity: 0.5;
+}
 .wfp-bar-name {
   font-weight: 700;
   font-size: 15.5px;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
-.wfp-bar-days {
-  flex: 0 0 auto;
-  padding: 4px 9px;
-  border-radius: 8px;
-  font-size: 12.5px;
-  font-weight: 600;
-  line-height: 1;
-}
-/* fill — high-contrast, flips with theme (white bar in dark, dark bar in light) */
+/* fill — high-contrast, flips with theme */
 .wfp-bar--fill {
   background: var(--fg);
   color: var(--bg);
   box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6);
-}
-.wfp-bar--fill .wfp-bar-days {
-  background: color-mix(in oklab, var(--bg) 82%, var(--fg));
-  color: var(--fg);
 }
 /* glass — subtle panel */
 .wfp-bar--glass {
   background: color-mix(in oklab, var(--fg) 8%, transparent);
   color: var(--fg);
   border: 1px solid color-mix(in oklab, var(--fg) 16%, transparent);
-}
-.wfp-bar--glass .wfp-bar-days {
-  background: color-mix(in oklab, var(--fg) 14%, transparent);
-  color: var(--fg);
 }
 /* accent — the development hero */
 .wfp-bar--accent {
@@ -3238,65 +3158,18 @@ html[data-theme="dark"] .collab-error {
   color: #fff;
   box-shadow: 0 18px 40px -24px color-mix(in oklab, var(--wfp-2) 60%, transparent);
 }
-.wfp-bar--accent .wfp-bar-days,
-.wfp-bar--accent-solid .wfp-bar-days {
-  background: rgba(255, 255, 255, 0.92);
-  color: #0c1a16;
-}
 
-/* milestones */
-.wfp-ms {
-  position: absolute;
-  top: calc(var(--rows) * var(--lane) + 8px);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  z-index: 2;
-}
-.wfp-ms-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  transform: rotate(45deg);
-  background: color-mix(in oklab, var(--fg) 14%, transparent);
-  border: 1px solid color-mix(in oklab, var(--fg) 26%, transparent);
-}
-.wfp-ms-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--fg-2);
-  white-space: nowrap;
-}
-
-/* ---------- mobile stacked list ---------- */
+/* ---------- mobile: numbered phase list ---------- */
 .wfp-mobile {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: clamp(20px, 4vh, 30px);
 }
-@media (min-width: 860px) {
-  .wfp-mobile {
-    display: none;
-  }
-}
-.wfp-m-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
 .wfp-m-title {
   font-size: 18px;
   font-weight: 800;
   color: var(--fg);
-}
-.wfp-m-dur {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
 }
 .wfp-m-list {
   display: flex;
@@ -3305,46 +3178,30 @@ html[data-theme="dark"] .collab-error {
 }
 .wfp-m-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 13px 15px;
-  border-radius: 14px;
-  background: color-mix(in oklab, var(--fg) 4%, transparent);
-  border: 1px solid var(--line);
-}
-.wfp-m-top {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 13px;
 }
 .wfp-m-name {
-  font-size: 15px;
+  font-size: 15.5px;
   font-weight: 700;
-  color: var(--fg);
+  letter-spacing: -0.01em;
 }
-.wfp-m-days {
-  flex: 0 0 auto;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
+.wfp-m-row--fill {
+  background: var(--fg);
+  color: var(--bg);
 }
-.wfp-m-track {
-  display: block;
-  width: 100%;
-  height: 8px;
-  border-radius: 6px;
+.wfp-m-row--glass {
   background: color-mix(in oklab, var(--fg) 8%, transparent);
-  overflow: hidden;
+  color: var(--fg);
+  border: 1px solid color-mix(in oklab, var(--fg) 16%, transparent);
 }
-.wfp-m-bar {
-  display: block;
-  height: 100%;
-  border-radius: 6px;
-  min-width: 8px;
-  background: color-mix(in oklab, var(--fg) 55%, transparent);
+.wfp-m-row--accent {
+  background: linear-gradient(105deg, var(--wfp-1), var(--wfp-2) 55%, var(--wfp-3));
+  color: #fff;
 }
-.wfp-m-row--accent .wfp-m-bar,
-.wfp-m-row--accent-solid .wfp-m-bar {
-  background: linear-gradient(90deg, var(--wfp-1), var(--wfp-2) 60%, var(--wfp-3));
+.wfp-m-row--accent-solid {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--wfp-2) 92%, #fff), color-mix(in oklab, var(--wfp-1) 70%, var(--wfp-2)));
+  color: #fff;
 }
