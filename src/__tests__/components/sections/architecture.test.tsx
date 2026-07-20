@@ -5,8 +5,9 @@ describe("ArchitecturePatterns", () => {
   it("tells the three-zone routing story", () => {
     render(<ArchitecturePatterns />);
     expect(screen.getByRole("heading", { name: /how i architect/i })).toBeInTheDocument();
-    expect(screen.getByText(/from the client/i)).toBeInTheDocument();
+    expect(screen.getByText(/public internet/i)).toBeInTheDocument();
     expect(screen.getByText(/to your infrastructure/i)).toBeInTheDocument();
+    expect(screen.getByText(/client infrastructure · self-hosted/i)).toBeInTheDocument();
     expect(screen.getByText(/ai gateway/i)).toBeInTheDocument();
     expect(screen.getByText(/guardrails & security/i)).toBeInTheDocument();
     expect(screen.getByText(/observability & evals/i)).toBeInTheDocument();
