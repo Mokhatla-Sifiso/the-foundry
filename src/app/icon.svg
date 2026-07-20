@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="8" fill="#0A0E10" />
+  <text
+    x="12.5"
+    y="23"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif"
+    font-size="21"
+    font-weight="800"
+    letter-spacing="-1"
+    text-anchor="middle"
+    fill="#EEF5F8"
+  >m</text>
+  <circle cx="23.2" cy="22" r="2.5" fill="#B2D5E5" />
+</svg>
