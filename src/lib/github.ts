@@ -1,151 +1,168 @@
 /**
- * Live project data from GitHub milestones. Server-side only — reads a
- * token from the environment when present (public repos work without one,
- * thanks to ISR caching keeping requests well under the anonymous limit).
- *
- * Not marked "use client"; only ever imported by the server-rendered
- * WorkflowPlan. The `next.revalidate` fetch option is a no-op on the client.
+ * Live project data from GitHub — server-side only. Reads a token from the
+ * environment when present; public repos work without one (ISR caching keeps
+ * requests well under the anonymous limit, but a token is recommended for the
+ * full dashboard since it hits several endpoints).
  */
 const REPO = process.env.GITHUB_REPO ?? "Mokhatla-Sifiso/the-foundry";
 const REVALIDATE_SECONDS = 300; // refresh at most every 5 minutes
 
-export type Milestone = Readonly<{
-  number: number;
-  title: string;
-  state: "open" | "closed";
-  open: number;
-  closed: number;
-  total: number;
-  progress: number; // 0..1
-  createdAt: string;
-  dueOn: string | null;
-  closedAt: string | null;
-  url: string;
-}>;
-
-type GhMilestone = Readonly<{
-  number: number;
-  title: string;
-  state: "open" | "closed";
-  open_issues: number;
-  closed_issues: number;
-  created_at: string;
-  due_on: string | null;
-  closed_at: string | null;
-  html_url: string;
-}>;
-
-export function toMilestone(m: GhMilestone): Milestone {
-  const total = m.open_issues + m.closed_issues;
-  const progress = total > 0 ? m.closed_issues / total : m.state === "closed" ? 1 : 0;
-  return {
-    number: m.number,
-    title: m.title,
-    state: m.state,
-    open: m.open_issues,
-    closed: m.closed_issues,
-    total,
-    progress,
-    createdAt: m.created_at,
-    dueOn: m.due_on,
-    closedAt: m.closed_at,
-    url: m.html_url,
-  };
-}
-
-export const REPO_SLUG = REPO;
-export const MILESTONES_URL = `https://github.com/${REPO}/milestones`;
-
-/** Fetch all milestones (open + closed), newest due last. Never throws. */
-export async function fetchMilestones(): Promise<readonly Milestone[]> {
-  const headers: Record<string, string> = {
+function ghHeaders(): Record<string, string> {
+  const h: Record<string, string> = {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
   };
   const token = process.env.GITHUB_TOKEN;
-  if (token) headers.Authorization = `Bearer ${token}`;
+  if (token) h.Authorization = `Bearer ${token}`;
+  return h;
+}
 
+async function gh<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${REPO}/milestones?state=all&per_page=100&sort=due_on&direction=asc`,
-      { headers, next: { revalidate: REVALIDATE_SECONDS } },
-    );
-    if (!res.ok) return [];
-    const data = (await res.json()) as GhMilestone[];
-    if (!Array.isArray(data)) return [];
-    return data.map(toMilestone);
+    const res = await fetch(`https://api.github.com/repos/${REPO}${path}`, {
+      headers: ghHeaders(),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
   } catch {
-    return [];
+    return null;
   }
 }
 
-/* ---------------- timeline projection (pure, testable) ---------------- */
+/* ----------------------------- types ----------------------------- */
 
-export type Segment = Readonly<{ milestone: Milestone; left: number; width: number }>;
-export type MonthTick = Readonly<{ label: string; frac: number }>;
-export type Timeline = Readonly<{
-  segments: readonly Segment[];
-  months: readonly MonthTick[];
-  nowFrac: number;
-  repo: string;
+export type RepoMeta = Readonly<{
+  fullName: string;
+  description: string;
+  stars: number;
+  forks: number;
+  language: string | null;
+  pushedAt: string;
   url: string;
+  defaultBranch: string;
 }>;
 
-const DAY = 86_400_000;
-const clamp01 = (n: number): number => Math.min(1, Math.max(0, n));
+export type PullState = "open" | "merged" | "closed";
+export type Pull = Readonly<{
+  number: number;
+  title: string;
+  state: PullState;
+  author: string;
+  url: string;
+  at: string; // most relevant timestamp (merged/updated/created)
+}>;
 
-/** Project milestones onto a 0..1 timeline. Returns null when there's nothing to show. */
-export function buildTimeline(milestones: readonly Milestone[], now: number): Timeline | null {
-  if (milestones.length === 0) return null;
+export type Lang = Readonly<{ name: string; pct: number }>;
+export type Contributor = Readonly<{ login: string; contributions: number; url: string }>;
 
-  const startOf = (m: Milestone): number => new Date(m.createdAt).getTime();
-  const endOf = (m: Milestone): number =>
-    new Date(m.dueOn ?? m.closedAt ?? new Date(now).toISOString()).getTime();
+export type Project = Readonly<{
+  repo: RepoMeta;
+  pulls: readonly Pull[];
+  openPulls: number;
+  mergedPulls: number;
+  languages: readonly Lang[];
+  contributors: readonly Contributor[];
+}>;
 
-  let min = Infinity;
-  let max = -Infinity;
-  for (const m of milestones) {
-    min = Math.min(min, startOf(m));
-    max = Math.max(max, endOf(m));
-  }
-  max = Math.max(max, now);
-  // pad so bars never touch the edges; guarantee a non-zero span
-  const rawSpan = Math.max(max - min, DAY);
-  const pad = rawSpan * 0.06;
-  const start = min - pad;
-  const span = rawSpan + pad * 2;
+/* ----------------------------- mappers ----------------------------- */
 
-  const ordered = [...milestones].sort((a, b) => endOf(a) - endOf(b));
-  const segments: Segment[] = ordered.map((m) => {
-    const left = clamp01((startOf(m) - start) / span);
-    const right = clamp01((endOf(m) - start) / span);
-    return { milestone: m, left, width: Math.max(right - left, 0.04) };
-  });
+type GhRepo = {
+  full_name: string;
+  description: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+  pushed_at: string;
+  html_url: string;
+  default_branch: string;
+};
+type GhPull = {
+  number: number;
+  title: string;
+  state: "open" | "closed";
+  merged_at: string | null;
+  created_at: string;
+  updated_at: string;
+  html_url: string;
+  user: { login: string } | null;
+};
+type GhContributor = { login: string; contributions: number; html_url: string };
 
-  const months = monthTicks(start, span);
-  const nowFrac = clamp01((now - start) / span);
-  return { segments, months, nowFrac, repo: REPO, url: MILESTONES_URL };
+export function toPull(p: GhPull): Pull {
+  const state: PullState = p.merged_at ? "merged" : p.state;
+  return {
+    number: p.number,
+    title: p.title,
+    state,
+    author: p.user?.login ?? "unknown",
+    url: p.html_url,
+    at: p.merged_at ?? p.updated_at ?? p.created_at,
+  };
 }
 
-function monthTicks(start: number, span: number): MonthTick[] {
-  const ticks: MonthTick[] = [];
-  const first = new Date(start);
-  const cursor = new Date(first.getFullYear(), first.getMonth(), 1);
-  if (cursor.getTime() < start) cursor.setMonth(cursor.getMonth() + 1);
-  const end = start + span;
-  // avoid crowding: step across months, thinning out for long ranges
-  const monthsSpan = span / (DAY * 30);
-  const step = monthsSpan > 9 ? 2 : 1;
-  let i = 0;
-  while (cursor.getTime() <= end && ticks.length < 12) {
-    if (i % step === 0) {
-      ticks.push({
-        label: cursor.toLocaleString("en-US", { month: "short" }),
-        frac: clamp01((cursor.getTime() - start) / span),
-      });
-    }
-    cursor.setMonth(cursor.getMonth() + 1);
-    i += 1;
-  }
-  return ticks;
+export function toLanguages(raw: Record<string, number>): Lang[] {
+  const entries = Object.entries(raw);
+  const total = entries.reduce((s, [, b]) => s + b, 0);
+  if (total === 0) return [];
+  return entries
+    .map(([name, bytes]) => ({ name, pct: Math.round((bytes / total) * 1000) / 10 }))
+    .sort((a, b) => b.pct - a.pct);
+}
+
+/* ----------------------------- relative time ----------------------------- */
+
+export function relTime(iso: string, now: number): string {
+  const s = Math.round((now - new Date(iso).getTime()) / 1000);
+  if (s < 45) return "just now";
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.round(h / 24);
+  if (d < 30) return `${d}d ago`;
+  const mo = Math.round(d / 30);
+  if (mo < 12) return `${mo}mo ago`;
+  return `${Math.round(mo / 12)}y ago`;
+}
+
+/* ----------------------------- aggregate ----------------------------- */
+
+/** Fetch the full live-project snapshot. Returns null only if the repo itself is unreachable. */
+export async function fetchProject(): Promise<Project | null> {
+  const [repoRaw, pullsRaw, langRaw, contribRaw] = await Promise.all([
+    gh<GhRepo>(""),
+    gh<GhPull[]>("/pulls?state=all&sort=updated&direction=desc&per_page=100"),
+    gh<Record<string, number>>("/languages"),
+    gh<GhContributor[]>("/contributors?per_page=20"),
+  ]);
+  if (!repoRaw) return null;
+
+  const pullsAll = Array.isArray(pullsRaw) ? pullsRaw.map(toPull) : [];
+  const openPulls = pullsAll.filter((p) => p.state === "open").length;
+  const mergedPulls = pullsAll.filter((p) => p.state === "merged").length;
+  const pulls = [...pullsAll].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()).slice(0, 7);
+
+  const languages = langRaw ? toLanguages(langRaw).slice(0, 6) : [];
+  const contributors = (Array.isArray(contribRaw) ? contribRaw : [])
+    .map((c): Contributor => ({ login: c.login, contributions: c.contributions, url: c.html_url }))
+    .slice(0, 8);
+
+  return {
+    repo: {
+      fullName: repoRaw.full_name,
+      description: repoRaw.description ?? "",
+      stars: repoRaw.stargazers_count,
+      forks: repoRaw.forks_count,
+      language: repoRaw.language,
+      pushedAt: repoRaw.pushed_at,
+      url: repoRaw.html_url,
+      defaultBranch: repoRaw.default_branch,
+    },
+    pulls,
+    openPulls,
+    mergedPulls,
+    languages,
+    contributors,
+  };
 }
