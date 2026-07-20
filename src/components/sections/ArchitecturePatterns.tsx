@@ -1,5 +1,3 @@
-"use client";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   siDocker,
   siGithubactions,
@@ -15,7 +13,7 @@ import {
 import { Reveal } from "@/components/primitives/Reveal";
 
 const VBW = 1640;
-const VBH = 1040;
+const VBH = 760;
 const px = (x: number): string => `${(x / VBW) * 100}%`;
 const py = (y: number): string => `${(y / VBH) * 100}%`;
 const curve = (x1: number, y1: number, x2: number, y2: number, k = 0.5): string => {
@@ -27,9 +25,9 @@ type Icon = Readonly<{ path: string; name: string }>;
 
 type Client = Readonly<{ label: string; y: number; proto: string; entry: readonly [number, number] }>;
 const CLIENTS: readonly Client[] = [
-  { label: "app.domain.com", y: 420, proto: "HTTPS", entry: [706, 524] },
-  { label: "api.domain.com", y: 520, proto: "WSS", entry: [700, 560] },
-  { label: "admin.domain.com", y: 620, proto: "Webhooks", entry: [706, 596] },
+  { label: "app.domain.com", y: 318, proto: "HTTPS", entry: [706, 372] },
+  { label: "api.domain.com", y: 400, proto: "WSS", entry: [700, 400] },
+  { label: "admin.domain.com", y: 482, proto: "Webhooks", entry: [706, 428] },
 ];
 
 const CAPS_TOP = ["Guardrails & Security", "Model Routing"] as const;
@@ -51,11 +49,11 @@ const GROUPS: readonly Group[] = [
     name: "Kubernetes",
     logo: { path: siKubernetes.path, name: "Kubernetes" },
     tag: "Ingress · Gateway API · CRDs",
-    tagY: 250,
-    box: { x: 1286, y: 224, w: 300, h: 208 },
+    tagY: 158,
+    box: { x: 1286, y: 122, w: 300, h: 168 },
     targets: [
-      { label: "Inference · GPU", y: 318 },
-      { label: "API Service", y: 384 },
+      { label: "Inference · GPU", y: 200 },
+      { label: "API Service", y: 260 },
     ],
   },
   {
@@ -63,11 +61,11 @@ const GROUPS: readonly Group[] = [
     name: "Docker / Compose",
     logo: { path: siDocker.path, name: "Docker" },
     tag: "Labels & Tags",
-    tagY: 500,
-    box: { x: 1286, y: 470, w: 300, h: 208 },
+    tagY: 356,
+    box: { x: 1286, y: 320, w: 300, h: 168 },
     targets: [
-      { label: "NestJS BFF", y: 562, icon: { path: siNestjs.path, name: "NestJS" } },
-      { label: "Workers · BullMQ", y: 628 },
+      { label: "NestJS BFF", y: 398, icon: { path: siNestjs.path, name: "NestJS" } },
+      { label: "Workers · BullMQ", y: 458 },
     ],
   },
   {
@@ -75,17 +73,17 @@ const GROUPS: readonly Group[] = [
     name: "Data & Models",
     logo: { path: siPostgresql.path, name: "PostgreSQL" },
     tag: "LiteLLM · Config",
-    tagY: 754,
-    box: { x: 1286, y: 726, w: 300, h: 208 },
+    tagY: 554,
+    box: { x: 1286, y: 518, w: 300, h: 168 },
     targets: [
-      { label: "Postgres · pgvector", y: 818, icon: { path: siPostgresql.path, name: "PostgreSQL" } },
-      { label: "Ollama · LLMs", y: 884, icon: { path: siOllama.path, name: "Ollama" } },
+      { label: "Postgres · pgvector", y: 596, icon: { path: siPostgresql.path, name: "PostgreSQL" } },
+      { label: "Ollama · LLMs", y: 656, icon: { path: siOllama.path, name: "Ollama" } },
     ],
   },
 ];
 const TARGET_X = 1352;
-const BRANCH: readonly [number, number] = [1120, 560];
-const EXIT: readonly [number, number] = [958, 560];
+const BRANCH: readonly [number, number] = [1120, 400];
+const EXIT: readonly [number, number] = [958, 400];
 
 const FOUNDATION: readonly Icon[] = [
   { path: siPulumi.path, name: "Pulumi" },
@@ -94,6 +92,23 @@ const FOUNDATION: readonly Icon[] = [
   { path: siPrometheus.path, name: "Prometheus" },
   { path: siGrafana.path, name: "Grafana" },
 ];
+
+type Wire = Readonly<{ d: string; kind: "in" | "trunk" | "tag" | "out"; marker: boolean }>;
+
+function buildWires(targets: readonly Target[]): Wire[] {
+  return [
+    ...CLIENTS.map(
+      (c): Wire => ({ d: curve(348, c.y, c.entry[0], c.entry[1], 0.55), kind: "in", marker: true }),
+    ),
+    { d: `M ${EXIT[0]} ${EXIT[1]} L ${BRANCH[0]} ${BRANCH[1]}`, kind: "trunk", marker: false },
+    ...GROUPS.map(
+      (g): Wire => ({ d: curve(BRANCH[0], BRANCH[1], 1206, g.tagY, 0.55), kind: "tag", marker: false }),
+    ),
+    ...targets.map(
+      (t): Wire => ({ d: curve(BRANCH[0], BRANCH[1], TARGET_X, t.y, 0.5), kind: "out", marker: true }),
+    ),
+  ];
+}
 
 function Logo({ icon, size = 22 }: { icon: Icon; size?: number }): React.ReactElement {
   return (
@@ -107,7 +122,7 @@ function Logo({ icon, size = 22 }: { icon: Icon; size?: number }): React.ReactEl
 function CapIcon({ i }: { i: number }): React.ReactElement {
   const paths = [
     "M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6l7-3z",
-    "M6 5h4a4 4 0 0 1 4 4v6a3 3 0 0 0 3 3M6 5v0m0 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm11 15a1 1 0 1 0 0 2 1 1 0 0 0 0-2z",
+    "M6 5h4a4 4 0 0 1 4 4v6a3 3 0 0 0 3 3M6 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm11 15a1 1 0 1 0 0 2 1 1 0 0 0 0-2z",
     "M9 3v4m6-4v4M7 7h10v3a5 5 0 0 1-10 0V7zm5 8v6",
     "M4 19V5m0 14h16M8 16l3-4 3 2 4-6",
   ];
@@ -127,24 +142,8 @@ function Check(): React.ReactElement {
 }
 
 export function ArchitecturePatterns(): React.ReactElement {
-  const [live, setLive] = useState(false);
-  const timer = useRef<number | null>(null);
-
-  const clear = useCallback((): void => {
-    if (timer.current) window.clearTimeout(timer.current);
-    timer.current = null;
-  }, []);
-  useEffect(() => clear, [clear]);
-
-  const trace = useCallback((): void => {
-    clear();
-    setLive(true);
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    timer.current = window.setTimeout(() => setLive(false), 3200);
-  }, [clear]);
-
   const targets = GROUPS.flatMap((g) => g.targets);
+  const wires = buildWires(targets);
 
   return (
     <section id="architecture" className="sec arch">
@@ -159,38 +158,29 @@ export function ArchitecturePatterns(): React.ReactElement {
         </Reveal>
 
         <Reveal delay={0.12} className="arch-scroll">
-          <div className={`arch-stage${live ? " is-live" : ""}`}>
+          <div className="arch-stage">
             <svg className="arch-wires" viewBox={`0 0 ${VBW} ${VBH}`} preserveAspectRatio="none" aria-hidden="true">
               <defs>
                 <marker id="arw" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto">
                   <path d="M1 1L7 4.5L1 8" fill="none" stroke="var(--arch-wire-strong)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </marker>
               </defs>
-
-              {CLIENTS.map((c) => (
-                <path key={`in-${c.label}`} className="wire wire--in" d={curve(348, c.y, c.entry[0], c.entry[1], 0.55)} markerEnd="url(#arw)" />
+              {wires.map((w, i) => (
+                <path key={`t-${i}`} className={`wire wire--${w.kind}`} d={w.d} markerEnd={w.marker ? "url(#arw)" : undefined} />
               ))}
-
-              <path className="wire wire--trunk" d={`M ${EXIT[0]} ${EXIT[1]} L ${BRANCH[0]} ${BRANCH[1]}`} />
-
-              {GROUPS.map((g) => (
-                <path key={`tag-${g.id}`} className="wire wire--tag" d={curve(BRANCH[0], BRANCH[1], 1206, g.tagY, 0.55)} />
-              ))}
-
-              {targets.map((t, i) => (
+              {wires.map((w, i) => (
                 <path
-                  key={`out-${t.label}`}
-                  className="wire wire--out"
-                  style={{ ["--i" as string]: i } as React.CSSProperties}
-                  d={curve(BRANCH[0], BRANCH[1], TARGET_X, t.y, 0.5)}
-                  markerEnd="url(#arw)"
+                  key={`p-${i}`}
+                  className={`wire-pulse${w.kind === "tag" ? " wire-pulse--tag" : ""}`}
+                  style={{ animationDelay: `${(i % 8) * 0.42}s` }}
+                  d={w.d}
                 />
               ))}
             </svg>
 
-            <div className="arch-box arch-box--clients" style={{ left: px(70), top: py(340), width: px(350), height: py(360) }} />
-            <div className="arch-box arch-box--core" style={{ left: px(600), top: py(110), width: `${(470 / VBW) * 100}%`, height: `${(852 / VBH) * 100}%` }} />
-            <div className="arch-box arch-box--infra" style={{ left: px(1150), top: py(150), width: `${(448 / VBW) * 100}%`, height: `${(808 / VBH) * 100}%` }} />
+            <div className="arch-box arch-box--clients" style={{ left: px(70), top: py(278), width: px(350), height: py(244) }} />
+            <div className="arch-box arch-box--core" style={{ left: px(600), top: py(72), width: `${(470 / VBW) * 100}%`, height: `${(616 / VBH) * 100}%` }} />
+            <div className="arch-box arch-box--infra" style={{ left: px(1150), top: py(96), width: `${(448 / VBW) * 100}%`, height: `${(610 / VBH) * 100}%` }} />
             {GROUPS.map((g) => (
               <div
                 key={`box-${g.id}`}
@@ -199,14 +189,14 @@ export function ArchitecturePatterns(): React.ReactElement {
               />
             ))}
 
-            <span className="arch-zone" style={{ left: px(78), top: py(300) }}>
+            <span className="arch-zone" style={{ left: px(78), top: py(252) }}>
               From the client
             </span>
-            <span className="arch-zone" style={{ left: px(1158), top: py(120) }}>
+            <span className="arch-zone" style={{ left: px(1158), top: py(74) }}>
               To your infrastructure
             </span>
 
-            <div className="arch-brand" style={{ left: px(835), top: py(168) }}>
+            <div className="arch-brand" style={{ left: px(835), top: py(122) }}>
               <span className="arch-brand-mark">
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                   <path d="M4 8l8-4 8 4-8 4-8-4z" fill="currentColor" opacity="0.9" />
@@ -228,12 +218,12 @@ export function ArchitecturePatterns(): React.ReactElement {
             ))}
 
             {CAPS_TOP.map((label, i) => (
-              <span key={label} className="arch-cap" style={{ left: px(835), top: py(288 + i * 92) }}>
+              <span key={label} className="arch-cap" style={{ left: px(835), top: py(205 + i * 74) }}>
                 <CapIcon i={i} />
                 {label}
               </span>
             ))}
-            <div className="arch-gw" style={{ left: px(835), top: py(560) }}>
+            <div className="arch-gw" style={{ left: px(835), top: py(400) }}>
               <span className="arch-gw-glow" aria-hidden="true" />
               <span className="arch-gw-grid" aria-hidden="true" />
               <span className="arch-gw-pill">
@@ -245,7 +235,7 @@ export function ArchitecturePatterns(): React.ReactElement {
               </span>
             </div>
             {CAPS_BOTTOM.map((label, i) => (
-              <span key={label} className="arch-cap" style={{ left: px(835), top: py(732 + i * 92) }}>
+              <span key={label} className="arch-cap" style={{ left: px(835), top: py(522 + i * 74) }}>
                 <CapIcon i={i + 2} />
                 {label}
               </span>
@@ -257,13 +247,13 @@ export function ArchitecturePatterns(): React.ReactElement {
                   <Check />
                   {g.tag}
                 </span>
-                <span className="arch-plat" style={{ left: px(g.box.x + g.box.w - 12), top: py(g.box.y + 30) }}>
-                  <Logo icon={g.logo} size={20} />
+                <span className="arch-plat" style={{ left: px(g.box.x + g.box.w - 12), top: py(g.box.y + 28) }}>
+                  <Logo icon={g.logo} size={18} />
                   {g.name}
                 </span>
                 {g.targets.map((t) => (
                   <span key={t.label} className="arch-node arch-node--target" style={{ left: px(TARGET_X + 100), top: py(t.y) }}>
-                    {t.icon ? <Logo icon={t.icon} size={18} /> : null}
+                    {t.icon ? <Logo icon={t.icon} size={17} /> : null}
                     {t.label}
                   </span>
                 ))}
@@ -272,19 +262,14 @@ export function ArchitecturePatterns(): React.ReactElement {
           </div>
         </Reveal>
 
-        <div className="arch-controls">
-          <button type="button" className="btn btn-primary arch-trace" onClick={trace}>
-            Trace a request
-          </button>
-          <div className="arch-foundation" aria-label="Cross-cutting toolchain">
-            <span className="arch-foundation-label">CI · IaC · Observability</span>
-            <div className="arch-foundation-marks">
-              {FOUNDATION.map((f) => (
-                <span className="arch-fmark" key={f.name}>
-                  <Logo icon={f} size={23} />
-                </span>
-              ))}
-            </div>
+        <div className="arch-foundation" aria-label="Cross-cutting toolchain">
+          <span className="arch-foundation-label">CI · IaC · Observability</span>
+          <div className="arch-foundation-marks">
+            {FOUNDATION.map((f) => (
+              <span className="arch-fmark" key={f.name}>
+                <Logo icon={f} size={22} />
+              </span>
+            ))}
           </div>
         </div>
       </div>

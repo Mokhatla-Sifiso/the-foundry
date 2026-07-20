@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { ArchitecturePatterns } from "@/components/sections/ArchitecturePatterns";
 
 describe("ArchitecturePatterns", () => {
@@ -31,10 +31,9 @@ describe("ArchitecturePatterns", () => {
     expect(screen.getByRole("img", { name: "Pulumi" })).toBeInTheDocument();
   });
 
-  it("goes live when a request is traced", () => {
+  it("animates on its own: no trace button, travelling pulses on every wire", () => {
     render(<ArchitecturePatterns />);
-    expect(document.querySelector(".arch-stage.is-live")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /trace a request/i }));
-    expect(document.querySelector(".arch-stage.is-live")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /trace a request/i })).toBeNull();
+    expect(document.querySelectorAll(".wire-pulse").length).toBe(13);
   });
 });
