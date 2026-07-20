@@ -37,12 +37,12 @@ describe("ArchitecturePatterns", () => {
     act(() => {
       jest.advanceTimersByTime(300);
     });
-    expect(document.querySelectorAll(".arch-node.is-lit").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll(".arch-gnode.is-lit").length).toBeGreaterThan(0);
 
     act(() => {
       jest.advanceTimersByTime(8 * 520 + 200);
     });
-    expect(document.querySelectorAll(".arch-node.is-lit").length).toBe(8);
+    expect(document.querySelectorAll(".arch-gnode.is-lit").length).toBe(8);
     const panel = document.querySelector(".arch-panel") as HTMLElement;
     expect(within(panel).getByRole("heading", { name: "Workers" })).toBeInTheDocument();
   });
