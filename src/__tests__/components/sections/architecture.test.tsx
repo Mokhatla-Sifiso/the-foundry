@@ -13,13 +13,14 @@ describe("ArchitecturePatterns", () => {
     expect(screen.getByText(/observability & evals/i)).toBeInTheDocument();
   });
 
-  it("shows entry points, protocols and discovery mechanisms", () => {
+  it("shows entry points, protocols, environments and discovery mechanisms", () => {
     render(<ArchitecturePatterns />);
     expect(screen.getByText("api.domain.com")).toBeInTheDocument();
     expect(screen.getByText("HTTPS")).toBeInTheDocument();
     expect(screen.getByText("WSS")).toBeInTheDocument();
     expect(screen.getByText(/ingress · gateway api · crds/i)).toBeInTheDocument();
-    expect(screen.getByText(/labels & tags/i)).toBeInTheDocument();
+    expect(screen.getByText(/via litellm model proxy/i)).toBeInTheDocument();
+    expect(screen.getByText(/staging \/ prod/i)).toBeInTheDocument();
   });
 
   it("uses real platform + tool logos as the backbone", () => {
@@ -35,6 +36,6 @@ describe("ArchitecturePatterns", () => {
   it("animates on its own: no trace button, travelling pulses on every wire", () => {
     render(<ArchitecturePatterns />);
     expect(screen.queryByRole("button", { name: /trace a request/i })).toBeNull();
-    expect(document.querySelectorAll(".wire-pulse").length).toBe(13);
+    expect(document.querySelectorAll(".wire-pulse").length).toBe(7);
   });
 });
