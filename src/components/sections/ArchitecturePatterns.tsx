@@ -4,7 +4,6 @@ import {
   siGrafana,
   siKubernetes,
   siNestjs,
-  siOllama,
   siOpentelemetry,
   siPostgresql,
   siPrometheus,
@@ -88,8 +87,8 @@ const GROUPS: readonly Group[] = [
     disco: "via LiteLLM model proxy",
     cardY: 508,
     targets: [
-      { label: "Ollama + hosted LLMs", icon: { path: siOllama.path, name: "Ollama" } },
-      { label: "Postgres · pgvector", icon: { path: siPostgresql.path, name: "PostgreSQL" } },
+      { label: "Claude · GPT · Gemini" },
+      { label: "PostgreSQL", icon: { path: siPostgresql.path, name: "PostgreSQL" } },
     ],
   },
 ];

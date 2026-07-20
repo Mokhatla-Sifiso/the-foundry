@@ -32,7 +32,7 @@ describe("ArchitecturePatterns", () => {
     expect(screen.getAllByRole("img", { name: "Kubernetes" }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("img", { name: "Docker" }).length).toBeGreaterThan(0);
     expect(screen.getByRole("img", { name: "NestJS" })).toBeInTheDocument();
-    expect(screen.getAllByRole("img", { name: "Ollama" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("img", { name: "PostgreSQL" }).length).toBeGreaterThan(0);
     // cross-cutting toolchain strip
     expect(screen.getByRole("img", { name: "Grafana" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Pulumi" })).toBeInTheDocument();
