@@ -66,7 +66,7 @@ const GROUPS: readonly Group[] = [
     env: "staging / prod",
     disco: "via Ingress · Gateway API · CRDs",
     cardY: 116,
-    targets: [{ label: "Inference · GPU" }, { label: "API Service" }],
+    targets: [{ label: "API services" }, { label: "Background workers" }],
   },
   {
     id: "docker",
@@ -291,6 +291,72 @@ export function ArchitecturePatterns(): React.ReactElement {
                     <span className="arch-row-ico">{t.icon ? <Logo icon={t.icon} size={16} /> : null}</span>
                     <span className="arch-row-label">{t.label}</span>
                     {t.flow === "async" ? <span className="arch-row-flow">async</span> : null}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        {/* ---------- mobile: same story, stacked vertically ---------- */}
+        <Reveal delay={0.1} className="arch-mobile">
+          {/* zone 1 — public internet */}
+          <div className="am-zone">
+            <span className="am-label">Public internet</span>
+            <div className="am-list">
+              {CLIENTS.map((c) => (
+                <div key={c.label} className="am-node am-client">
+                  <span>{c.label}</span>
+                  <span className="am-proto">{c.proto}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="am-flow">
+            <LockIcon />
+            TLS · authN → self-hosted infra
+          </div>
+
+          {/* zone 2 — the platform */}
+          <div className="am-core">
+            <span className="am-label">AI-Native Platform</span>
+            <div className="am-gw">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" className="am-gw-mark">
+                <path d="M4 8l8-4 8 4-8 4-8-4z" fill="currentColor" />
+                <path d="M4 12l8 4 8-4M4 16l8 4 8-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+              </svg>
+              AI Gateway
+            </div>
+            <div className="am-caps">
+              {[...CAPS_TOP, ...CAPS_BOTTOM].map((c, i) => (
+                <span key={c.label} className="am-cap" title={c.sub}>
+                  <CapIcon i={i} />
+                  {c.label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="am-flow">routes to your infrastructure</div>
+
+          {/* zone 3 — infrastructure cards */}
+          <div className="am-cards">
+            {GROUPS.map((g) => (
+              <div key={g.id} className="am-card">
+                <div className="am-card-head">
+                  <span className="am-card-name">
+                    <Logo icon={g.logo} size={16} />
+                    {g.name}
+                  </span>
+                  {g.env ? <span className="am-card-env">{g.env}</span> : null}
+                </div>
+                <span className="am-card-disco">{g.disco}</span>
+                {g.targets.map((t) => (
+                  <div key={t.label} className="am-row">
+                    <span className="am-row-ico">{t.icon ? <Logo icon={t.icon} size={15} /> : null}</span>
+                    <span className="am-row-label">{t.label}</span>
+                    {t.flow === "async" ? <span className="am-row-flow">async</span> : null}
                   </div>
                 ))}
               </div>

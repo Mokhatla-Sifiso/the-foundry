@@ -3071,14 +3071,20 @@ html[data-theme="dark"] .collab-error {
   color: var(--muted);
 }
 /* ===== Architecture — three-zone routing story ===== */
+/* the grid diagram shows on wider screens; mobile gets the stacked layout */
 .arch-scroll {
-  display: flex;
+  display: none;
   justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
   margin-top: clamp(18px, 3vh, 30px);
   padding: 6px 2px 14px;
   scrollbar-width: thin;
+}
+@media (min-width: 940px) {
+  .arch-scroll {
+    display: flex;
+  }
 }
 .arch-stage {
   position: relative;
@@ -3461,6 +3467,210 @@ html[data-theme="dark"] .collab-error {
   box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
   z-index: 5;
 }
+/* ---------- mobile stacked layout ---------- */
+.arch-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: clamp(20px, 4vh, 30px);
+}
+.am-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.am-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.am-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.am-node,
+.am-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--arch-node-bg);
+  color: var(--arch-node-fg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 24px -18px var(--arch-node-shadow);
+  font-weight: 700;
+  font-size: 14px;
+}
+.am-client {
+  justify-content: space-between;
+}
+.am-proto {
+  flex: 0 0 auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--arch-accent);
+  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
+  padding: 3px 8px;
+  border-radius: 7px;
+}
+.am-flow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  align-self: center;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.am-flow svg {
+  color: var(--arch-teal-a);
+  flex: 0 0 auto;
+}
+.am-flow::before,
+.am-flow::after {
+  content: "";
+  width: 16px;
+  height: 1px;
+  background: var(--arch-line);
+}
+.am-core {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--arch-line);
+  background: color-mix(in oklab, var(--arch-accent) 4%, transparent);
+}
+.am-gw {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #0e1d33, #060d18);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--arch-accent) 45%, transparent),
+    0 14px 30px -14px color-mix(in oklab, var(--arch-accent) 65%, transparent);
+}
+.am-gw-mark {
+  color: var(--arch-accent);
+  flex: 0 0 auto;
+}
+.am-caps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.am-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: linear-gradient(180deg, var(--arch-teal-a), var(--arch-teal-b));
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.15;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+.am-cap svg {
+  flex: 0 0 auto;
+  opacity: 0.95;
+}
+.am-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.am-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--arch-line);
+  background: color-mix(in oklab, var(--fg) 2.5%, transparent);
+}
+.am-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.am-card-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 14px;
+}
+.am-card-name svg {
+  color: var(--fg);
+  flex: 0 0 auto;
+}
+.am-card-env {
+  flex: 0 0 auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--arch-accent);
+  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
+  padding: 3px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.am-card-disco {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.am-row {
+  font-size: 13.5px;
+}
+.am-row-ico {
+  flex: 0 0 auto;
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.am-row-label {
+  flex: 1 1 auto;
+}
+.am-row-flow {
+  flex: 0 0 auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: color-mix(in oklab, var(--arch-teal-a) 92%, #fff);
+  background: color-mix(in oklab, var(--arch-teal-a) 22%, transparent);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+/* hide the stacked layout once the grid diagram takes over */
+@media (min-width: 940px) {
+  .arch-mobile {
+    display: none;
+  }
+}
+
 /* cross-cutting toolchain strip (centred under the diagram) */
 .arch-foundation {
   display: flex;
