@@ -50,10 +50,11 @@ export type NavLink = Readonly<{
 export const NAVLINKS: ReadonlyArray<NavLink> = [
   { n: "01", t: "Work", href: "#work" },
   { n: "02", t: "Services", href: "#services" },
-  { n: "03", t: "AI Workflow", href: "#ai" },
-  { n: "04", t: "Experience", href: "#experience" },
-  { n: "05", t: "For recruiters", href: "#recruiters" },
-  { n: "06", t: "Contact", href: "#contact" },
+  { n: "03", t: "Architecture", href: "#architecture" },
+  { n: "04", t: "AI Workflow", href: "#ai" },
+  { n: "05", t: "Experience", href: "#experience" },
+  { n: "06", t: "For recruiters", href: "#recruiters" },
+  { n: "07", t: "Contact", href: "#contact" },
 ];
 export type Service = Readonly<{
   w1: string;
@@ -136,7 +137,11 @@ export const XP: ReadonlyArray<XpRow> = [
 export type WorkflowStep = Readonly<{ n: string; title: string; line: string }>;
 export const AI_WORKFLOW: ReadonlyArray<WorkflowStep> = [
   { n: "01", title: "Edit", line: "Agents draft and refactor in the editor. I set the direction." },
-  { n: "02", title: "Pair", line: "Claude on the hard parts: architecture, tricky refactors, edge cases." },
+  {
+    n: "02",
+    title: "Pair",
+    line: "Claude on the hard parts: architecture, tricky refactors, edge cases.",
+  },
   { n: "03", title: "Verify", line: "Tests and CI must be green. Nothing ships on vibes." },
   { n: "04", title: "Ship", line: "Every diff reviewed by me, then merged and live." },
 ];
