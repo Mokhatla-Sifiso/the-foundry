@@ -3277,3 +3277,126 @@ html[data-theme="dark"] .collab-error {
 .wfp-m-row--accent-solid .wfp-m-bar {
   background: linear-gradient(90deg, var(--wfp-1), var(--wfp-2) 60%, var(--wfp-3));
 }
+
+/* ---------- Workflow plan: live GitHub tracker ---------- */
+.wfp-top-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+.wfp-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 3px 9px 3px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: color-mix(in oklab, var(--wfp-2) 88%, var(--fg));
+  background: color-mix(in oklab, var(--wfp-2) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--wfp-2) 30%, transparent);
+  text-decoration: none;
+}
+.wfp-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--wfp-3);
+  animation: wfp-pulse 1.8s ease-out infinite;
+}
+@keyframes wfp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--wfp-3) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* month ticks on the live axis */
+.wfp-tick {
+  position: absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.wfp-plot--live {
+  height: calc(var(--rows) * var(--lane) + 10px);
+}
+
+/* live phase bars — a track with a progress fill */
+.wfp-bar.wfp-live {
+  overflow: hidden;
+  justify-content: space-between;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--fg);
+  background: color-mix(in oklab, var(--fg) 7%, transparent);
+  border: 1px solid color-mix(in oklab, var(--fg) 16%, transparent);
+}
+.wfp-live-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    color-mix(in oklab, var(--wfp-2) 55%, transparent),
+    color-mix(in oklab, var(--wfp-3) 48%, transparent)
+  );
+  z-index: 0;
+}
+.wfp-live .wfp-bar-name,
+.wfp-live .wfp-live-pct {
+  position: relative;
+  z-index: 1;
+}
+.wfp-live-pct {
+  flex: 0 0 auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+.wfp-live.is-done {
+  border-color: color-mix(in oklab, var(--wfp-2) 42%, transparent);
+}
+.wfp-live.is-done .wfp-live-fill {
+  background: linear-gradient(105deg, var(--wfp-1), var(--wfp-2) 55%, var(--wfp-3));
+}
+.wfp-live.is-done .wfp-bar-name {
+  color: #fff;
+}
+
+/* live mobile rows */
+.wfp-m-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.wfp-m-pct {
+  flex: 0 0 auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.wfp-m-row--live {
+  text-decoration: none;
+  color: var(--fg);
+}
+.wfp-m-row--live .wfp-m-bar {
+  background: linear-gradient(90deg, var(--wfp-1), var(--wfp-2) 60%, var(--wfp-3));
+}
+.wfp-m-row--live.is-done {
+  border-color: color-mix(in oklab, var(--wfp-2) 40%, transparent);
+}
