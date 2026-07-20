@@ -5,9 +5,10 @@ describe("ArchitecturePatterns", () => {
   it("tells the three-zone routing story", () => {
     render(<ArchitecturePatterns />);
     expect(screen.getByRole("heading", { name: /how i architect/i })).toBeInTheDocument();
-    // zone labels carry the narrative
-    expect(screen.getByText(/from the client/i)).toBeInTheDocument();
+    // zone labels + trust boundary carry the narrative
+    expect(screen.getByText(/public internet/i)).toBeInTheDocument();
     expect(screen.getByText(/to your infrastructure/i)).toBeInTheDocument();
+    expect(screen.getByText(/client infrastructure · self-hosted/i)).toBeInTheDocument();
     // the gateway hero
     expect(screen.getByText(/ai gateway/i)).toBeInTheDocument();
     // capability pillars framing the engine

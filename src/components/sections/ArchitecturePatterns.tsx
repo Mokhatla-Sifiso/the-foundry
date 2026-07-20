@@ -37,18 +37,26 @@ const CLIENTS: readonly Client[] = [
   { label: "admin.domain.com", y: 482, proto: "Webhooks", entry: [706, 428] },
 ];
 
-/* ---- zone 2: the gateway, framed by capability pillars ---- */
-const CAPS_TOP = ["Guardrails & Security", "Model Routing"] as const;
-const CAPS_BOTTOM = ["Retrieval & Tools", "Observability & Evals"] as const;
+/* ---- zone 2: the gateway, framed by capability pillars (each names its concrete controls) ---- */
+type Cap = Readonly<{ label: string; sub: string }>;
+const CAPS_TOP: readonly Cap[] = [
+  { label: "Guardrails & Security", sub: "authN/Z · tenant isolation · PII redaction" },
+  { label: "Model Routing", sub: "model select · fallbacks · rate limits" },
+];
+const CAPS_BOTTOM: readonly Cap[] = [
+  { label: "Retrieval & Tools", sub: "RAG · vector search · tool calling · MCP" },
+  { label: "Observability & Evals", sub: "traces · token/cost · SLOs · eval gates" },
+];
 
-/* ---- zone 3: infrastructure, grouped by platform + discovery mechanism ---- */
-type Target = Readonly<{ label: string; y: number; icon?: Icon }>;
+/* ---- zone 3: infrastructure, grouped by platform + discovery mechanism + environment ---- */
+type Target = Readonly<{ label: string; y: number; icon?: Icon; flow?: "async" }>;
 type Group = Readonly<{
   id: string;
   name: string;
   logo: Icon;
   tag: string;
   tagY: number;
+  env?: string;
   box: Readonly<{ x: number; y: number; w: number; h: number }>;
   targets: readonly Target[];
 }>;
@@ -59,6 +67,7 @@ const GROUPS: readonly Group[] = [
     logo: { path: siKubernetes.path, name: "Kubernetes" },
     tag: "Ingress · Gateway API · CRDs",
     tagY: 158,
+    env: "staging / prod",
     box: { x: 1286, y: 122, w: 300, h: 168 },
     targets: [
       { label: "Inference · GPU", y: 200 },
@@ -71,22 +80,23 @@ const GROUPS: readonly Group[] = [
     logo: { path: siDocker.path, name: "Docker" },
     tag: "Labels & Tags",
     tagY: 356,
+    env: "local / dev",
     box: { x: 1286, y: 320, w: 300, h: 168 },
     targets: [
       { label: "NestJS BFF", y: 398, icon: { path: siNestjs.path, name: "NestJS" } },
-      { label: "Workers · BullMQ", y: 458 },
+      { label: "Workers · BullMQ", y: 458, flow: "async" },
     ],
   },
   {
-    id: "data",
-    name: "Data & Models",
+    id: "models",
+    name: "Models & data",
     logo: { path: siPostgresql.path, name: "PostgreSQL" },
-    tag: "LiteLLM · Config",
+    tag: "via LiteLLM · model proxy",
     tagY: 554,
     box: { x: 1286, y: 518, w: 300, h: 168 },
     targets: [
-      { label: "Postgres · pgvector", y: 596, icon: { path: siPostgresql.path, name: "PostgreSQL" } },
-      { label: "Ollama · LLMs", y: 656, icon: { path: siOllama.path, name: "Ollama" } },
+      { label: "Ollama + hosted LLMs", y: 596, icon: { path: siOllama.path, name: "Ollama" } },
+      { label: "Postgres · pgvector", y: 656, icon: { path: siPostgresql.path, name: "PostgreSQL" } },
     ],
   },
 ];
@@ -103,7 +113,7 @@ const FOUNDATION: readonly Icon[] = [
   { path: siGrafana.path, name: "Grafana" },
 ];
 
-type Wire = Readonly<{ d: string; kind: "in" | "trunk" | "tag" | "out"; marker: boolean }>;
+type Wire = Readonly<{ d: string; kind: "in" | "trunk" | "tag" | "out"; marker: boolean; async?: boolean }>;
 
 function buildWires(targets: readonly Target[]): Wire[] {
   return [
@@ -115,7 +125,12 @@ function buildWires(targets: readonly Target[]): Wire[] {
       (g): Wire => ({ d: curve(BRANCH[0], BRANCH[1], 1206, g.tagY, 0.55), kind: "tag", marker: false }),
     ),
     ...targets.map(
-      (t): Wire => ({ d: curve(BRANCH[0], BRANCH[1], TARGET_X, t.y, 0.5), kind: "out", marker: true }),
+      (t): Wire => ({
+        d: curve(BRANCH[0], BRANCH[1], TARGET_X, t.y, 0.5),
+        kind: "out",
+        marker: true,
+        async: t.flow === "async",
+      }),
     ),
   ];
 }
@@ -151,6 +166,15 @@ function Check(): React.ReactElement {
   );
 }
 
+function LockIcon(): React.ReactElement {
+  return (
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </svg>
+  );
+}
+
 export function ArchitecturePatterns(): React.ReactElement {
   const targets = GROUPS.flatMap((g) => g.targets);
   const wires = buildWires(targets);
@@ -178,7 +202,12 @@ export function ArchitecturePatterns(): React.ReactElement {
               </defs>
               {/* static tracks */}
               {wires.map((w, i) => (
-                <path key={`t-${i}`} className={`wire wire--${w.kind}`} d={w.d} markerEnd={w.marker ? "url(#arw)" : undefined} />
+                <path
+                  key={`t-${i}`}
+                  className={`wire wire--${w.kind}${w.async ? " wire--async" : ""}`}
+                  d={w.d}
+                  markerEnd={w.marker ? "url(#arw)" : undefined}
+                />
               ))}
               {/* travelling pulses */}
               {wires.map((w, i) => (
@@ -203,9 +232,20 @@ export function ArchitecturePatterns(): React.ReactElement {
               />
             ))}
 
+            {/* ---------- trust boundary: a single divider — left is public internet, right is the client's self-hosted infra ---------- */}
+            <div className="arch-divider" style={{ left: px(566), top: py(96), height: `${((704 - 96) / VBH) * 100}%` }} />
+            <span className="arch-trust-tag" style={{ left: px(582), top: py(60) }}>
+              <LockIcon />
+              Client infrastructure · self-hosted
+            </span>
+            {/* the boundary enforces TLS + authN on every crossing */}
+            <span className="arch-ingress" style={{ left: px(566), top: py(300) }}>
+              TLS · authN
+            </span>
+
             {/* ---------- zone labels ---------- */}
             <span className="arch-zone" style={{ left: px(78), top: py(252) }}>
-              From the client
+              Public internet
             </span>
             <span className="arch-zone" style={{ left: px(1158), top: py(74) }}>
               To your infrastructure
@@ -234,11 +274,11 @@ export function ArchitecturePatterns(): React.ReactElement {
               </span>
             ))}
 
-            {/* ---------- capability pillars ---------- */}
-            {CAPS_TOP.map((label, i) => (
-              <span key={label} className="arch-cap" style={{ left: px(835), top: py(205 + i * 74) }}>
+            {/* ---------- capability pillars (concrete controls in the hover title) ---------- */}
+            {CAPS_TOP.map((c, i) => (
+              <span key={c.label} className="arch-cap" title={c.sub} style={{ left: px(835), top: py(205 + i * 74) }}>
                 <CapIcon i={i} />
-                {label}
+                {c.label}
               </span>
             ))}
             {/* ---------- the gateway (hero) ---------- */}
@@ -253,10 +293,10 @@ export function ArchitecturePatterns(): React.ReactElement {
                 AI Gateway
               </span>
             </div>
-            {CAPS_BOTTOM.map((label, i) => (
-              <span key={label} className="arch-cap" style={{ left: px(835), top: py(522 + i * 74) }}>
+            {CAPS_BOTTOM.map((c, i) => (
+              <span key={c.label} className="arch-cap" title={c.sub} style={{ left: px(835), top: py(522 + i * 74) }}>
                 <CapIcon i={i + 2} />
-                {label}
+                {c.label}
               </span>
             ))}
 
@@ -270,6 +310,7 @@ export function ArchitecturePatterns(): React.ReactElement {
                 <span className="arch-plat" style={{ left: px(g.box.x + g.box.w - 12), top: py(g.box.y + 28) }}>
                   <Logo icon={g.logo} size={18} />
                   {g.name}
+                  {g.env ? <em className="arch-plat-env">{g.env}</em> : null}
                 </span>
                 {g.targets.map((t) => (
                   <span key={t.label} className="arch-node arch-node--target" style={{ left: px(TARGET_X + 100), top: py(t.y) }}>
@@ -281,6 +322,18 @@ export function ArchitecturePatterns(): React.ReactElement {
             ))}
           </div>
         </Reveal>
+
+        <div className="arch-legend" aria-hidden="true">
+          <span className="arch-legend-item">
+            <i className="arch-swatch arch-swatch--sync" /> Sync
+          </span>
+          <span className="arch-legend-item">
+            <i className="arch-swatch arch-swatch--async" /> Async · queue
+          </span>
+          <span className="arch-legend-item">
+            <i className="arch-swatch arch-swatch--config" /> Config
+          </span>
+        </div>
 
         <div className="arch-foundation" aria-label="Cross-cutting toolchain">
           <span className="arch-foundation-label">CI · IaC · Observability</span>

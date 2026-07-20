@@ -3116,6 +3116,10 @@ html[data-theme="dark"] .collab-error {
   stroke-dasharray: 6 7;
   opacity: 0.75;
 }
+/* async / queue edges are dashed */
+.wire--async {
+  stroke-dasharray: 9 8;
+}
 /* a slow travelling pulse rides each wire, always on */
 .wire-pulse {
   fill: none;
@@ -3376,6 +3380,87 @@ html[data-theme="dark"] .collab-error {
   50% {
     transform: scale(1.018);
   }
+}
+
+/* trust boundary divider — public internet (left) vs client's self-hosted infra (right) */
+.arch-divider {
+  position: absolute;
+  width: 0;
+  border-left: 1.5px dashed color-mix(in oklab, var(--arch-wire-strong) 65%, transparent);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+.arch-trust-tag {
+  position: absolute;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.82cqw;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.arch-trust-tag svg {
+  color: var(--arch-teal-a);
+  flex: 0 0 auto;
+}
+.arch-ingress {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0.34em 0.7em;
+  border-radius: 0.55em;
+  background: var(--arch-panel);
+  color: var(--arch-panel-fg);
+  border: 1px solid var(--arch-line);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78cqw;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
+  z-index: 5;
+}
+.arch-plat-env {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72cqw;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  color: var(--arch-accent);
+  padding-left: 0.15em;
+}
+
+/* edge-type legend */
+.arch-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: clamp(12px, 2vh, 18px);
+}
+.arch-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.arch-swatch {
+  width: 22px;
+  height: 0;
+  border-top: 2px solid var(--arch-wire-strong);
+}
+.arch-swatch--async {
+  border-top-style: dashed;
+}
+.arch-swatch--config {
+  border-top-style: dashed;
+  border-top-color: var(--arch-teal-a);
 }
 
 /* cross-cutting toolchain strip (centred under the diagram) */
