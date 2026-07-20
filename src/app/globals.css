@@ -71,6 +71,9 @@ html[data-theme="light"] {
   --arch-panel-fg: #26334a;
   --arch-teal-a: #2ba7c4;
   --arch-teal-b: #1f7f99;
+  --wfp-1: #0c3f36;
+  --wfp-2: #16a38b;
+  --wfp-3: #34d399;
   --field-line: rgba(2, 8, 12, 0.14);
   --field-line-hover: rgba(2, 8, 12, 0.28);
   --card: #0a0e10;
@@ -115,6 +118,9 @@ html[data-theme="dark"] {
   --arch-panel-fg: #cfe0ea;
   --arch-teal-a: #35b6d3;
   --arch-teal-b: #1f7f99;
+  --wfp-1: #0c3f36;
+  --wfp-2: #16a38b;
+  --wfp-3: #34d399;
   --field-line: rgba(178, 213, 229, 0.22);
   --field-line-hover: rgba(178, 213, 229, 0.4);
   --card: #0c1316;
@@ -3047,12 +3053,12 @@ html[data-theme="dark"] .collab-error {
 }
 
 /* ============================================================
-   Architectures & Patterns — tool-wired showpiece
+   Workflow plan — delivery timeline (Gantt)
    ============================================================ */
-.arch {
+.wfp {
   overflow: hidden;
 }
-.arch-h {
+.wfp-h {
   font-weight: 800;
   font-size: clamp(40px, 6vw, 88px);
   letter-spacing: -0.035em;
@@ -3060,653 +3066,285 @@ html[data-theme="dark"] .collab-error {
   margin: 16px 0 0;
   color: var(--fg);
 }
-.arch-h .em {
+.wfp-h .em {
   color: var(--candy);
 }
-.arch-lead {
-  margin: clamp(20px, 3vh, 32px) 0 clamp(28px, 4vh, 44px);
-  max-width: 46ch;
-  font-size: clamp(15px, 1.5vw, 18px);
-  line-height: 1.6;
-  color: var(--muted);
-}
-/* ===== Architecture — three-zone routing story ===== */
-/* the grid diagram shows on wider screens; mobile gets the stacked layout */
-.arch-scroll {
+
+/* the chart shows on wider screens; mobile gets the stacked list */
+.wfp-scroll {
   display: none;
-  justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
-  margin-top: clamp(18px, 3vh, 30px);
-  padding: 6px 2px 14px;
+  margin-top: clamp(20px, 3.5vh, 40px);
+  padding: 4px 2px 12px;
   scrollbar-width: thin;
 }
-@media (min-width: 940px) {
-  .arch-scroll {
-    display: flex;
+@media (min-width: 860px) {
+  .wfp-scroll {
+    display: block;
   }
 }
-.arch-stage {
+.wfp-chart {
   position: relative;
-  flex: 0 0 auto;
   width: 100%;
-  max-width: 1080px;
-  min-width: 940px;
-  aspect-ratio: 1640 / 760;
-  container-type: inline-size;
-  margin-inline: auto;
+  min-width: 800px;
+  --lane: 56px;
 }
-
-/* wire layer */
-.arch-wires {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  z-index: 1;
-  pointer-events: none;
+.wfp-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
 }
-.wire {
-  fill: none;
-  stroke: var(--arch-wire);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-}
-.wire--trunk {
-  stroke-width: 2.6;
-}
-/* a slow travelling pulse rides each wire, always on */
-.wire-pulse {
-  fill: none;
-  stroke: var(--arch-accent);
-  stroke-width: 3.4;
-  stroke-linecap: round;
-  stroke-dasharray: 14 2000;
-  stroke-dashoffset: 14;
-  opacity: 0.9;
-  animation: arch-comet 3.6s linear infinite;
-}
-@keyframes arch-comet {
-  from {
-    stroke-dashoffset: 14;
-  }
-  to {
-    stroke-dashoffset: -1000;
-  }
-}
-
-/* group boxes + zone labels */
-.arch-box {
-  position: absolute;
-  border: 1px solid var(--arch-line);
-  border-radius: 1cqw;
-  pointer-events: none;
-}
-.arch-box--core {
-  border-radius: 1.4cqw;
-  background: color-mix(in oklab, var(--arch-accent) 4%, transparent);
-}
-.arch-box--infra,
-.arch-box--clients {
-  background: color-mix(in oklab, var(--fg) 1.5%, transparent);
-}
-.arch-box--group {
-  background: color-mix(in oklab, var(--fg) 2.5%, transparent);
-}
-.arch-zone {
-  position: absolute;
-  transform: translateY(-50%);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.98cqw;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* dark pill nodes */
-.arch-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55em;
-  white-space: nowrap;
-  padding: 0.72em 1.05em;
-  border-radius: 0.85em;
-  background: var(--arch-node-bg);
-  color: var(--arch-node-fg);
-  font-weight: 700;
-  font-size: 1.18cqw;
-  letter-spacing: -0.01em;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow:
-    0 0.9em 1.7em -0.7em var(--arch-node-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  z-index: 2;
-  transition:
-    box-shadow 0.4s var(--ease),
-    transform 0.25s var(--ease);
-}
-.arch-node svg {
-  flex: 0 0 auto;
-}
-
-/* protocol pills on the wires */
-.arch-proto {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  padding: 0.4em 0.72em;
-  border-radius: 0.6em;
-  background: var(--arch-panel);
-  color: var(--arch-panel-fg);
-  border: 1px solid var(--arch-line);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.95cqw;
-  font-weight: 600;
-  box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
-  z-index: 3;
-}
-
-/* capability pillars (teal) */
-.arch-cap {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55em;
-  padding: 0.72em 1.25em;
-  border-radius: 0.85em;
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.15cqw;
-  white-space: nowrap;
-  background: linear-gradient(180deg, var(--arch-teal-a), var(--arch-teal-b));
-  box-shadow:
-    0 0.7em 1.5em -0.7em color-mix(in oklab, var(--arch-teal-b) 75%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  z-index: 3;
-}
-.arch-cap svg {
-  opacity: 0.95;
-}
-
-/* the gateway hero */
-.arch-gw {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  z-index: 4;
-}
-.arch-gw-glow {
-  position: absolute;
-  width: 22cqw;
-  height: 15cqw;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in oklab, var(--arch-accent) 42%, transparent),
-    transparent 68%
-  );
-  filter: blur(4px);
-  opacity: 0.55;
-}
-.arch-gw-grid {
-  position: absolute;
-  width: 18cqw;
-  height: 12cqw;
-  background-image: radial-gradient(
-    color-mix(in oklab, var(--arch-accent) 42%, transparent) 1px,
-    transparent 1.5px
-  );
-  background-size: 9px 9px;
-  -webkit-mask-image: radial-gradient(circle at center, #000 8%, transparent 60%);
-  mask-image: radial-gradient(circle at center, #000 8%, transparent 60%);
-  opacity: 0.5;
-}
-.arch-gw-pill {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6em;
-  padding: 0.9em 1.6em;
-  border-radius: 1em;
-  background: linear-gradient(180deg, #0e1d33, #060d18);
-  color: #fff;
+.wfp-top-title {
+  font-size: clamp(18px, 2vw, 24px);
   font-weight: 800;
-  font-size: 1.55cqw;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--arch-accent) 45%, transparent),
-    0 1em 2.6em -0.8em color-mix(in oklab, var(--arch-accent) 70%, transparent),
-    0 0 3.4em -0.6em color-mix(in oklab, var(--arch-accent) 65%, transparent);
-}
-.arch-gw-mark {
-  color: var(--arch-accent);
-  flex: 0 0 auto;
-}
-
-/* center brand header */
-.arch-brand {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
+  letter-spacing: -0.02em;
   color: var(--fg);
-  font-weight: 800;
-  font-size: 1.22cqw;
-  white-space: nowrap;
 }
-.arch-brand-mark {
-  display: inline-flex;
-  color: var(--arch-accent);
+.wfp-top-dur {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
 }
 
-/* discovery-mechanism tag pills */
-/* clean platform cards: header + discovery caption + uniform node rows */
-.arch-card-head {
+/* date axis */
+.wfp-axis {
+  position: relative;
+  height: 30px;
+  margin-bottom: 6px;
+}
+.wfp-tick {
   position: absolute;
-  transform: translateY(-50%);
+  top: 6px;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.wfp-now-head {
+  position: absolute;
+  top: -18px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+.wfp-now-tri {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--wfp-3);
+}
+.wfp-now-pill {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--wfp-2);
+  color: #04140f;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* plot area */
+.wfp-plot {
+  position: relative;
+  height: calc(var(--rows) * var(--lane) + 66px);
+}
+.wfp-grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed var(--line);
+  transform: translateX(-50%);
+}
+.wfp-now-line {
+  position: absolute;
+  top: 0;
+  bottom: 40px;
+  width: 0;
+  border-left: 1.5px solid color-mix(in oklab, var(--wfp-3) 80%, transparent);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* task bars */
+.wfp-bar {
+  position: absolute;
+  height: 46px;
+  min-width: max-content; /* never truncate the phase name */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5em;
+  gap: 14px;
+  padding: 0 15px;
+  border-radius: 13px;
   z-index: 2;
+  transition: transform 0.25s var(--ease);
 }
-.arch-card-name {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  color: var(--fg);
+.wfp-bar:hover {
+  transform: translateY(-2px);
+}
+.wfp-bar-name {
   font-weight: 700;
-  font-size: 1.05cqw;
-  white-space: nowrap;
-}
-.arch-card-name svg {
-  color: var(--fg);
-  flex: 0 0 auto;
-}
-.arch-card-env {
-  flex: 0 0 auto;
-  padding: 0.2em 0.5em;
-  border-radius: 0.45em;
-  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
-  color: var(--arch-accent);
-  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.68cqw;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.arch-card-disco {
-  position: absolute;
-  transform: translateY(-50%);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.74cqw;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--muted);
-  white-space: nowrap;
-  z-index: 2;
-}
-.arch-row {
-  position: absolute;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  height: 2.3cqw;
-  min-height: 30px;
-  padding: 0 0.75em;
-  border-radius: 0.6em;
-  background: var(--arch-node-bg);
-  color: var(--arch-node-fg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0.6em 1.3em -0.7em var(--arch-node-shadow);
-  z-index: 2;
-}
-.arch-row-ico {
-  flex: 0 0 auto;
-  width: 1.4cqw;
-  min-width: 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.arch-row-label {
-  flex: 1 1 auto;
-  font-size: 1cqw;
-  font-weight: 700;
+  font-size: 15.5px;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.arch-row-flow {
+.wfp-bar-days {
   flex: 0 0 auto;
-  padding: 0.12em 0.5em;
-  border-radius: 0.4em;
-  background: color-mix(in oklab, var(--arch-teal-a) 22%, transparent);
-  color: color-mix(in oklab, var(--arch-teal-a) 92%, #fff);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.64cqw;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+/* fill — high-contrast, flips with theme (white bar in dark, dark bar in light) */
+.wfp-bar--fill {
+  background: var(--fg);
+  color: var(--bg);
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6);
+}
+.wfp-bar--fill .wfp-bar-days {
+  background: color-mix(in oklab, var(--bg) 82%, var(--fg));
+  color: var(--fg);
+}
+/* glass — subtle panel */
+.wfp-bar--glass {
+  background: color-mix(in oklab, var(--fg) 8%, transparent);
+  color: var(--fg);
+  border: 1px solid color-mix(in oklab, var(--fg) 16%, transparent);
+}
+.wfp-bar--glass .wfp-bar-days {
+  background: color-mix(in oklab, var(--fg) 14%, transparent);
+  color: var(--fg);
+}
+/* accent — the development hero */
+.wfp-bar--accent {
+  background: linear-gradient(105deg, var(--wfp-1), var(--wfp-2) 55%, var(--wfp-3));
+  color: #fff;
+  box-shadow:
+    0 22px 50px -22px color-mix(in oklab, var(--wfp-2) 70%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.wfp-bar--accent-solid {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--wfp-2) 92%, #fff), color-mix(in oklab, var(--wfp-1) 70%, var(--wfp-2)));
+  color: #fff;
+  box-shadow: 0 18px 40px -24px color-mix(in oklab, var(--wfp-2) 60%, transparent);
+}
+.wfp-bar--accent .wfp-bar-days,
+.wfp-bar--accent-solid .wfp-bar-days {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0c1a16;
 }
 
-/* ---- gateway breathes gently, always on ---- */
-.arch-gw-glow {
-  animation: arch-breathe 3.8s ease-in-out infinite;
-}
-.arch-gw-pill {
-  animation: arch-gw-breathe 3.8s ease-in-out infinite;
-}
-@keyframes arch-breathe {
-  0%,
-  100% {
-    opacity: 0.42;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.06);
-  }
-}
-@keyframes arch-gw-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.018);
-  }
-}
-
-/* trust boundary divider — public internet (left) vs client's self-hosted infra (right) */
-.arch-divider {
+/* milestones */
+.wfp-ms {
   position: absolute;
-  width: 0;
-  border-left: 1.5px dashed color-mix(in oklab, var(--arch-wire-strong) 65%, transparent);
+  top: calc(var(--rows) * var(--lane) + 8px);
   transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1;
-}
-.arch-trust-tag {
-  position: absolute;
-  transform: translateY(-50%);
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4em;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.82cqw;
+  gap: 8px;
+  z-index: 2;
+}
+.wfp-ms-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  transform: rotate(45deg);
+  background: color-mix(in oklab, var(--fg) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--fg) 26%, transparent);
+}
+.wfp-ms-label {
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--muted);
+  color: var(--fg-2);
   white-space: nowrap;
 }
-.arch-trust-tag svg {
-  color: var(--arch-teal-a);
-  flex: 0 0 auto;
-}
-.arch-ingress {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  padding: 0.34em 0.7em;
-  border-radius: 0.55em;
-  background: var(--arch-panel);
-  color: var(--arch-panel-fg);
-  border: 1px solid var(--arch-line);
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.78cqw;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
-  z-index: 5;
-}
-/* ---------- mobile stacked layout ---------- */
-.arch-mobile {
+
+/* ---------- mobile stacked list ---------- */
+.wfp-mobile {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: clamp(20px, 4vh, 30px);
 }
-.am-zone {
+@media (min-width: 860px) {
+  .wfp-mobile {
+    display: none;
+  }
+}
+.wfp-m-head {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.am-label {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  font-weight: 600;
-}
-.am-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.am-node,
-.am-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--arch-node-bg);
-  color: var(--arch-node-fg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 24px -18px var(--arch-node-shadow);
-  font-weight: 700;
-  font-size: 14px;
-}
-.am-client {
+  align-items: baseline;
   justify-content: space-between;
-}
-.am-proto {
-  flex: 0 0 auto;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--arch-accent);
-  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
-  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
-  padding: 3px 8px;
-  border-radius: 7px;
-}
-.am-flow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  align-self: center;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-}
-.am-flow svg {
-  color: var(--arch-teal-a);
-  flex: 0 0 auto;
-}
-.am-flow::before,
-.am-flow::after {
-  content: "";
-  width: 16px;
-  height: 1px;
-  background: var(--arch-line);
-}
-.am-core {
-  display: flex;
-  flex-direction: column;
   gap: 12px;
-  padding: 16px;
-  border-radius: 18px;
-  border: 1px solid var(--arch-line);
-  background: color-mix(in oklab, var(--arch-accent) 4%, transparent);
 }
-.am-gw {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  padding: 12px 18px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #0e1d33, #060d18);
-  color: #fff;
+.wfp-m-title {
+  font-size: 18px;
   font-weight: 800;
-  font-size: 16px;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--arch-accent) 45%, transparent),
-    0 14px 30px -14px color-mix(in oklab, var(--arch-accent) 65%, transparent);
+  color: var(--fg);
 }
-.am-gw-mark {
-  color: var(--arch-accent);
-  flex: 0 0 auto;
+.wfp-m-dur {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
 }
-.am-caps {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.am-cap {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 12px;
-  border-radius: 11px;
-  background: linear-gradient(180deg, var(--arch-teal-a), var(--arch-teal-b));
-  color: #fff;
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 1.15;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-}
-.am-cap svg {
-  flex: 0 0 auto;
-  opacity: 0.95;
-}
-.am-cards {
+.wfp-m-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
-.am-card {
+.wfp-m-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px;
-  border-radius: 16px;
-  border: 1px solid var(--arch-line);
-  background: color-mix(in oklab, var(--fg) 2.5%, transparent);
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--fg) 4%, transparent);
+  border: 1px solid var(--line);
 }
-.am-card-head {
+.wfp-m-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
 }
-.am-card-name {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--fg);
+.wfp-m-name {
+  font-size: 15px;
   font-weight: 700;
-  font-size: 14px;
-}
-.am-card-name svg {
   color: var(--fg);
-  flex: 0 0 auto;
 }
-.am-card-env {
+.wfp-m-days {
   flex: 0 0 auto;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--arch-accent);
-  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
-  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
-  padding: 3px 7px;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-.am-card-disco {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--muted);
 }
-.am-row {
-  font-size: 13.5px;
-}
-.am-row-ico {
-  flex: 0 0 auto;
-  width: 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.am-row-label {
-  flex: 1 1 auto;
-}
-.am-row-flow {
-  flex: 0 0 auto;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  color: color-mix(in oklab, var(--arch-teal-a) 92%, #fff);
-  background: color-mix(in oklab, var(--arch-teal-a) 22%, transparent);
-  padding: 2px 7px;
+.wfp-m-track {
+  display: block;
+  width: 100%;
+  height: 8px;
   border-radius: 6px;
+  background: color-mix(in oklab, var(--fg) 8%, transparent);
+  overflow: hidden;
 }
-/* hide the stacked layout once the grid diagram takes over */
-@media (min-width: 940px) {
-  .arch-mobile {
-    display: none;
-  }
+.wfp-m-bar {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  min-width: 8px;
+  background: color-mix(in oklab, var(--fg) 55%, transparent);
 }
-
-/* cross-cutting toolchain strip (centred under the diagram) */
-.arch-foundation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: clamp(18px, 2.5vh, 28px);
-  padding-top: clamp(16px, 2.5vh, 24px);
-  border-top: 1px solid var(--line);
-}
-.arch-foundation-label {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 700;
-}
-.arch-foundation-marks {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-  color: var(--fg-2);
-}
-.arch-fmark {
-  display: inline-flex;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wire-pulse,
-  .arch-gw-glow,
-  .arch-gw-pill {
-    animation: none;
-  }
-  .wire-pulse {
-    display: none;
-  }
+.wfp-m-row--accent .wfp-m-bar,
+.wfp-m-row--accent-solid .wfp-m-bar {
+  background: linear-gradient(90deg, var(--wfp-1), var(--wfp-2) 60%, var(--wfp-3));
 }

@@ -19,7 +19,7 @@ describe("NAVLINKS", () => {
     expect(NAVLINKS.map((l) => `${l.n} ${l.t} ${l.href}`)).toEqual([
       "01 Work #work",
       "02 Services #services",
-      "03 Architecture #architecture",
+      "03 Delivery #workflow",
       "04 AI Workflow #ai",
       "05 Experience #experience",
       "06 For recruiters #recruiters",
@@ -30,7 +30,7 @@ describe("NAVLINKS", () => {
     const HOME_SECTION_IDS = new Set([
       "work",
       "services",
-      "architecture",
+      "workflow",
       "ai",
       "experience",
       "recruiters",
