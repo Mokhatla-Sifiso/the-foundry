@@ -1,4 +1,7 @@
 jest.mock("framer-motion");
+jest.mock("@/components/sections/WorkflowPlan", () => ({
+  WorkflowPlan: () => <section id="workflow" />,
+}));
 jest.mock("next/image", () => ({
   __esModule: true,
   default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
