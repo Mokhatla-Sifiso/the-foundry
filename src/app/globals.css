@@ -58,6 +58,9 @@ html[data-theme="light"] {
   --pill-line: rgba(255, 255, 255, 0.85);
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-line: rgba(255, 255, 255, 0.75);
+  --arch-accent: #2563eb;
+  --arch-card-bg: #ffffff;
+  --arch-card-shadow: rgba(30, 52, 92, 0.16);
   --field-line: rgba(2, 8, 12, 0.14);
   --field-line-hover: rgba(2, 8, 12, 0.28);
   --card: #0a0e10;
@@ -89,6 +92,9 @@ html[data-theme="dark"] {
   --pill-line: rgba(178, 213, 229, 0.2);
   --glass-bg: rgba(178, 213, 229, 0.06);
   --glass-line: rgba(178, 213, 229, 0.18);
+  --arch-accent: #7aa2ff;
+  --arch-card-bg: rgba(178, 213, 229, 0.05);
+  --arch-card-shadow: rgba(0, 0, 0, 0.5);
   --field-line: rgba(178, 213, 229, 0.22);
   --field-line-hover: rgba(178, 213, 229, 0.4);
   --card: #0c1316;
@@ -3021,7 +3027,7 @@ html[data-theme="dark"] .collab-error {
 }
 
 /* ============================================================
-   Architectures & Patterns — the interactive showpiece
+   Architectures & Patterns — tool-wired showpiece
    ============================================================ */
 .arch {
   overflow: hidden;
@@ -3038,7 +3044,7 @@ html[data-theme="dark"] .collab-error {
   color: var(--candy);
 }
 .arch-lead {
-  margin: clamp(20px, 3vh, 32px) 0 clamp(32px, 5vh, 52px);
+  margin: clamp(20px, 3vh, 32px) 0 clamp(28px, 4vh, 44px);
   max-width: 46ch;
   font-size: clamp(15px, 1.5vw, 18px);
   line-height: 1.6;
@@ -3046,13 +3052,10 @@ html[data-theme="dark"] .collab-error {
 }
 .arch-stage {
   display: grid;
-  gap: clamp(18px, 2.4vw, 28px);
+  gap: clamp(24px, 3vw, 40px);
 }
 .arch-controls {
   display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
 }
 .arch-trace {
   min-width: 210px;
@@ -3061,274 +3064,170 @@ html[data-theme="dark"] .collab-error {
   opacity: 0.7;
   cursor: default;
 }
-.arch-cue {
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  color: var(--fg-2);
-  font-style: italic;
-}
 
-/* the request path — SVG circuit board */
-.arch-board-wrap {
-  overflow-x: auto;
-  border-radius: var(--r);
-  border: 1px solid var(--pill-line);
-  background:
-    radial-gradient(
-      120% 100% at 50% 0%,
-      color-mix(in oklab, var(--candy) 6%, transparent),
-      transparent 60%
-    ),
-    var(--pill);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 12px;
-}
-.arch-board {
-  display: block;
-  width: 100%;
-  min-width: 760px;
-  height: auto;
-  font-family: inherit;
-}
-.arch-grid-dot {
-  fill: var(--fg);
-  opacity: 0.05;
-}
-.arch-trace-base {
-  fill: none;
-  stroke: var(--pill-line);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.arch-trace-live {
-  fill: none;
-  stroke: var(--candy);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0;
-  filter: url(#arch-glow);
-  transition: opacity 0.3s var(--ease);
-}
-.arch-trace-live.is-on {
-  opacity: 0.6;
-}
-.arch-trace-flow {
-  fill: none;
-  stroke: #eaf6fb;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: url(#arch-glow);
-  stroke-dasharray: 18 260;
-  animation: arch-current 0.95s linear infinite;
-}
-@keyframes arch-current {
-  from {
-    stroke-dashoffset: 278;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-.arch-gnode {
-  cursor: pointer;
-}
-.arch-gnode-box {
-  fill: color-mix(in oklab, var(--fg) 5%, transparent);
-  stroke: var(--pill-line);
-  stroke-width: 1.2;
-  transition:
-    fill 0.35s var(--ease),
-    stroke 0.35s var(--ease);
-}
-.arch-gnode:hover .arch-gnode-box {
-  stroke: var(--fg-2);
-}
-.arch-gnode:focus-visible {
-  outline: none;
-}
-.arch-gnode:focus-visible .arch-gnode-box {
-  stroke: var(--candy);
-  stroke-width: 2;
-}
-.arch-pin {
-  fill: var(--pill-line);
-  transition: fill 0.35s var(--ease);
-}
-.arch-gnode-n {
-  fill: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-.arch-gnode-label {
-  fill: var(--fg);
-  font-size: 15px;
-  font-weight: 700;
-}
-.arch-gnode-role {
-  fill: var(--fg-2);
-  font-size: 11px;
-}
-.arch-gnode.is-lit .arch-gnode-box {
-  fill: color-mix(in oklab, var(--candy) 12%, transparent);
-  stroke: color-mix(in oklab, var(--candy) 60%, transparent);
-}
-.arch-gnode.is-lit .arch-pin {
-  fill: var(--candy);
-}
-.arch-gnode.is-lit .arch-gnode-n {
-  fill: var(--candy);
-}
-.arch-gnode.is-active .arch-gnode-box {
-  fill: color-mix(in oklab, var(--candy) 18%, transparent);
-  stroke: var(--candy);
-  stroke-width: 2;
-}
-.arch-gnode.is-pulse .arch-gnode-box {
-  filter: url(#arch-glow);
-}
-
-/* cross-cutting layers */
-.arch-layers {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-.arch-layer {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 16px 18px;
-  text-align: left;
-  border-radius: 16px;
-  border: 1px dashed var(--pill-line);
-  background: transparent;
-  color: var(--fg);
-  cursor: pointer;
-  transition:
-    border-color 0.3s var(--ease),
-    background 0.3s var(--ease);
-}
-.arch-layer:hover {
-  border-color: var(--fg-2);
-}
-.arch-layer.is-active {
-  border-style: solid;
-  border-color: var(--candy);
-  background: color-mix(in oklab, var(--candy) 12%, transparent);
-}
-.arch-layer-label {
-  font-size: 14px;
-  font-weight: 700;
-}
-.arch-layer-blurb {
-  font-size: 11.5px;
-  color: var(--fg-2);
-}
-
-/* detail panel */
-.arch-panel {
-  min-height: 240px;
-}
-.arch-detail {
-  display: grid;
-  gap: 16px;
-  padding: clamp(22px, 2.6vw, 34px);
-  border-radius: var(--r);
-  border: 1px solid var(--glass-line);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  animation: arch-fade 0.4s var(--ease);
-}
-@keyframes arch-fade {
-  from {
-    opacity: 0;
-    translate: 0 8px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-.arch-detail-head {
+/* the tool flow */
+.arch-flow {
   display: flex;
   align-items: center;
-  gap: 16px;
+  overflow-x: auto;
+  padding: 10px 2px 20px;
+  scrollbar-width: none;
 }
-.arch-detail-n {
-  font-size: 13px;
+.arch-flow::-webkit-scrollbar {
+  display: none;
+}
+.arch-cell {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.arch-card {
+  width: 134px;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 10px;
+  border-radius: 22px;
+  text-align: center;
+  background: var(--arch-card-bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 34px -20px var(--arch-card-shadow);
+  transition:
+    border-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease),
+    transform 0.25s var(--ease);
+}
+.arch-card-marks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+  transition: color 0.4s var(--ease);
+}
+.arch-mark {
+  width: 27px;
+  height: 27px;
+  display: block;
+}
+.arch-mark--mono {
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--arch-accent) 14%, transparent);
+  color: var(--arch-accent);
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  color: var(--candy);
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid color-mix(in oklab, var(--candy) 40%, transparent);
+  letter-spacing: 0.02em;
 }
-.arch-detail-title {
-  font-size: clamp(22px, 2.4vw, 30px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin: 0;
+.arch-card-label {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
 }
-.arch-detail-role {
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
+.arch-card-role {
+  font-size: 11px;
+  color: var(--muted);
+}
+.arch-card.is-lit {
+  border-color: color-mix(in oklab, var(--arch-accent) 55%, transparent);
+  box-shadow:
+    0 16px 40px -18px color-mix(in oklab, var(--arch-accent) 60%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--arch-accent) 30%, transparent);
+  transform: translateY(-2px);
+}
+.arch-card.is-lit .arch-card-marks {
+  color: var(--arch-accent);
+}
+
+/* connectors */
+.arch-link {
+  position: relative;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 2px;
+  align-self: center;
+}
+.arch-link-line {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.4s var(--ease);
+}
+.arch-link-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--arch-accent);
+  box-shadow: 0 0 10px 1px color-mix(in oklab, var(--arch-accent) 70%, transparent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.arch-link.is-live .arch-link-line {
+  background: color-mix(in oklab, var(--arch-accent) 70%, transparent);
+}
+.arch-link.is-live .arch-link-dot {
+  opacity: 1;
+  animation: arch-dot 0.9s linear infinite;
+}
+@keyframes arch-dot {
+  from {
+    left: 0;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+/* cross-cutting tooling strip */
+.arch-foundation {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.arch-foundation-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 700;
 }
-.arch-detail-what {
-  font-size: clamp(15px, 1.5vw, 18px);
-  line-height: 1.6;
-  color: var(--fg);
-  margin: 0;
-  max-width: 60ch;
-}
-.arch-stack {
+.arch-foundation-marks {
   display: flex;
+  align-items: center;
+  gap: 22px;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.arch-stack li {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  background: color-mix(in oklab, var(--candy) 9%, transparent);
-  border: 1px solid color-mix(in oklab, var(--candy) 24%, transparent);
-  color: var(--fg);
-  white-space: nowrap;
-}
-.arch-take {
-  margin: 4px 0 0;
-  padding: 0 0 0 18px;
-  border-left: 2px solid var(--candy);
-  font-size: clamp(15px, 1.6vw, 19px);
-  line-height: 1.6;
-  font-style: italic;
   color: var(--fg-2);
-  max-width: 64ch;
+}
+.arch-fmark .arch-mark {
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 720px) {
-  .arch-layers {
-    grid-template-columns: repeat(2, 1fr);
+  .arch-card {
+    width: 132px;
+    min-height: 118px;
+  }
+  .arch-link {
+    width: 34px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .arch-detail {
-    animation: none;
+  .arch-card {
+    transition: none;
   }
-  .arch-trace-flow {
+  .arch-link.is-live .arch-link-dot {
     animation: none;
-    opacity: 0;
   }
 }
