@@ -3068,79 +3068,128 @@ html[data-theme="dark"] .collab-error {
   font-style: italic;
 }
 
-/* the request path */
-.arch-flow {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
-}
-.arch-node {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px 14px 18px;
-  text-align: left;
-  border-radius: 18px;
+/* the request path — SVG circuit board */
+.arch-board-wrap {
+  overflow-x: auto;
+  border-radius: var(--r);
   border: 1px solid var(--pill-line);
-  background: var(--pill);
+  background:
+    radial-gradient(
+      120% 100% at 50% 0%,
+      color-mix(in oklab, var(--candy) 6%, transparent),
+      transparent 60%
+    ),
+    var(--pill);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  color: var(--fg);
+  padding: 12px;
+}
+.arch-board {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
+  font-family: inherit;
+}
+.arch-grid-dot {
+  fill: var(--fg);
+  opacity: 0.05;
+}
+.arch-trace-base {
+  fill: none;
+  stroke: var(--pill-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.arch-trace-live {
+  fill: none;
+  stroke: var(--candy);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  filter: url(#arch-glow);
+  transition: opacity 0.3s var(--ease);
+}
+.arch-trace-live.is-on {
+  opacity: 0.6;
+}
+.arch-trace-flow {
+  fill: none;
+  stroke: #eaf6fb;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#arch-glow);
+  stroke-dasharray: 18 260;
+  animation: arch-current 0.95s linear infinite;
+}
+@keyframes arch-current {
+  from {
+    stroke-dashoffset: 278;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.arch-gnode {
   cursor: pointer;
+}
+.arch-gnode-box {
+  fill: color-mix(in oklab, var(--fg) 5%, transparent);
+  stroke: var(--pill-line);
+  stroke-width: 1.2;
   transition:
-    border-color 0.35s var(--ease),
-    background 0.35s var(--ease),
-    box-shadow 0.35s var(--ease),
-    transform 0.2s var(--ease);
+    fill 0.35s var(--ease),
+    stroke 0.35s var(--ease);
 }
-.arch-node:hover {
-  transform: translateY(-2px);
-  border-color: var(--fg-2);
+.arch-gnode:hover .arch-gnode-box {
+  stroke: var(--fg-2);
 }
-.arch-node-n {
+.arch-gnode:focus-visible {
+  outline: none;
+}
+.arch-gnode:focus-visible .arch-gnode-box {
+  stroke: var(--candy);
+  stroke-width: 2;
+}
+.arch-pin {
+  fill: var(--pill-line);
+  transition: fill 0.35s var(--ease);
+}
+.arch-gnode-n {
+  fill: var(--muted);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+  letter-spacing: 0.1em;
 }
-.arch-node-label {
+.arch-gnode-label {
+  fill: var(--fg);
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.01em;
 }
-.arch-node-role {
-  font-size: 11.5px;
-  color: var(--fg-2);
+.arch-gnode-role {
+  fill: var(--fg-2);
+  font-size: 11px;
 }
-.arch-node.is-lit {
-  border-color: color-mix(in oklab, var(--candy) 55%, transparent);
-  background: color-mix(in oklab, var(--candy) 12%, var(--pill));
+.arch-gnode.is-lit .arch-gnode-box {
+  fill: color-mix(in oklab, var(--candy) 12%, transparent);
+  stroke: color-mix(in oklab, var(--candy) 60%, transparent);
 }
-.arch-node.is-lit .arch-node-n {
-  color: var(--candy);
+.arch-gnode.is-lit .arch-pin {
+  fill: var(--candy);
 }
-.arch-node.is-active {
-  border-color: var(--candy);
-  background: color-mix(in oklab, var(--candy) 18%, var(--pill));
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--candy) 22%, transparent);
+.arch-gnode.is-lit .arch-gnode-n {
+  fill: var(--candy);
 }
-.arch-node.is-pulse {
-  box-shadow:
-    0 0 0 3px color-mix(in oklab, var(--candy) 30%, transparent),
-    0 14px 40px -14px color-mix(in oklab, var(--candy) 55%, transparent);
-  animation: arch-ping 0.52s var(--ease);
+.arch-gnode.is-active .arch-gnode-box {
+  fill: color-mix(in oklab, var(--candy) 18%, transparent);
+  stroke: var(--candy);
+  stroke-width: 2;
 }
-@keyframes arch-ping {
-  0% {
-    transform: scale(0.97);
-  }
-  55% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: scale(1);
-  }
+.arch-gnode.is-pulse .arch-gnode-box {
+  filter: url(#arch-glow);
 }
 
 /* cross-cutting layers */
@@ -3269,25 +3318,17 @@ html[data-theme="dark"] .collab-error {
   max-width: 64ch;
 }
 
-@media (max-width: 900px) {
-  .arch-flow {
-    grid-template-columns: repeat(4, 1fr);
-  }
+@media (max-width: 720px) {
   .arch-layers {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 560px) {
-  .arch-flow {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .arch-node,
   .arch-detail {
     animation: none;
   }
-  .arch-node.is-pulse {
+  .arch-trace-flow {
     animation: none;
+    opacity: 0;
   }
 }

@@ -5,8 +5,35 @@ import { ARCH_LAYERS, ARCH_NODES, type ArchLayer, type ArchNode } from "@/lib/ar
 
 type Selection = Readonly<{ kind: "node" | "layer"; id: string }>;
 
-const STEP_MS = 520;
+const STEP_MS = 480;
 const LAST = ARCH_NODES.length - 1;
+
+// Board layout — top-left origin of each node's box.
+const NODE_W = 160;
+const NODE_H = 76;
+const POS: Record<string, { x: number; y: number }> = {
+  client: { x: 40, y: 30 },
+  edge: { x: 40, y: 150 },
+  shell: { x: 40, y: 270 },
+  bff: { x: 300, y: 270 },
+  gateway: { x: 560, y: 270 },
+  ai: { x: 820, y: 240 },
+  data: { x: 820, y: 400 },
+  workers: { x: 1040, y: 400 },
+};
+
+// Routed circuit traces. `into` = the flow index that lights this trace when the
+// pulse arrives (client=0 … data=6). The branch to workers lights once AI is live.
+type Trace = Readonly<{ id: string; d: string; into: number }>;
+const TRACES: ReadonlyArray<Trace> = [
+  { id: "t-client-edge", d: "M120 106 V150", into: 1 },
+  { id: "t-edge-shell", d: "M120 226 V270", into: 2 },
+  { id: "t-shell-bff", d: "M200 308 H300", into: 3 },
+  { id: "t-bff-gateway", d: "M460 308 H560", into: 4 },
+  { id: "t-gateway-ai", d: "M720 308 H770 V278 H820", into: 5 },
+  { id: "t-ai-data", d: "M900 316 V400", into: 6 },
+  { id: "t-ai-workers", d: "M980 278 H1010 V438 H1040", into: 5 },
+];
 
 export function ArchitecturePatterns(): React.ReactElement {
   const [selection, setSelection] = useState<Selection>({ kind: "node", id: ARCH_NODES[0].id });
@@ -58,6 +85,8 @@ export function ArchitecturePatterns(): React.ReactElement {
   const activeLayer =
     selection.kind === "layer" ? ARCH_LAYERS.find((l) => l.id === selection.id) : undefined;
 
+  const flowIndex = (id: string): number => ARCH_NODES.findIndex((n) => n.id === id);
+
   return (
     <section id="architecture" className="sec arch">
       <div className="wrap">
@@ -71,8 +100,8 @@ export function ArchitecturePatterns(): React.ReactElement {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="arch-lead">
-            A reference architecture for an AI-native product, traced end to end. Fire a request and
-            follow it through the path, or open any layer it sits inside.
+            A reference architecture for an AI-native product, wired end to end. Send a request and
+            watch the current run the path, or open any layer it sits inside.
           </p>
         </Reveal>
 
@@ -91,27 +120,85 @@ export function ArchitecturePatterns(): React.ReactElement {
             </span>
           </div>
 
-          <div className="arch-flow" aria-label="Request path">
-            {ARCH_NODES.map((node, i) => {
-              const isActive = selection.kind === "node" && selection.id === node.id;
-              const lit = pulse >= i;
-              return (
-                <button
-                  key={node.id}
-                  type="button"
-                  className={`arch-node${isActive ? " is-active" : ""}${lit ? " is-lit" : ""}${
-                    tracing && pulse === i ? " is-pulse" : ""
-                  }`}
-                  onClick={() => pick({ kind: "node", id: node.id })}
-                  aria-pressed={isActive}
-                  aria-label={`${node.label}: ${node.role}`}
-                >
-                  <span className="arch-node-n">{node.n}</span>
-                  <span className="arch-node-label">{node.label}</span>
-                  <span className="arch-node-role">{node.role}</span>
-                </button>
-              );
-            })}
+          <div className="arch-board-wrap">
+            <svg
+              className="arch-board"
+              viewBox="0 0 1220 500"
+              role="group"
+              aria-label="Request path circuit"
+            >
+              <defs>
+                <filter id="arch-glow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3.4" result="b" />
+                  <feMerge>
+                    <feMergeNode in="b" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <pattern id="arch-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+                  <circle cx="1" cy="1" r="1" className="arch-grid-dot" />
+                </pattern>
+              </defs>
+
+              <rect x="0" y="0" width="1220" height="500" fill="url(#arch-grid)" />
+
+              {TRACES.map((t) => {
+                const live = pulse >= t.into;
+                return (
+                  <g key={t.id}>
+                    <path d={t.d} className="arch-trace-base" />
+                    <path d={t.d} className={`arch-trace-live${live ? " is-on" : ""}`} />
+                    {live ? <path d={t.d} className="arch-trace-flow" /> : null}
+                  </g>
+                );
+              })}
+
+              {ARCH_NODES.map((node) => {
+                const p = POS[node.id];
+                const i = flowIndex(node.id);
+                const lit = pulse >= i;
+                const isActive = selection.kind === "node" && selection.id === node.id;
+                return (
+                  <g
+                    key={node.id}
+                    className={`arch-gnode${lit ? " is-lit" : ""}${isActive ? " is-active" : ""}${
+                      tracing && pulse === i ? " is-pulse" : ""
+                    }`}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isActive}
+                    aria-label={`${node.label}: ${node.role}`}
+                    onClick={() => pick({ kind: "node", id: node.id })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        pick({ kind: "node", id: node.id });
+                      }
+                    }}
+                  >
+                    <rect
+                      x={p.x}
+                      y={p.y}
+                      width={NODE_W}
+                      height={NODE_H}
+                      rx={14}
+                      className="arch-gnode-box"
+                    />
+                    <circle cx={p.x} cy={p.y + NODE_H / 2} r={3} className="arch-pin" />
+                    <circle cx={p.x + NODE_W} cy={p.y + NODE_H / 2} r={3} className="arch-pin" />
+                    <text x={p.x + 16} y={p.y + 26} className="arch-gnode-n">
+                      {node.n}
+                    </text>
+                    <text x={p.x + 16} y={p.y + 46} className="arch-gnode-label">
+                      {node.label}
+                    </text>
+                    <text x={p.x + 16} y={p.y + 63} className="arch-gnode-role">
+                      {node.role}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
           </div>
 
           <div className="arch-layers" aria-label="Cross-cutting layers">
