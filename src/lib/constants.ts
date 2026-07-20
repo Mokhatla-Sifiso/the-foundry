@@ -50,7 +50,7 @@ export type NavLink = Readonly<{
 export const NAVLINKS: ReadonlyArray<NavLink> = [
   { n: "01", t: "Work", href: "#work" },
   { n: "02", t: "Services", href: "#services" },
-  { n: "03", t: "Architecture", href: "#architecture" },
+  { n: "03", t: "Delivery", href: "#workflow" },
   { n: "04", t: "AI Workflow", href: "#ai" },
   { n: "05", t: "Experience", href: "#experience" },
   { n: "06", t: "For recruiters", href: "#recruiters" },

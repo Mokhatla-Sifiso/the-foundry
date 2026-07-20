@@ -2,7 +2,6 @@ import { NavMenu } from "@/components/nav/NavMenu";
 import { Progress } from "@/components/primitives/Progress";
 import { SmoothScroll } from "@/components/primitives/SmoothScroll";
 import { AISection } from "@/components/sections/AISection";
-import { ArchitecturePatterns } from "@/components/sections/ArchitecturePatterns";
 import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
 import { Faq } from "@/components/sections/Faq";
@@ -13,6 +12,7 @@ import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { TransContinental } from "@/components/sections/TransContinental";
 import { Work } from "@/components/sections/Work";
+import { WorkflowPlan } from "@/components/sections/WorkflowPlan";
 export default function HomePage(): React.ReactElement {
   return (
     <SmoothScroll>
@@ -22,7 +22,7 @@ export default function HomePage(): React.ReactElement {
         <Hero />
         <Statement />
         <Services />
-        <ArchitecturePatterns />
+        <WorkflowPlan />
         <Work />
         <Experience />
         <TransContinental />
