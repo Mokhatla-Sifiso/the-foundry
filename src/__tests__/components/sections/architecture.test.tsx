@@ -4,11 +4,14 @@ import { ArchitecturePatterns } from "@/components/sections/ArchitecturePatterns
 describe("ArchitecturePatterns", () => {
   afterEach(() => jest.useRealTimers());
 
-  it("renders the heading and the tool nodes as a wired flow", () => {
+  it("renders the heading and the centred hub composition", () => {
     render(<ArchitecturePatterns />);
     expect(screen.getByRole("heading", { name: /how i architect/i })).toBeInTheDocument();
-    // eight tool cards
-    expect(document.querySelectorAll(".arch-card").length).toBe(8);
+    // a single dominant hub, flanked by two nodes
+    expect(document.querySelectorAll(".arch-hub").length).toBe(1);
+    expect(document.querySelectorAll(".arch-flank").length).toBe(2);
+    // six tool chips orbit the hub
+    expect(document.querySelectorAll(".arch-orbit-chip").length).toBe(6);
   });
 
   it("shows real tool logos as the backbone (labelled for a11y)", () => {
@@ -16,25 +19,23 @@ describe("ArchitecturePatterns", () => {
     expect(screen.getByRole("img", { name: "NestJS" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /PostgreSQL/ })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Ollama" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Next.js" })).toBeInTheDocument();
     // cross-cutting tooling strip
     expect(screen.getByRole("img", { name: "Docker" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Grafana" })).toBeInTheDocument();
   });
 
-  it("lights the tools in sequence when a request is traced", () => {
+  it("goes live when a request is traced, then settles", () => {
     jest.useFakeTimers();
     render(<ArchitecturePatterns />);
+    expect(document.querySelector(".arch-diagram.is-live")).toBeNull();
+
     fireEvent.click(screen.getByRole("button", { name: /trace a request/i }));
+    expect(document.querySelector(".arch-diagram.is-live")).not.toBeNull();
 
     act(() => {
-      jest.advanceTimersByTime(300);
+      jest.advanceTimersByTime(2700);
     });
-    expect(document.querySelectorAll(".arch-card.is-lit").length).toBeGreaterThan(0);
-
-    act(() => {
-      jest.advanceTimersByTime(8 * 420 + 200);
-    });
-    expect(document.querySelectorAll(".arch-card.is-lit").length).toBe(8);
-    expect(document.querySelectorAll(".arch-link.is-live").length).toBe(7);
+    expect(document.querySelector(".arch-diagram.is-live")).toBeNull();
   });
 });

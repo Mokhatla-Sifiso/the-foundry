@@ -3052,69 +3052,274 @@ html[data-theme="dark"] .collab-error {
 }
 .arch-stage {
   display: grid;
-  gap: clamp(24px, 3vw, 40px);
-}
-.arch-controls {
-  display: flex;
-}
-.arch-trace {
-  min-width: 210px;
-}
-.arch-trace:disabled {
-  opacity: 0.7;
-  cursor: default;
+  gap: clamp(26px, 4vh, 46px);
 }
 
-/* the tool flow */
-.arch-flow {
+/* ---- the centered hub composition ---- */
+.arch-diagram {
   display: flex;
   align-items: center;
-  overflow-x: auto;
-  padding: 10px 2px 20px;
-  scrollbar-width: none;
+  justify-content: center;
+  gap: clamp(8px, 1.4vw, 20px);
+  padding: clamp(18px, 3vh, 36px) 4px;
 }
-.arch-flow::-webkit-scrollbar {
-  display: none;
-}
-.arch-cell {
-  display: flex;
-  align-items: center;
+
+/* flanking nodes (browser / backend) */
+.arch-flank {
   flex: 0 0 auto;
-}
-.arch-card {
-  width: 134px;
-  min-height: 132px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 12px;
-  padding: 20px 10px;
-  border-radius: 22px;
-  text-align: center;
-  background: var(--arch-card-bg);
-  border: 1px solid var(--line);
-  box-shadow: 0 14px 34px -20px var(--arch-card-shadow);
-  transition:
-    border-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease),
-    transform 0.25s var(--ease);
+  width: clamp(118px, 13vw, 150px);
 }
-.arch-card-marks {
+.arch-flank-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+.arch-flank-card {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px 14px;
+  border-radius: 20px;
   color: var(--fg);
-  transition: color 0.4s var(--ease);
+  background: var(--arch-card-bg);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 18px 40px -26px var(--arch-card-shadow),
+    inset 0 1px 0 color-mix(in oklab, #fff 55%, transparent);
 }
+
+/* connector wires with bracketed tags */
+.arch-wire {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.arch-wire-track {
+  position: relative;
+  width: clamp(40px, 5vw, 78px);
+  height: 2px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--line) 0 6px,
+    transparent 6px 12px
+  );
+  transition: background 0.4s var(--ease);
+}
+.arch-wire-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--arch-accent);
+  box-shadow: 0 0 12px 2px color-mix(in oklab, var(--arch-accent) 65%, transparent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+/* bracketed monospace tag (viewfinder corners) */
+.arch-tag {
+  position: relative;
+  padding: 7px 13px;
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--arch-accent);
+  white-space: nowrap;
+}
+.arch-tag::before,
+.arch-tag::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid color-mix(in oklab, var(--arch-accent) 50%, transparent);
+}
+.arch-tag::before {
+  top: 0;
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.arch-tag::after {
+  right: 0;
+  bottom: 0;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* the hub — the star of the composition */
+.arch-hub {
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+.arch-hub-tag {
+  position: relative;
+  padding: 6px 14px;
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--arch-accent);
+  background: color-mix(in oklab, var(--arch-accent) 10%, transparent);
+  border-radius: 999px;
+}
+.arch-hub-halo {
+  position: relative;
+  width: clamp(240px, 30vw, 320px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+/* radiating dotted halftone */
+.arch-hub-halo::before {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--arch-accent) 42%, transparent) 1.25px,
+    transparent 1.4px
+  );
+  background-size: 13px 13px;
+  -webkit-mask-image: radial-gradient(circle at center, #000 14%, transparent 62%);
+  mask-image: radial-gradient(circle at center, #000 14%, transparent 62%);
+}
+/* soft glow behind the core */
+.arch-hub-halo::after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--arch-accent) 32%, transparent),
+    transparent 70%
+  );
+  filter: blur(6px);
+  transition: opacity 0.4s var(--ease);
+}
+.arch-hub-core {
+  position: relative;
+  z-index: 2;
+  width: clamp(84px, 10vw, 104px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 28px;
+  background: linear-gradient(
+    155deg,
+    color-mix(in oklab, var(--arch-accent) 88%, #fff),
+    var(--arch-accent) 55%,
+    color-mix(in oklab, var(--arch-accent) 78%, #000)
+  );
+  box-shadow:
+    0 26px 52px -18px color-mix(in oklab, var(--arch-accent) 62%, transparent),
+    0 10px 22px -12px var(--arch-card-shadow),
+    inset 0 1px 0 color-mix(in oklab, #fff 60%, transparent);
+}
+.arch-hub-glyph {
+  width: 58%;
+  height: 58%;
+}
+.arch-hub-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.5;
+}
+.arch-hub-grid {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 1;
+}
+/* tool logos orbiting the hub — the stack inside the app */
+.arch-orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.arch-orbit-chip {
+  position: absolute;
+  width: clamp(42px, 5vw, 52px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 15px;
+  color: var(--fg);
+  background: var(--arch-card-bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 26px -16px var(--arch-card-shadow);
+}
+/* rotated hexagon ring — leaves top-center (tag) and bottom-center (pill) clear */
+.arch-orbit-chip:nth-child(1) {
+  top: 12%;
+  left: 72%;
+}
+.arch-orbit-chip:nth-child(2) {
+  top: 50%;
+  left: 94%;
+}
+.arch-orbit-chip:nth-child(3) {
+  top: 88%;
+  left: 72%;
+}
+.arch-orbit-chip:nth-child(4) {
+  top: 88%;
+  left: 28%;
+}
+.arch-orbit-chip:nth-child(5) {
+  top: 50%;
+  left: 6%;
+}
+.arch-orbit-chip:nth-child(6) {
+  top: 12%;
+  left: 28%;
+}
+.arch-hub-pill {
+  position: relative;
+  z-index: 4;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+  background: var(--arch-card-bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 30px -20px var(--arch-card-shadow);
+}
+
 .arch-mark {
-  width: 27px;
-  height: 27px;
+  width: 26px;
+  height: 26px;
   display: block;
 }
 .arch-mark--mono {
   display: grid;
   place-items: center;
+  width: 26px;
+  height: 26px;
   border-radius: 8px;
   background: color-mix(in oklab, var(--arch-accent) 14%, transparent);
   color: var(--arch-accent);
@@ -3122,78 +3327,86 @@ html[data-theme="dark"] .collab-error {
   font-weight: 800;
   letter-spacing: 0.02em;
 }
-.arch-card-label {
-  font-size: 14.5px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--fg);
-}
-.arch-card-role {
-  font-size: 11px;
-  color: var(--muted);
-}
-.arch-card.is-lit {
-  border-color: color-mix(in oklab, var(--arch-accent) 55%, transparent);
-  box-shadow:
-    0 16px 40px -18px color-mix(in oklab, var(--arch-accent) 60%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--arch-accent) 30%, transparent);
-  transform: translateY(-2px);
-}
-.arch-card.is-lit .arch-card-marks {
-  color: var(--arch-accent);
-}
 
-/* connectors */
-.arch-link {
-  position: relative;
-  flex: 0 0 auto;
-  width: 28px;
-  height: 2px;
-  align-self: center;
+/* ---- trace animation ---- */
+.arch-diagram.is-live .arch-wire-track {
+  background: repeating-linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--arch-accent) 70%, transparent) 0 6px,
+    transparent 6px 12px
+  );
 }
-.arch-link-line {
-  position: absolute;
-  inset: 0;
-  border-radius: 2px;
-  background: var(--line);
-  transition: background 0.4s var(--ease);
-}
-.arch-link-dot {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--arch-accent);
-  box-shadow: 0 0 10px 1px color-mix(in oklab, var(--arch-accent) 70%, transparent);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-.arch-link.is-live .arch-link-line {
-  background: color-mix(in oklab, var(--arch-accent) 70%, transparent);
-}
-.arch-link.is-live .arch-link-dot {
+.arch-diagram.is-live .arch-wire-dot {
   opacity: 1;
-  animation: arch-dot 0.9s linear infinite;
+  animation: arch-flow-x 1.3s linear infinite;
 }
-@keyframes arch-dot {
+.arch-diagram.is-live .arch-wire--out .arch-wire-dot {
+  animation-delay: 0.65s;
+}
+.arch-diagram.is-live .arch-hub-halo::after {
+  opacity: 1;
+  animation: arch-glow 1.3s ease-in-out infinite;
+}
+.arch-diagram.is-live .arch-hub-core {
+  animation: arch-pulse 1.3s ease-in-out infinite;
+}
+@keyframes arch-flow-x {
   from {
     left: 0;
+    top: 50%;
   }
   to {
     left: 100%;
+    top: 50%;
+  }
+}
+@keyframes arch-flow-y {
+  from {
+    top: 0;
+    left: 50%;
+  }
+  to {
+    top: 100%;
+    left: 50%;
+  }
+}
+@keyframes arch-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@keyframes arch-glow {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
-/* cross-cutting tooling strip */
+/* controls + cross-cutting tooling strip */
+.arch-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(20px, 3vh, 30px);
+  border-top: 1px solid var(--line);
+}
+.arch-trace {
+  min-width: 200px;
+}
 .arch-foundation {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   flex-wrap: wrap;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
 }
 .arch-foundation-label {
   font-size: 11px;
@@ -3205,29 +3418,36 @@ html[data-theme="dark"] .collab-error {
 .arch-foundation-marks {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 20px;
   flex-wrap: wrap;
   color: var(--fg-2);
 }
 .arch-fmark .arch-mark {
-  width: 24px;
-  height: 24px;
+  width: 23px;
+  height: 23px;
 }
 
-@media (max-width: 720px) {
-  .arch-card {
-    width: 132px;
-    min-height: 118px;
+@media (max-width: 900px) {
+  .arch-diagram {
+    flex-direction: column;
   }
-  .arch-link {
-    width: 34px;
+  .arch-wire-track {
+    width: 2px;
+    height: 44px;
+  }
+  .arch-diagram.is-live .arch-wire-dot {
+    animation-name: arch-flow-y;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .arch-card {
-    transition: none;
-  }
-  .arch-link.is-live .arch-link-dot {
+  .arch-diagram.is-live .arch-wire-dot,
+  .arch-diagram.is-live .arch-hub-core,
+  .arch-diagram.is-live .arch-hub-halo::after {
     animation: none;
+  }
+  .arch-diagram.is-live .arch-wire-dot {
+    opacity: 1;
+    left: 50%;
+    top: 50%;
   }
 }
