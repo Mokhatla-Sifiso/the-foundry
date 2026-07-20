@@ -3110,16 +3110,6 @@ html[data-theme="dark"] .collab-error {
 .wire--trunk {
   stroke-width: 2.6;
 }
-.wire--tag {
-  stroke: var(--arch-teal-a);
-  stroke-width: 2;
-  stroke-dasharray: 6 7;
-  opacity: 0.75;
-}
-/* async / queue edges are dashed */
-.wire--async {
-  stroke-dasharray: 9 8;
-}
 /* a slow travelling pulse rides each wire, always on */
 .wire-pulse {
   fill: none;
@@ -3130,9 +3120,6 @@ html[data-theme="dark"] .collab-error {
   stroke-dashoffset: 14;
   opacity: 0.9;
   animation: arch-comet 3.6s linear infinite;
-}
-.wire-pulse--tag {
-  stroke: var(--arch-teal-a);
 }
 @keyframes arch-comet {
   from {
@@ -3314,44 +3301,95 @@ html[data-theme="dark"] .collab-error {
 }
 
 /* discovery-mechanism tag pills */
-.arch-mech {
+/* clean platform cards: header + discovery caption + uniform node rows */
+.arch-card-head {
   position: absolute;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
+  transform: translateY(-50%);
+  display: flex;
   align-items: center;
-  gap: 0.4em;
-  padding: 0.42em 0.75em;
-  border-radius: 0.6em;
-  background: var(--arch-panel);
-  color: var(--arch-panel-fg);
-  border: 1px solid var(--arch-line);
-  font-size: 0.92cqw;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
-  z-index: 4;
+  justify-content: space-between;
+  gap: 0.5em;
+  z-index: 2;
 }
-.arch-mech svg {
-  color: var(--arch-teal-a);
-  flex: 0 0 auto;
-}
-
-/* platform name + logo */
-.arch-plat {
-  position: absolute;
-  transform: translate(-100%, -50%);
+.arch-card-name {
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
   color: var(--fg);
   font-weight: 700;
-  font-size: 1.08cqw;
+  font-size: 1.05cqw;
+  white-space: nowrap;
+}
+.arch-card-name svg {
+  color: var(--fg);
+  flex: 0 0 auto;
+}
+.arch-card-env {
+  flex: 0 0 auto;
+  padding: 0.2em 0.5em;
+  border-radius: 0.45em;
+  background: color-mix(in oklab, var(--arch-accent) 12%, transparent);
+  color: var(--arch-accent);
+  border: 1px solid color-mix(in oklab, var(--arch-accent) 26%, transparent);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.68cqw;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.arch-card-disco {
+  position: absolute;
+  transform: translateY(-50%);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.74cqw;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--muted);
   white-space: nowrap;
   z-index: 2;
 }
-.arch-plat svg {
-  color: var(--fg);
+.arch-row {
+  position: absolute;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  height: 2.3cqw;
+  min-height: 30px;
+  padding: 0 0.75em;
+  border-radius: 0.6em;
+  background: var(--arch-node-bg);
+  color: var(--arch-node-fg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0.6em 1.3em -0.7em var(--arch-node-shadow);
+  z-index: 2;
+}
+.arch-row-ico {
   flex: 0 0 auto;
+  width: 1.4cqw;
+  min-width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.arch-row-label {
+  flex: 1 1 auto;
+  font-size: 1cqw;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.arch-row-flow {
+  flex: 0 0 auto;
+  padding: 0.12em 0.5em;
+  border-radius: 0.4em;
+  background: color-mix(in oklab, var(--arch-teal-a) 22%, transparent);
+  color: color-mix(in oklab, var(--arch-teal-a) 92%, #fff);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.64cqw;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
 /* ---- gateway breathes gently, always on ---- */
@@ -3423,46 +3461,6 @@ html[data-theme="dark"] .collab-error {
   box-shadow: 0 6px 14px -8px var(--arch-node-shadow);
   z-index: 5;
 }
-.arch-plat-env {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.72cqw;
-  font-weight: 600;
-  font-style: normal;
-  letter-spacing: 0.02em;
-  color: var(--arch-accent);
-  padding-left: 0.15em;
-}
-
-/* edge-type legend */
-.arch-legend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  flex-wrap: wrap;
-  margin-top: clamp(12px, 2vh, 18px);
-}
-.arch-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--muted);
-}
-.arch-swatch {
-  width: 22px;
-  height: 0;
-  border-top: 2px solid var(--arch-wire-strong);
-}
-.arch-swatch--async {
-  border-top-style: dashed;
-}
-.arch-swatch--config {
-  border-top-style: dashed;
-  border-top-color: var(--arch-teal-a);
-}
-
 /* cross-cutting toolchain strip (centred under the diagram) */
 .arch-foundation {
   display: flex;

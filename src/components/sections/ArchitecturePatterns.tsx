@@ -48,16 +48,15 @@ const CAPS_BOTTOM: readonly Cap[] = [
   { label: "Observability & Evals", sub: "traces · token/cost · SLOs · eval gates" },
 ];
 
-/* ---- zone 3: infrastructure, grouped by platform + discovery mechanism + environment ---- */
-type Target = Readonly<{ label: string; y: number; icon?: Icon; flow?: "async" }>;
+/* ---- zone 3: infrastructure, grouped into clean platform cards ---- */
+type Target = Readonly<{ label: string; icon?: Icon; flow?: "async" }>;
 type Group = Readonly<{
   id: string;
   name: string;
   logo: Icon;
-  tag: string;
-  tagY: number;
   env?: string;
-  box: Readonly<{ x: number; y: number; w: number; h: number }>;
+  disco: string; // how the gateway discovers/routes into this platform
+  cardY: number;
   targets: readonly Target[];
 }>;
 const GROUPS: readonly Group[] = [
@@ -65,42 +64,40 @@ const GROUPS: readonly Group[] = [
     id: "k8s",
     name: "Kubernetes",
     logo: { path: siKubernetes.path, name: "Kubernetes" },
-    tag: "Ingress · Gateway API · CRDs",
-    tagY: 158,
     env: "staging / prod",
-    box: { x: 1286, y: 122, w: 300, h: 168 },
-    targets: [
-      { label: "Inference · GPU", y: 200 },
-      { label: "API Service", y: 260 },
-    ],
+    disco: "via Ingress · Gateway API · CRDs",
+    cardY: 116,
+    targets: [{ label: "Inference · GPU" }, { label: "API Service" }],
   },
   {
     id: "docker",
     name: "Docker / Compose",
     logo: { path: siDocker.path, name: "Docker" },
-    tag: "Labels & Tags",
-    tagY: 356,
     env: "local / dev",
-    box: { x: 1286, y: 320, w: 300, h: 168 },
+    disco: "via container labels",
+    cardY: 312,
     targets: [
-      { label: "NestJS BFF", y: 398, icon: { path: siNestjs.path, name: "NestJS" } },
-      { label: "Workers · BullMQ", y: 458, flow: "async" },
+      { label: "NestJS BFF", icon: { path: siNestjs.path, name: "NestJS" } },
+      { label: "Workers · BullMQ", flow: "async" },
     ],
   },
   {
     id: "models",
     name: "Models & data",
     logo: { path: siPostgresql.path, name: "PostgreSQL" },
-    tag: "via LiteLLM · model proxy",
-    tagY: 554,
-    box: { x: 1286, y: 518, w: 300, h: 168 },
+    disco: "via LiteLLM model proxy",
+    cardY: 508,
     targets: [
-      { label: "Ollama + hosted LLMs", y: 596, icon: { path: siOllama.path, name: "Ollama" } },
-      { label: "Postgres · pgvector", y: 656, icon: { path: siPostgresql.path, name: "PostgreSQL" } },
+      { label: "Ollama + hosted LLMs", icon: { path: siOllama.path, name: "Ollama" } },
+      { label: "Postgres · pgvector", icon: { path: siPostgresql.path, name: "PostgreSQL" } },
     ],
   },
 ];
-const TARGET_X = 1352; // left edge the wires arrive at
+/* shared card geometry (grid units) */
+const CARD = { x: 1264, w: 320, h: 176 } as const;
+const ROW_X = CARD.x + 18; // left edge of the header + node rows
+const ROW_W = CARD.w - 36;
+const cardMidY = (cy: number): number => cy + CARD.h / 2;
 const BRANCH: readonly [number, number] = [1120, 400]; // where the fan-out splits
 const EXIT: readonly [number, number] = [958, 400]; // gateway right edge
 
@@ -113,24 +110,17 @@ const FOUNDATION: readonly Icon[] = [
   { path: siGrafana.path, name: "Grafana" },
 ];
 
-type Wire = Readonly<{ d: string; kind: "in" | "trunk" | "tag" | "out"; marker: boolean; async?: boolean }>;
+type Wire = Readonly<{ d: string; kind: "in" | "trunk" | "out"; marker: boolean }>;
 
-function buildWires(targets: readonly Target[]): Wire[] {
+function buildWires(): Wire[] {
   return [
     ...CLIENTS.map(
       (c): Wire => ({ d: curve(348, c.y, c.entry[0], c.entry[1], 0.55), kind: "in", marker: true }),
     ),
     { d: `M ${EXIT[0]} ${EXIT[1]} L ${BRANCH[0]} ${BRANCH[1]}`, kind: "trunk", marker: false },
+    // one routing line per platform card
     ...GROUPS.map(
-      (g): Wire => ({ d: curve(BRANCH[0], BRANCH[1], 1206, g.tagY, 0.55), kind: "tag", marker: false }),
-    ),
-    ...targets.map(
-      (t): Wire => ({
-        d: curve(BRANCH[0], BRANCH[1], TARGET_X, t.y, 0.5),
-        kind: "out",
-        marker: true,
-        async: t.flow === "async",
-      }),
+      (g): Wire => ({ d: curve(BRANCH[0], BRANCH[1], CARD.x, cardMidY(g.cardY), 0.5), kind: "out", marker: true }),
     ),
   ];
 }
@@ -158,14 +148,6 @@ function CapIcon({ i }: { i: number }): React.ReactElement {
   );
 }
 
-function Check(): React.ReactElement {
-  return (
-    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M20 6L9 17l-5-5" />
-    </svg>
-  );
-}
-
 function LockIcon(): React.ReactElement {
   return (
     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -176,8 +158,7 @@ function LockIcon(): React.ReactElement {
 }
 
 export function ArchitecturePatterns(): React.ReactElement {
-  const targets = GROUPS.flatMap((g) => g.targets);
-  const wires = buildWires(targets);
+  const wires = buildWires();
 
   return (
     <section id="architecture" className="sec arch">
@@ -202,33 +183,23 @@ export function ArchitecturePatterns(): React.ReactElement {
               </defs>
               {/* static tracks */}
               {wires.map((w, i) => (
-                <path
-                  key={`t-${i}`}
-                  className={`wire wire--${w.kind}${w.async ? " wire--async" : ""}`}
-                  d={w.d}
-                  markerEnd={w.marker ? "url(#arw)" : undefined}
-                />
+                <path key={`t-${i}`} className={`wire wire--${w.kind}`} d={w.d} markerEnd={w.marker ? "url(#arw)" : undefined} />
               ))}
               {/* travelling pulses */}
               {wires.map((w, i) => (
-                <path
-                  key={`p-${i}`}
-                  className={`wire-pulse${w.kind === "tag" ? " wire-pulse--tag" : ""}`}
-                  style={{ animationDelay: `${(i % 8) * 0.42}s` }}
-                  d={w.d}
-                />
+                <path key={`p-${i}`} className="wire-pulse" style={{ animationDelay: `${(i % 7) * 0.44}s` }} d={w.d} />
               ))}
             </svg>
 
             {/* ---------- zone group boxes ---------- */}
             <div className="arch-box arch-box--clients" style={{ left: px(70), top: py(278), width: px(350), height: py(244) }} />
             <div className="arch-box arch-box--core" style={{ left: px(600), top: py(72), width: `${(470 / VBW) * 100}%`, height: `${(616 / VBH) * 100}%` }} />
-            <div className="arch-box arch-box--infra" style={{ left: px(1150), top: py(96), width: `${(448 / VBW) * 100}%`, height: `${(610 / VBH) * 100}%` }} />
+            <div className="arch-box arch-box--infra" style={{ left: px(1242), top: py(96), width: `${(360 / VBW) * 100}%`, height: `${(608 / VBH) * 100}%` }} />
             {GROUPS.map((g) => (
               <div
                 key={`box-${g.id}`}
                 className="arch-box arch-box--group"
-                style={{ left: px(g.box.x), top: py(g.box.y), width: `${(g.box.w / VBW) * 100}%`, height: `${(g.box.h / VBH) * 100}%` }}
+                style={{ left: px(CARD.x), top: py(g.cardY), width: `${(CARD.w / VBW) * 100}%`, height: `${(CARD.h / VBH) * 100}%` }}
               />
             ))}
 
@@ -247,7 +218,7 @@ export function ArchitecturePatterns(): React.ReactElement {
             <span className="arch-zone" style={{ left: px(78), top: py(252) }}>
               Public internet
             </span>
-            <span className="arch-zone" style={{ left: px(1158), top: py(74) }}>
+            <span className="arch-zone" style={{ left: px(1250), top: py(74) }}>
               To your infrastructure
             </span>
 
@@ -300,40 +271,33 @@ export function ArchitecturePatterns(): React.ReactElement {
               </span>
             ))}
 
-            {/* ---------- infra: platform groups ---------- */}
+            {/* ---------- infra: clean platform cards ---------- */}
             {GROUPS.map((g) => (
-              <div key={`hdr-${g.id}`}>
-                <span className="arch-mech" style={{ left: px(1206), top: py(g.tagY) }}>
-                  <Check />
-                  {g.tag}
-                </span>
-                <span className="arch-plat" style={{ left: px(g.box.x + g.box.w - 12), top: py(g.box.y + 28) }}>
-                  <Logo icon={g.logo} size={18} />
-                  {g.name}
-                  {g.env ? <em className="arch-plat-env">{g.env}</em> : null}
-                </span>
-                {g.targets.map((t) => (
-                  <span key={t.label} className="arch-node arch-node--target" style={{ left: px(TARGET_X + 100), top: py(t.y) }}>
-                    {t.icon ? <Logo icon={t.icon} size={17} /> : null}
-                    {t.label}
+              <div key={`card-${g.id}`}>
+                {/* header: platform + environment */}
+                <div className="arch-card-head" style={{ left: px(ROW_X), top: py(g.cardY + 30), width: `${(ROW_W / VBW) * 100}%` }}>
+                  <span className="arch-card-name">
+                    <Logo icon={g.logo} size={17} />
+                    {g.name}
                   </span>
+                  {g.env ? <span className="arch-card-env">{g.env}</span> : null}
+                </div>
+                {/* how the gateway reaches this platform */}
+                <span className="arch-card-disco" style={{ left: px(ROW_X), top: py(g.cardY + 58) }}>
+                  {g.disco}
+                </span>
+                {/* uniform node rows */}
+                {g.targets.map((t, ti) => (
+                  <div key={t.label} className="arch-row" style={{ left: px(ROW_X), top: py(g.cardY + 100 + ti * 46), width: `${(ROW_W / VBW) * 100}%` }}>
+                    <span className="arch-row-ico">{t.icon ? <Logo icon={t.icon} size={16} /> : null}</span>
+                    <span className="arch-row-label">{t.label}</span>
+                    {t.flow === "async" ? <span className="arch-row-flow">async</span> : null}
+                  </div>
                 ))}
               </div>
             ))}
           </div>
         </Reveal>
-
-        <div className="arch-legend" aria-hidden="true">
-          <span className="arch-legend-item">
-            <i className="arch-swatch arch-swatch--sync" /> Sync
-          </span>
-          <span className="arch-legend-item">
-            <i className="arch-swatch arch-swatch--async" /> Async · queue
-          </span>
-          <span className="arch-legend-item">
-            <i className="arch-swatch arch-swatch--config" /> Config
-          </span>
-        </div>
 
         <div className="arch-foundation" aria-label="Cross-cutting toolchain">
           <span className="arch-foundation-label">CI · IaC · Observability</span>
