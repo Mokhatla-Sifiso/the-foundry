@@ -8,7 +8,7 @@ describe("WorkflowPlan", () => {
     render(<WorkflowPlan />);
     expect(screen.getByRole("heading", { name: /how i deliver/i })).toBeInTheDocument();
     expect(screen.getAllByText(/workflow plan/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/4 months/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/16 weeks/i).length).toBeGreaterThan(0);
   });
 
   it("uses the industry-standard enterprise SDLC phases with week durations", () => {
@@ -25,8 +25,8 @@ describe("WorkflowPlan", () => {
     ]) {
       expect(screen.getAllByText(phase).length).toBeGreaterThan(0);
     }
-    // durations are in weeks, not calendar dates
-    expect(screen.getAllByText("7 weeks").length).toBeGreaterThan(0);
+    // Development is the largest phase (~40% of the split); durations in weeks
+    expect(screen.getAllByText("8 weeks").length).toBeGreaterThan(0);
     expect(screen.getAllByText("1 week").length).toBeGreaterThan(0);
   });
 
