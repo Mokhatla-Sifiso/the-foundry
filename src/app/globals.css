@@ -3053,7 +3053,10 @@ html[data-theme="dark"] .collab-error {
 }
 
 /* ============================================================
-   Live delivery timeline (GitHub pull requests)
+   Delivery phases — the product path from Discovery to Iterate.
+   A staggered cascade of phase bars; each is one phase of the
+   process and the deliverable that closes it. No live data, no
+   invented progress — the path itself is the content.
    ============================================================ */
 .wfp {
   overflow: hidden;
@@ -3069,230 +3072,105 @@ html[data-theme="dark"] .collab-error {
 .wfp-h .em {
   color: var(--candy);
 }
-.wfp-top-title {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  margin: clamp(22px, 3.5vh, 40px) 0 clamp(8px, 1.5vh, 14px);
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--fg);
+.wfp-lead {
+  margin: clamp(14px, 2vh, 20px) 0 clamp(26px, 4.5vh, 48px);
+  max-width: 52ch;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: var(--muted);
 }
-.wfp-live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px 3px 8px;
-  border-radius: 999px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: color-mix(in oklab, var(--wfp-2) 88%, var(--fg));
-  background: color-mix(in oklab, var(--wfp-2) 12%, transparent);
-  border: 1px solid color-mix(in oklab, var(--wfp-2) 30%, transparent);
-  text-decoration: none;
-}
-.wfp-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--wfp-3);
-  animation: wfp-pulse 1.8s ease-out infinite;
-}
-@keyframes wfp-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--wfp-3) 55%, transparent);
-  }
-  70% {
-    box-shadow: 0 0 0 6px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-/* chart shows on wider screens; mobile gets the list */
 .wfp-scroll {
-  display: none;
+  display: block;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 4px 2px 12px;
+  padding: 4px 2px 14px;
   scrollbar-width: thin;
-}
-@media (min-width: 860px) {
-  .wfp-scroll {
-    display: block;
-  }
-  .wfp-mobile {
-    display: none;
-  }
-}
-.wfp-chart {
-  position: relative;
-  width: 100%;
-  min-width: 800px;
-  --lane: 56px;
-}
-
-/* axis — month context + the Now marker */
-.wfp-axis {
-  position: relative;
-  height: 26px;
-  margin-bottom: 6px;
-}
-.wfp-tick {
-  position: absolute;
-  top: 6px;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.wfp-now-head {
-  position: absolute;
-  top: -14px;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  z-index: 3;
-}
-.wfp-now-tri {
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid var(--wfp-3);
-}
-.wfp-now-pill {
-  padding: 4px 10px;
-  border-radius: 8px;
-  background: var(--wfp-2);
-  color: #04140f;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
 }
 .wfp-plot {
   position: relative;
-  height: calc(var(--rows) * var(--lane) + 8px);
-}
-.wfp-grid {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1px dashed var(--line);
-  transform: translateX(-50%);
-}
-.wfp-now-line {
-  position: absolute;
-  top: 0;
-  bottom: 6px;
-  width: 0;
-  border-left: 1.5px solid color-mix(in oklab, var(--wfp-3) 80%, transparent);
-  transform: translateX(-50%);
-  z-index: 1;
+  width: 100%;
+  min-width: 720px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  --lane: 74px;
+  height: calc(var(--rows) * var(--lane) + 14px);
 }
 
-/* PR bars — colour = state */
+/* phase bars — a staggered cascade, each a full-fill emerald card */
 .wfp-bar {
   position: absolute;
-  height: 46px;
-  min-width: 150px;
-  max-width: 42%;
+  left: var(--l);
+  top: calc(var(--r) * var(--lane));
+  width: clamp(300px, 44%, 560px);
+  min-height: 62px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
-  border-radius: 13px;
-  z-index: 2;
-  text-decoration: none;
+  gap: 16px;
+  padding: 0 22px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(105deg, var(--wfp-1), var(--wfp-2) 62%, var(--wfp-3));
+  box-shadow: 0 12px 34px -20px color-mix(in oklab, var(--wfp-1) 92%, black);
   transition: transform 0.25s var(--ease);
 }
 .wfp-bar:hover {
   transform: translateY(-2px);
 }
-.wfp-bar-name {
+.wfp-idx {
+  flex: none;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
   font-weight: 700;
-  font-size: 14.5px;
+  letter-spacing: 0.02em;
+  color: color-mix(in oklab, #fff 76%, var(--wfp-1));
+}
+.wfp-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.wfp-bar-name {
+  font-weight: 800;
+  font-size: 16px;
   letter-spacing: -0.01em;
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.wfp-bar--merged {
-  background: linear-gradient(105deg, var(--wfp-1), var(--wfp-2) 55%, var(--wfp-3));
-  color: #fff;
-  box-shadow: 0 20px 44px -24px color-mix(in oklab, var(--wfp-2) 65%, transparent);
-}
-.wfp-bar--open {
-  background: color-mix(in oklab, var(--candy) 15%, transparent);
-  border: 1px solid color-mix(in oklab, var(--candy) 36%, transparent);
-  color: var(--fg);
-}
-.wfp-bar--closed {
-  background: color-mix(in oklab, var(--fg) 7%, transparent);
-  border: 1px solid color-mix(in oklab, var(--fg) 16%, transparent);
-  color: var(--muted);
+.wfp-bar-desc {
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: color-mix(in oklab, #fff 82%, var(--wfp-2));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ---------- mobile list ---------- */
-.wfp-mobile {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: clamp(20px, 4vh, 30px);
-}
-.wfp-m-title {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--fg);
-}
-.wfp-m-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.wfp-m-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 15px;
-  border-radius: 12px;
-  border-left: 4px solid var(--line);
-  background: color-mix(in oklab, var(--fg) 4%, transparent);
-  text-decoration: none;
-  color: var(--fg);
-}
-.wfp-m-row--merged {
-  border-left-color: var(--wfp-2);
-}
-.wfp-m-row--open {
-  border-left-color: var(--candy);
-}
-.wfp-m-row--closed {
-  border-left-color: color-mix(in oklab, var(--fg) 26%, transparent);
-  color: var(--muted);
-}
-.wfp-m-name {
-  font-size: 14.5px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-.wfp-empty {
-  margin-top: clamp(22px, 4vh, 40px);
-  color: var(--muted);
-  font-size: 15px;
-}
-.wfp-empty a {
-  color: var(--candy);
+/* one responsive chart: stack the bars on narrow screens (no second view) */
+@media (max-width: 859px) {
+  .wfp-scroll {
+    overflow-x: visible;
+  }
+  .wfp-plot {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    height: auto;
+  }
+  .wfp-bar {
+    position: static;
+    left: auto;
+    top: auto;
+    width: 100%;
+  }
+  .wfp-bar-name,
+  .wfp-bar-desc {
+    white-space: normal;
+  }
 }
