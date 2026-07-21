@@ -1,8 +1,8 @@
 /**
- * Live project data from GitHub — server-side only. Reads a token from the
- * environment when present; public repos work without one (ISR caching keeps
- * requests well under the anonymous limit, but a token is recommended for the
- * full dashboard since it hits several endpoints).
+ * Live delivery timeline from GitHub pull requests. Server-side only; reads a
+ * token from the environment when present (public repos work without one).
+ * We surface only what's valuable — what shipped, and roughly when — not the
+ * repo's vanity stats.
  */
 const REPO = process.env.GITHUB_REPO ?? "Mokhatla-Sifiso/the-foundry";
 const REVALIDATE_SECONDS = 300; // refresh at most every 5 minutes
@@ -32,85 +32,51 @@ async function gh<T>(path: string): Promise<T | null> {
 
 /* ----------------------------- types ----------------------------- */
 
-export type RepoMeta = Readonly<{
-  fullName: string;
-  description: string;
-  stars: number;
-  forks: number;
-  language: string | null;
-  pushedAt: string;
-  url: string;
-  defaultBranch: string;
-}>;
-
 export type PullState = "open" | "merged" | "closed";
 export type Pull = Readonly<{
   number: number;
   title: string;
   state: PullState;
-  author: string;
+  createdAt: string;
+  endAt: string; // merged/closed date, or now for still-open
   url: string;
-  at: string; // most relevant timestamp (merged/updated/created)
 }>;
 
-export type Lang = Readonly<{ name: string; pct: number }>;
-export type Contributor = Readonly<{ login: string; contributions: number; url: string }>;
+export type Segment = Readonly<{ pull: Pull; left: number }>;
+export type Timeline = Readonly<{ segments: readonly Segment[]; nowFrac: number }>;
 
 export type Project = Readonly<{
-  repo: RepoMeta;
-  pulls: readonly Pull[];
-  openPulls: number;
-  mergedPulls: number;
-  languages: readonly Lang[];
-  contributors: readonly Contributor[];
+  fullName: string;
+  url: string;
+  pushedAgo: string;
+  timeline: Timeline;
 }>;
 
 /* ----------------------------- mappers ----------------------------- */
 
-type GhRepo = {
-  full_name: string;
-  description: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  pushed_at: string;
-  html_url: string;
-  default_branch: string;
-};
+type GhRepo = { full_name: string; html_url: string; pushed_at: string };
 type GhPull = {
   number: number;
   title: string;
   state: "open" | "closed";
   merged_at: string | null;
+  closed_at: string | null;
   created_at: string;
-  updated_at: string;
   html_url: string;
-  user: { login: string } | null;
 };
-type GhContributor = { login: string; contributions: number; html_url: string };
 
-export function toPull(p: GhPull): Pull {
+export function toPull(p: GhPull, now: number): Pull {
   const state: PullState = p.merged_at ? "merged" : p.state;
+  const end = p.merged_at ?? p.closed_at ?? new Date(now).toISOString();
   return {
     number: p.number,
     title: p.title,
     state,
-    author: p.user?.login ?? "unknown",
+    createdAt: p.created_at,
+    endAt: end,
     url: p.html_url,
-    at: p.merged_at ?? p.updated_at ?? p.created_at,
   };
 }
-
-export function toLanguages(raw: Record<string, number>): Lang[] {
-  const entries = Object.entries(raw);
-  const total = entries.reduce((s, [, b]) => s + b, 0);
-  if (total === 0) return [];
-  return entries
-    .map(([name, bytes]) => ({ name, pct: Math.round((bytes / total) * 1000) / 10 }))
-    .sort((a, b) => b.pct - a.pct);
-}
-
-/* ----------------------------- relative time ----------------------------- */
 
 export function relTime(iso: string, now: number): string {
   const s = Math.round((now - new Date(iso).getTime()) / 1000);
@@ -126,43 +92,45 @@ export function relTime(iso: string, now: number): string {
   return `${Math.round(mo / 12)}y ago`;
 }
 
+/* --------------------------- timeline (pure) --------------------------- */
+
+const ms = (iso: string): number => new Date(iso).getTime();
+
+/**
+ * The most recent pull requests as a clean staggered cascade — newest last,
+ * flowing toward "Now". Positions are an even stagger, not exact dates: the
+ * valuable signal is what shipped and in what order, not the calendar.
+ */
+export function buildTimeline(pulls: readonly Pull[], now: number, take = 8): Timeline | null {
+  if (pulls.length === 0) return null;
+  const recent = [...pulls].sort((a, b) => ms(b.endAt) - ms(a.endAt)).slice(0, take);
+  const ordered = [...recent].sort((a, b) => ms(a.endAt) - ms(b.endAt)); // oldest → newest
+  const n = ordered.length;
+  const segments: Segment[] = ordered.map((pull, i) => ({
+    pull,
+    left: n > 1 ? (i / (n - 1)) * 0.56 : 0,
+  }));
+  return { segments, nowFrac: 0.97 };
+}
+
 /* ----------------------------- aggregate ----------------------------- */
 
-/** Fetch the full live-project snapshot. Returns null only if the repo itself is unreachable. */
 export async function fetchProject(): Promise<Project | null> {
-  const [repoRaw, pullsRaw, langRaw, contribRaw] = await Promise.all([
+  const now = Date.now();
+  const [repo, pullsRaw] = await Promise.all([
     gh<GhRepo>(""),
-    gh<GhPull[]>("/pulls?state=all&sort=updated&direction=desc&per_page=100"),
-    gh<Record<string, number>>("/languages"),
-    gh<GhContributor[]>("/contributors?per_page=20"),
+    gh<GhPull[]>("/pulls?state=all&sort=updated&direction=desc&per_page=30"),
   ]);
-  if (!repoRaw) return null;
+  if (!repo) return null;
 
-  const pullsAll = Array.isArray(pullsRaw) ? pullsRaw.map(toPull) : [];
-  const openPulls = pullsAll.filter((p) => p.state === "open").length;
-  const mergedPulls = pullsAll.filter((p) => p.state === "merged").length;
-  const pulls = [...pullsAll].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()).slice(0, 7);
-
-  const languages = langRaw ? toLanguages(langRaw).slice(0, 6) : [];
-  const contributors = (Array.isArray(contribRaw) ? contribRaw : [])
-    .map((c): Contributor => ({ login: c.login, contributions: c.contributions, url: c.html_url }))
-    .slice(0, 8);
+  const pulls = Array.isArray(pullsRaw) ? pullsRaw.map((p) => toPull(p, now)) : [];
+  const timeline = buildTimeline(pulls, now);
+  if (!timeline) return null;
 
   return {
-    repo: {
-      fullName: repoRaw.full_name,
-      description: repoRaw.description ?? "",
-      stars: repoRaw.stargazers_count,
-      forks: repoRaw.forks_count,
-      language: repoRaw.language,
-      pushedAt: repoRaw.pushed_at,
-      url: repoRaw.html_url,
-      defaultBranch: repoRaw.default_branch,
-    },
-    pulls,
-    openPulls,
-    mergedPulls,
-    languages,
-    contributors,
+    fullName: repo.full_name,
+    url: repo.html_url,
+    pushedAgo: relTime(repo.pushed_at, now),
+    timeline,
   };
 }
