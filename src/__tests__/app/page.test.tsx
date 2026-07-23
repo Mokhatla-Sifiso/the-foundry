@@ -1,4 +1,9 @@
 jest.mock("framer-motion");
+// WorkflowPlan is an async server component (fetches GitHub) covered by its own
+// test; this composition test only checks Hero/Statement/Contact/Footer, so stub it.
+jest.mock("@/components/sections/WorkflowPlan", () => ({
+  WorkflowPlan: () => <section id="workflow" />,
+}));
 jest.mock("next/image", () => ({
   __esModule: true,
   default: ({ src, alt, ...rest }: { src: string; alt: string }) => (

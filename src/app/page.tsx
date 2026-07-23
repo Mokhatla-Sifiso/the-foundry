@@ -12,6 +12,7 @@ import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
 import { TransContinental } from "@/components/sections/TransContinental";
 import { Work } from "@/components/sections/Work";
+import { WorkflowPlan } from "@/components/sections/WorkflowPlan";
 export default function HomePage(): React.ReactElement {
   return (
     <SmoothScroll>
@@ -21,6 +22,7 @@ export default function HomePage(): React.ReactElement {
         <Hero />
         <Statement />
         <Services />
+        <WorkflowPlan />
         <Work />
         <Experience />
         <TransContinental />
