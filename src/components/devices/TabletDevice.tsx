@@ -22,7 +22,7 @@ export function TabletDevice(): React.ReactElement {
           </div>
           <div className="gh-ck">
             <span className="gh-ok" aria-hidden="true" />
-            329 tests passed
+            410 tests passed
             <span className="gh-mut">coverage ✓</span>
           </div>
           <div className="gh-ck">
