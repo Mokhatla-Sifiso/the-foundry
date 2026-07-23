@@ -128,7 +128,14 @@ describe("AISection", () => {
     }
     expect(screen.getByText("Production-grade, not prototypes")).toBeInTheDocument();
     expect(screen.getByText("Velocity with judgment")).toBeInTheDocument();
-    expect(screen.getByText("409 tests")).toBeInTheDocument();
+    expect(screen.getByText("410 tests")).toBeInTheDocument();
+  });
+  it("quotes one test count, not two: the CI mock and the proof line must agree", () => {
+    beforeEachLocal();
+    const { container } = render(<AISection />);
+    const counts = [...(container.textContent ?? "").matchAll(/(\d{2,5}) tests/g)].map((m) => m[1]);
+    expect(counts.length).toBeGreaterThan(1);
+    expect(new Set(counts).size).toBe(1);
   });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();
