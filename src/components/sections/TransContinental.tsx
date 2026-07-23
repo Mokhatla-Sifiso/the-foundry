@@ -102,9 +102,9 @@ const LOCATIONS: ReadonlyArray<Location> = [
     country: "South Africa",
     org: "MTN Group",
     role: "Software Engineer · Acting Tech Lead",
-    when: "Mar 2024 to Present",
+    when: "Mar 2024 to Apr 2026",
     dayToDay:
-      "Leading StudioSync sprints, reviews and mentoring while building microfrontends across MTN's internal platforms.",
+      "Led StudioSync sprints, reviews and mentoring while building microfrontends across MTN's internal platforms.",
     core: [
       "Acting Technical Lead on StudioSync (payroll & contract platform)",
       "Microfrontends for Kente, Bayobab BSP Portal, HR Assist, Knowledge Base",
@@ -129,9 +129,9 @@ const LOCATIONS: ReadonlyArray<Location> = [
     country: "South Africa",
     org: "Accenture",
     role: "Software Product & Platform Engineer",
-    when: "Mar 2024 to Present",
+    when: "Mar 2024 to Apr 2026",
     dayToDay:
-      "Shaping the Bayobab Client Portal's architecture and moving its backend from Java to TypeScript.",
+      "Shaped the Bayobab Client Portal's architecture and moved its backend from Java to TypeScript.",
     core: [
       "Frontend architecture for the Bayobab Client Portal",
       "Java to TypeScript backend migration",
