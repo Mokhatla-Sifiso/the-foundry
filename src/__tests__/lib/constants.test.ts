@@ -65,10 +65,16 @@ describe("WORK", () => {
   });
 });
 describe("XP", () => {
-  it("marks MTN and Accenture as ongoing (now=true)", () => {
-    expect(XP[0].now).toBe(true);
-    expect(XP[1].now).toBe(true);
-    expect(XP[2].now).toBeUndefined();
-    expect(XP[3].now).toBeUndefined();
+  it("marks no role as ongoing: MTN and Accenture both ended Apr 2026", () => {
+    for (const row of XP) expect(row.now).toBeUndefined();
+  });
+  it("closes the MTN and Accenture rows at Apr 2026", () => {
+    expect(XP[0].org).toBe("MTN Group, Roodepoort");
+    expect(XP[0].when).toBe("Mar 2024 to Apr 2026");
+    expect(XP[1].org).toBe("Accenture, Waterfall");
+    expect(XP[1].when).toBe("Mar 2024 to Apr 2026");
+  });
+  it("never claims a present-tense end date anywhere in the timeline", () => {
+    for (const row of XP) expect(row.when).not.toMatch(/present|current|now/i);
   });
 });
