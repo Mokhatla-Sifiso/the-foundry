@@ -85,7 +85,7 @@ export const SERVICES: ReadonlyArray<Service> = [
     w1: "Technical",
     w2: "Leadership",
     pills: ["Code review", "Mentorship", "Architecture", "Agile · Scrum", "Sprint delivery"],
-    d: "Acting Technical Lead on StudioSync, owning specs, component boundaries, and migrations while mentoring the team and holding engineering standards high across frontend and backend.",
+    d: "I was Acting Technical Lead on StudioSync, owning specs, component boundaries, and migrations while mentoring the team and holding engineering standards high across frontend and backend.",
   },
   {
     w1: "Platform",
@@ -116,14 +116,12 @@ export const XP: ReadonlyArray<XpRow> = [
   {
     role: "Software Engineer · Tech Lead",
     org: "MTN Group, Roodepoort",
-    when: "Mar 2024 to Present",
-    now: true,
+    when: "Mar 2024 to Apr 2026",
   },
   {
     role: "Product & Platform Engineer",
     org: "Accenture, Waterfall",
-    when: "Mar 2024 to Present",
-    now: true,
+    when: "Mar 2024 to Apr 2026",
   },
   {
     role: "Frontend Engineer",

@@ -9,6 +9,7 @@ import {
   IconMail,
   IconUser,
 } from "@/components/primitives/icons";
+import { AgreementChecks } from "@/components/access/AgreementChecks";
 import { emailRe } from "@/lib/recruiter";
 import { Dots } from "./Dots";
 import { Field } from "./Field";
@@ -150,43 +151,14 @@ export function SignUp({
           error={errors.url}
         />
 
-        <div className="consent-checks">
-          <label className="consent-check">
-            <input
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              aria-describedby={errors.consent ? "consent-error" : undefined}
-            />
-            <span>
-              I agree to the{" "}
-              <a href="/legal/terms" target="_blank" rel="noreferrer">
-                Recruiter Terms
-              </a>
-              .
-            </span>
-          </label>
-          <label className="consent-check">
-            <input
-              type="checkbox"
-              checked={acceptedPrivacy}
-              onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-              aria-describedby={errors.consent ? "consent-error" : undefined}
-            />
-            <span>
-              I&apos;ve read the{" "}
-              <a href="/legal/privacy" target="_blank" rel="noreferrer">
-                Privacy Policy
-              </a>{" "}
-              and understand how my details will be used.
-            </span>
-          </label>
-          {errors.consent ? (
-            <p id="consent-error" className="consent-check-err" role="alert">
-              {errors.consent}
-            </p>
-          ) : null}
-        </div>
+        <AgreementChecks
+          acceptedTerms={acceptedTerms}
+          acceptedPrivacy={acceptedPrivacy}
+          onTermsChange={setAcceptedTerms}
+          onPrivacyChange={setAcceptedPrivacy}
+          termsLabel="Recruiter Terms"
+          error={errors.consent}
+        />
 
         <button type="submit" className="btn btn-primary">
           Send verification code
