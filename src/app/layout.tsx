@@ -21,7 +21,7 @@ const onest = Onest({
 
 const TITLE = `${SITE.name}, Software Engineer`;
 const DESCRIPTION =
-  "Mzwakhe Mokhatla, a full-stack software engineer and acting Technical Lead in South Africa, turning ideas into digital realities through production-grade React, Next.js, TypeScript, NestJS, and Azure-native systems for telecoms, fintech, and consulting clients.";
+  "Mzwakhe Mokhatla, a full-stack software engineer and technical lead based in South Africa, turning ideas into digital realities through production-grade React, Next.js, TypeScript, NestJS, and Azure-native systems for telecoms, fintech, and consulting clients.";
 const KEYWORDS = [
   "Mzwakhe Mokhatla",
   "Software Engineer",
@@ -115,7 +115,10 @@ function StructuredData({ nonce }: { nonce?: string }): React.ReactElement {
       addressLocality: "Pretoria",
       addressCountry: "South Africa",
     },
-    worksFor: [
+    // MTN Group and Accenture both ended Apr 2026. schema.org `worksFor` asserts
+    // CURRENT employment, so claiming either here would be false; past roles are
+    // covered by the Experience section rather than structured data.
+    alumniOf: [
       { "@type": "Organization", name: "MTN Group" },
       { "@type": "Organization", name: "Accenture" },
     ],

@@ -16,6 +16,7 @@ import {
   IconLink,
   IconBack,
 } from "@/components/primitives/icons";
+import { AgreementChecks } from "@/components/access/AgreementChecks";
 import { apiFetch } from "@/lib/api";
 import { SITE } from "@/lib/constants";
 import "../recruiter/recruiter.css";
@@ -34,6 +35,9 @@ export default function ExecutivePage(): React.ReactElement {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [otpError, setOtpError] = useState<string | undefined>();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [consentError, setConsentError] = useState<string | undefined>();
   const [slot, setSlot] = useState("");
   const [demoTopic, setDemoTopic] = useState("");
   const [repos, setRepos] = useState("");
@@ -66,21 +70,28 @@ export default function ExecutivePage(): React.ReactElement {
 
   const start = useCallback(async (): Promise<void> => {
     setOtpError(undefined);
+    // Stop here rather than at the API, so the refusal reads as a form error
+    // instead of a failed request.
+    if (!acceptedTerms || !acceptedPrivacy) {
+      setConsentError("Please accept the Terms of Use and Privacy Policy to continue.");
+      return;
+    }
+    setConsentError(undefined);
     const res = await apiFetch<{ ok: true }>("/api/executive/start", {
       method: "POST",
-      body: JSON.stringify({ email, name }),
+      body: JSON.stringify({ email, name, acceptedTerms, acceptedPrivacy }),
     });
     if (!res.ok) return;
     toast.success(`Code sent to ${email}`);
     setStep("otp");
-  }, [email, name]);
+  }, [email, name, acceptedTerms, acceptedPrivacy]);
 
   const verify = useCallback(
     async (otp: string): Promise<void> => {
       setOtpError(undefined);
       const res = await apiFetch<{ ok: true }>("/api/executive/verify", {
         method: "POST",
-        body: JSON.stringify({ email, otp, name }),
+        body: JSON.stringify({ email, otp, name, acceptedTerms, acceptedPrivacy }),
         silent: true,
       });
       if (!res.ok) {
@@ -89,16 +100,16 @@ export default function ExecutivePage(): React.ReactElement {
       }
       setStep("hub");
     },
-    [email, name],
+    [email, name, acceptedTerms, acceptedPrivacy],
   );
 
   const resend = useCallback(async (): Promise<void> => {
     const res = await apiFetch<{ ok: true }>("/api/executive/start", {
       method: "POST",
-      body: JSON.stringify({ email, name }),
+      body: JSON.stringify({ email, name, acceptedTerms, acceptedPrivacy }),
     });
     if (res.ok) toast.success("New code sent.");
-  }, [email, name]);
+  }, [email, name, acceptedTerms, acceptedPrivacy]);
 
   const submitDemo = useCallback(async (): Promise<void> => {
     const res = await apiFetch<{ ok: true }>("/api/executive/demo", {
@@ -187,6 +198,14 @@ export default function ExecutivePage(): React.ReactElement {
                       placeholder="you@company.com"
                       autoComplete="email"
                     />
+                    <AgreementChecks
+                      acceptedTerms={acceptedTerms}
+                      acceptedPrivacy={acceptedPrivacy}
+                      onTermsChange={setAcceptedTerms}
+                      onPrivacyChange={setAcceptedPrivacy}
+                      error={consentError}
+                      idPrefix="exec-consent"
+                    />
                     <button type="button" className="btn btn-primary" onClick={() => void start()}>
                       Send me a code
                       <Arrow />
@@ -212,9 +231,7 @@ export default function ExecutivePage(): React.ReactElement {
                     </span>
                     Verified
                   </span>
-                  <h1 className="t">
-                    What can I set up{firstName ? <>, {firstName}</> : null}?
-                  </h1>
+                  <h1 className="t">What can I set up{firstName ? <>, {firstName}</> : null}?</h1>
                   <p className="sub">
                     Book a live walkthrough, or request access to the code behind a project. Either
                     way I will follow up personally.
@@ -229,7 +246,9 @@ export default function ExecutivePage(): React.ReactElement {
                           Book a demo
                           {requests.demo ? <em className="exec-tag">Requested</em> : null}
                         </span>
-                        <span className="exec-opt-d">A live walkthrough of a build, on your schedule.</span>
+                        <span className="exec-opt-d">
+                          A live walkthrough of a build, on your schedule.
+                        </span>
                       </span>
                       <Arrow />
                     </button>
@@ -242,7 +261,9 @@ export default function ExecutivePage(): React.ReactElement {
                           Request repo access
                           {requests.repo ? <em className="exec-tag">Requested</em> : null}
                         </span>
-                        <span className="exec-opt-d">Read access to the repositories behind the work.</span>
+                        <span className="exec-opt-d">
+                          Read access to the repositories behind the work.
+                        </span>
                       </span>
                       <Arrow />
                     </button>
@@ -251,7 +272,10 @@ export default function ExecutivePage(): React.ReactElement {
                     <span className="b">Prefer email</span>
                     <div>
                       Reach me directly at{" "}
-                      <a href={`mailto:${SITE.email}`} style={{ color: "var(--candy)", fontWeight: 700 }}>
+                      <a
+                        href={`mailto:${SITE.email}`}
+                        style={{ color: "var(--candy)", fontWeight: 700 }}
+                      >
                         {SITE.email}
                       </a>
                       .
@@ -284,7 +308,11 @@ export default function ExecutivePage(): React.ReactElement {
                       value={demoTopic}
                       onChange={(e) => setDemoTopic(e.target.value)}
                     />
-                    <button type="button" className="btn btn-primary" onClick={() => void submitDemo()}>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => void submitDemo()}
+                    >
                       Send demo request
                       <Arrow />
                     </button>
@@ -319,7 +347,11 @@ export default function ExecutivePage(): React.ReactElement {
                       value={purpose}
                       onChange={(e) => setPurpose(e.target.value)}
                     />
-                    <button type="button" className="btn btn-primary" onClick={() => void submitRepo()}>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => void submitRepo()}
+                    >
                       Send access request
                       <Arrow />
                     </button>

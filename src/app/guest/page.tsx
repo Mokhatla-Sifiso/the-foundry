@@ -7,6 +7,7 @@ import { Otp } from "@/components/recruiter/Otp";
 import { TopBar } from "@/components/recruiter/TopBar";
 import { Field } from "@/components/recruiter/Field";
 import { Arrow, IconMail, IconUser, IconLock, IconCheck } from "@/components/primitives/icons";
+import { AgreementChecks } from "@/components/access/AgreementChecks";
 import { apiFetch } from "@/lib/api";
 import { GUEST_RESOURCES, resourceLabel } from "@/lib/access/resources";
 import { SITE } from "@/lib/constants";
@@ -30,6 +31,9 @@ export default function GuestPage(): React.ReactElement {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [otpError, setOtpError] = useState<string | undefined>();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [consentError, setConsentError] = useState<string | undefined>();
   const [picked, setPicked] = useState<ReadonlyArray<string>>([]);
   const [message, setMessage] = useState("");
   const [resumed, setResumed] = useState(false);
@@ -63,21 +67,28 @@ export default function GuestPage(): React.ReactElement {
 
   const start = useCallback(async (): Promise<void> => {
     setOtpError(undefined);
+    // Stop here rather than at the API, so the refusal reads as a form error
+    // instead of a failed request.
+    if (!acceptedTerms || !acceptedPrivacy) {
+      setConsentError("Please accept the Terms of Use and Privacy Policy to continue.");
+      return;
+    }
+    setConsentError(undefined);
     const res = await apiFetch<{ ok: true }>("/api/guest/start", {
       method: "POST",
-      body: JSON.stringify({ email, name }),
+      body: JSON.stringify({ email, name, acceptedTerms, acceptedPrivacy }),
     });
     if (!res.ok) return;
     toast.success(`Code sent to ${email}`);
     setStep("otp");
-  }, [email, name]);
+  }, [email, name, acceptedTerms, acceptedPrivacy]);
 
   const verify = useCallback(
     async (otp: string): Promise<void> => {
       setOtpError(undefined);
       const res = await apiFetch<{ ok: true }>("/api/guest/verify", {
         method: "POST",
-        body: JSON.stringify({ email, otp, name }),
+        body: JSON.stringify({ email, otp, name, acceptedTerms, acceptedPrivacy }),
         silent: true,
       });
       if (!res.ok) {
@@ -86,16 +97,16 @@ export default function GuestPage(): React.ReactElement {
       }
       setStep("form");
     },
-    [email, name],
+    [email, name, acceptedTerms, acceptedPrivacy],
   );
 
   const resend = useCallback(async (): Promise<void> => {
     const res = await apiFetch<{ ok: true }>("/api/guest/start", {
       method: "POST",
-      body: JSON.stringify({ email, name }),
+      body: JSON.stringify({ email, name, acceptedTerms, acceptedPrivacy }),
     });
     if (res.ok) toast.success("New code sent.");
-  }, [email, name]);
+  }, [email, name, acceptedTerms, acceptedPrivacy]);
 
   const submit = useCallback(async (): Promise<void> => {
     const res = await apiFetch<{ ok: true; status: string }>("/api/guest/request", {
@@ -193,6 +204,14 @@ export default function GuestPage(): React.ReactElement {
                       icon={<IconMail />}
                       placeholder="you@example.com"
                       autoComplete="email"
+                    />
+                    <AgreementChecks
+                      acceptedTerms={acceptedTerms}
+                      acceptedPrivacy={acceptedPrivacy}
+                      onTermsChange={setAcceptedTerms}
+                      onPrivacyChange={setAcceptedPrivacy}
+                      error={consentError}
+                      idPrefix="guest-consent"
                     />
                     <button type="button" className="btn btn-primary" onClick={() => void start()}>
                       Send me a code

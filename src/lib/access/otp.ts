@@ -2,10 +2,23 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
+import { logConsent } from "@/lib/privacy/log";
+import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OTP_RE = /^\d{6}$/;
+
+/** Both agreements must be ticked explicitly; anything but `true` is a refusal. */
+export function hasAcceptedAgreements(payload: unknown): boolean {
+  const input = (payload ?? {}) as Record<string, unknown>;
+  return input.acceptedTerms === true && input.acceptedPrivacy === true;
+}
+
+const CONSENT_REQUIRED = {
+  message: "Please accept the Terms of Use and the Privacy Policy to continue.",
+  field: "consent",
+} as const;
 
 export async function startOtp(request: Request, tag: string): Promise<Response> {
   try {
@@ -17,6 +30,11 @@ export async function startOtp(request: Request, tag: string): Promise<Response>
     }
     if (name.length < 2) {
       return NextResponse.json({ message: "Please enter your name." }, { status: 400 });
+    }
+    // Gate before any code is sent: consent is the price of entry, not an
+    // afterthought once they already hold a one-time code.
+    if (!hasAcceptedAgreements(payload)) {
+      return NextResponse.json(CONSENT_REQUIRED, { status: 400 });
     }
     const hdrs = await headers();
     const ip = clientIp(hdrs);
@@ -48,6 +66,11 @@ export async function verifyOtp(request: Request, tag: string): Promise<Response
     if (!OTP_RE.test(otp)) {
       return NextResponse.json({ message: "Enter the 6-digit code." }, { status: 400 });
     }
+    // Re-asserted here so every issued session has a matching consent record,
+    // even if someone replays a code straight against this endpoint.
+    if (!hasAcceptedAgreements(payload)) {
+      return NextResponse.json(CONSENT_REQUIRED, { status: 400 });
+    }
     const hdrs = await headers();
     if (!(await rateLimit("otp-verify", `ip:${clientIp(hdrs)}`))) {
       return NextResponse.json(
@@ -77,6 +100,19 @@ export async function verifyOtp(request: Request, tag: string): Promise<Response
         .update({ where: { id: session.user.id }, data: { name, emailVerified: true } })
         .catch(() => undefined);
     }
+    // Proof of consent, tied to the user so it also surfaces in their DSAR export.
+    await Promise.all([
+      logConsent({
+        userId: session.user.id,
+        action: "accept_terms",
+        payload: { version: TERMS_VERSION, journey: tag },
+      }),
+      logConsent({
+        userId: session.user.id,
+        action: "accept_privacy",
+        payload: { version: PRIVACY_POLICY_VERSION, journey: tag },
+      }),
+    ]);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(`[${tag}]`, err);

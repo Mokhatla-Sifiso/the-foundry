@@ -128,7 +128,7 @@ describe("AISection", () => {
     }
     expect(screen.getByText("Production-grade, not prototypes")).toBeInTheDocument();
     expect(screen.getByText("Velocity with judgment")).toBeInTheDocument();
-    expect(screen.getByText("329 tests")).toBeInTheDocument();
+    expect(screen.getByText("409 tests")).toBeInTheDocument();
   });
   it("respects the showPhone / showDesktop toggles", () => {
     beforeEachLocal();
@@ -181,8 +181,18 @@ describe("TransContinental", () => {
     fireEvent.click(screen.getByRole("button", { name: "Roodepoort" }));
     expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent(/Roodepoort/);
     expect(screen.getByText("MTN Group")).toBeInTheDocument();
-    expect(screen.getByText(/Leading StudioSync sprints/)).toBeInTheDocument();
-    expect(screen.getByText(/Time reporting, people and contract-management modules/)).toBeInTheDocument();
+    expect(screen.getByText(/Led StudioSync sprints/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Time reporting, people and contract-management modules/),
+    ).toBeInTheDocument();
+  });
+  it("closes the MTN and Accenture stints at Apr 2026 rather than leaving them open", () => {
+    render(<TransContinental />);
+    for (const city of ["Roodepoort", "Waterfall"]) {
+      fireEvent.click(screen.getByRole("button", { name: city }));
+      expect(screen.getByText("Mar 2024 to Apr 2026")).toBeInTheDocument();
+      expect(screen.queryByText(/present|current/i)).not.toBeInTheDocument();
+    }
   });
 });
 describe("Faq", () => {
@@ -190,7 +200,11 @@ describe("Faq", () => {
     const { container } = render(<Faq />);
     expect(container.querySelector("section#faq")).not.toBeNull();
     for (const item of FAQS) {
-      expect(screen.getByRole("button", { name: new RegExp(item.q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", {
+          name: new RegExp(item.q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+        }),
+      ).toBeInTheDocument();
       expect(screen.getByText(item.a)).toBeInTheDocument();
     }
     expect(container.querySelectorAll(".faq-item").length).toBe(FAQS.length);
@@ -200,9 +214,17 @@ describe("Faq", () => {
     const items = container.querySelectorAll(".faq-item");
     expect(items[0].classList.contains("faq-item--open")).toBe(true);
     expect(items[1].classList.contains("faq-item--open")).toBe(false);
-    fireEvent.click(screen.getByRole("button", { name: new RegExp(FAQS[1].q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }));
-    expect(container.querySelectorAll(".faq-item")[1].classList.contains("faq-item--open")).toBe(true);
-    expect(container.querySelectorAll(".faq-item")[0].classList.contains("faq-item--open")).toBe(false);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: new RegExp(FAQS[1].q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      }),
+    );
+    expect(container.querySelectorAll(".faq-item")[1].classList.contains("faq-item--open")).toBe(
+      true,
+    );
+    expect(container.querySelectorAll(".faq-item")[0].classList.contains("faq-item--open")).toBe(
+      false,
+    );
   });
 });
 describe("Contact", () => {
@@ -218,9 +240,7 @@ describe("Contact", () => {
     expect(screen.getByRole("button", { name: /Send message/i })).toBeInTheDocument();
   });
   it("posts to /api/contact and shows the sent confirmation on success", async () => {
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    const fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
     global.fetch = fetchMock as unknown as typeof fetch;
     render(<Contact />);
     fireEvent.change(screen.getByLabelText("Name"), {
