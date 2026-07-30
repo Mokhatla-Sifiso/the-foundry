@@ -40,7 +40,13 @@ export function proxy(request: NextRequest): NextResponse {
 export const config = {
   matcher: [
     {
-      source: "/((?!api|_next/static|_next/image|.*\\..*).*)",
+      // Everything except the API and Next's own static/image pipelines. We
+      // deliberately do NOT skip dotted paths: a request like `/whatever.js`
+      // that falls through to the app's 404 must still carry the CSP, or an
+      // error page ships with no script policy. `_next/static` already covers
+      // the real bundled assets, so the only extra work is a header on the odd
+      // /public file, where a CSP is simply ignored.
+      source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },
