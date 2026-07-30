@@ -128,7 +128,7 @@ describe("AISection", () => {
     }
     expect(screen.getByText("Production-grade, not prototypes")).toBeInTheDocument();
     expect(screen.getByText("Velocity with judgment")).toBeInTheDocument();
-    expect(screen.getByText("410 tests")).toBeInTheDocument();
+    expect(screen.getByText("415 tests")).toBeInTheDocument();
   });
   it("quotes one test count, not two: the CI mock and the proof line must agree", () => {
     beforeEachLocal();

@@ -1,0 +1,51 @@
+import { NextRequest } from "next/server";
+import { proxy, config } from "@/proxy";
+
+function req(path: string): NextRequest {
+  return new NextRequest(new URL(`https://www.mzwakhemokhatla.co.za${path}`));
+}
+
+const matcher = new RegExp(`^${config.matcher[0].source}$`);
+
+describe("proxy CSP", () => {
+  it("sets a nonce-based CSP on the response", () => {
+    const csp = proxy(req("/")).headers.get("content-security-policy");
+    expect(csp).toBeTruthy();
+    expect(csp).toMatch(/script-src [^;]*'nonce-[^']+'/);
+    expect(csp).toContain("'strict-dynamic'");
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("base-uri 'none'");
+    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain("upgrade-insecure-requests");
+  });
+
+  it("forwards the same nonce to the app via the x-nonce request header", () => {
+    const res = proxy(req("/"));
+    const csp = res.headers.get("content-security-policy") ?? "";
+    const nonce = /'nonce-([^']+)'/.exec(csp)?.[1];
+    expect(nonce).toBeTruthy();
+    expect(nonce).toMatch(/^[A-Za-z0-9+/=]+$/);
+  });
+
+  it("issues a fresh nonce per request", () => {
+    const a = proxy(req("/")).headers.get("content-security-policy");
+    const b = proxy(req("/")).headers.get("content-security-policy");
+    expect(a).not.toEqual(b);
+  });
+});
+
+describe("proxy matcher", () => {
+  it("covers a dotted path that 404s, so error pages still get a CSP", () => {
+    expect(matcher.test("/404javascript.js")).toBe(true);
+    expect(matcher.test("/does-not-exist")).toBe(true);
+    expect(matcher.test("/")).toBe(true);
+    expect(matcher.test("/recruiter")).toBe(true);
+  });
+
+  it("still skips the API and Next's own static + image pipelines", () => {
+    expect(matcher.test("/api/guest/start")).toBe(false);
+    expect(matcher.test("/_next/static/chunk.js")).toBe(false);
+    expect(matcher.test("/_next/image")).toBe(false);
+    expect(matcher.test("/favicon.ico")).toBe(false);
+  });
+});
