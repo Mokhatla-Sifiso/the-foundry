@@ -34,20 +34,50 @@ describe("Recruiters", () => {
   });
 });
 describe("Hero", () => {
-  it("renders the spec's lowercase wordmark + h1 + Scroll cue", () => {
-    const { container } = render(<Hero />);
+  const underlay = <pre data-testid="underlay">source</pre>;
+  it("renders the wordmark and the under-construction copy", () => {
+    const { container } = render(<Hero underlay={underlay} />);
     expect(container.querySelector(".hero-mark")?.textContent).toBe("mzwakhe");
+    expect(screen.getByText("Under construction")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /Turning ideas into\s+digital realities\./i,
+      /Work in progress\.\s+Peel back the page\./i,
     );
-    expect(screen.getByText("Scroll")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Drag the corner to see the code underneath. The CV and my inbox are still open.",
+      ),
+    ).toBeInTheDocument();
+  });
+  it("uses no em dashes in any visible hero copy", () => {
+    const { container } = render(<Hero underlay={underlay} />);
+    expect(container.querySelector(".hero-foot")?.textContent).not.toContain(String.fromCharCode(0x2014));
+  });
+  it("routes the CTAs to the CV access tiers and the contact section", () => {
+    render(<Hero underlay={underlay} />);
+    expect(screen.getByRole("link", { name: /Download CV/i })).toHaveAttribute(
+      "href",
+      "#recruiters",
+    );
+    expect(screen.getByRole("link", { name: /Get in touch/i })).toHaveAttribute(
+      "href",
+      "#contact",
+    );
+  });
+  it("renders the underlay inside a decorative, aria-hidden page curl", () => {
+    const { container } = render(<Hero underlay={underlay} />);
+    const peel = container.querySelector(".hero-peel");
+    expect(peel).not.toBeNull();
+    expect(peel?.getAttribute("aria-hidden")).toBe("true");
+    expect(peel?.querySelector(".peel-under [data-testid='underlay']")).not.toBeNull();
+    expect(peel?.querySelector(".peel-flap")).not.toBeNull();
+    expect(peel?.querySelector(".peel-tip")).not.toBeNull();
   });
   it("ids the section as #top so the brand href can scroll-link back", () => {
-    const { container } = render(<Hero />);
+    const { container } = render(<Hero underlay={underlay} />);
     expect(container.querySelector("section#top")).not.toBeNull();
   });
   it("renders the portrait next/image with the SITE.portrait src + descriptive alt", () => {
-    render(<Hero />);
+    render(<Hero underlay={underlay} />);
     const img = screen.getByAltText(`Portrait of ${SITE.name}`) as HTMLImageElement;
     expect(img).toBeInTheDocument();
     expect(img.getAttribute("src")).toBe(SITE.portrait);

@@ -1,10 +1,18 @@
 "use client";
+import { Arrow, Chat } from "@/components/primitives/icons";
 import { EASE } from "@/components/primitives/Reveal";
 import { SITE } from "@/lib/constants";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-export function Hero(): React.ReactElement {
+import { HeroPeel } from "./HeroPeel";
+
+type HeroProps = Readonly<{
+  /** What the page peels back to reveal: the code that builds this hero. */
+  underlay: React.ReactNode;
+}>;
+
+export function Hero({ underlay }: HeroProps): React.ReactElement {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -12,7 +20,6 @@ export function Hero(): React.ReactElement {
   });
   const yRender = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const yMark = useTransform(scrollYProgress, [0, 1], [0, 80]);
-  const cueFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   return (
     <section id="top" className="hero" ref={ref}>
       <motion.div
@@ -45,28 +52,36 @@ export function Hero(): React.ReactElement {
         </motion.div>
       </div>
 
+      <HeroPeel progress={scrollYProgress}>{underlay}</HeroPeel>
+
       <div className="wrap hero-foot">
-        <motion.h1
+        <motion.div
+          className="hero-copy"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.5 }}
         >
-          Turning ideas into <span className="em">digital realities.</span>
-        </motion.h1>
-
-        <motion.div
-          className="scroll-cue"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          style={{ opacity: cueFade }}
-        >
-          <motion.span
-            className="dot"
-            animate={{ scale: [1, 0.5, 1], opacity: [1, 0.4, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-          Scroll
+          <span className="eyebrow">Under construction</span>
+          <h1>
+            Work in progress. <span className="em">Peel back the page.</span>
+          </h1>
+          <p className="hero-sub">
+            Drag the corner to see the code underneath. The CV and my inbox are still open.
+          </p>
+          <div className="hero-cta">
+            <a href="#recruiters" className="pill pill-dark">
+              Download CV
+              <span className="ic">
+                <Arrow />
+              </span>
+            </a>
+            <a href="#contact" className="pill pill-light">
+              Get in touch
+              <span className="ic">
+                <Chat />
+              </span>
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>

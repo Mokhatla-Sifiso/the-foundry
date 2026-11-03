@@ -72,8 +72,19 @@ export const useScroll = () => ({
   scrollXProgress: passthroughMotionValue(0),
 });
 export const useSpring = <T,>(value: T) => value;
-export const useTransform = <T,>(_input: unknown, _from: unknown, to: T[]) => to[0];
+type Readable = { get: () => unknown };
+// Supports both forms: useTransform(value, inputRange, outputRange) and
+// useTransform(values | value, transformer).
+export const useTransform = <T,>(input: unknown, from: unknown, to?: T[]) => {
+  if (typeof from === "function") {
+    const read = (v: unknown) => (v as Readable).get();
+    const values = Array.isArray(input) ? input.map(read) : read(input);
+    return passthroughMotionValue((from as (v: unknown) => unknown)(values));
+  }
+  return (to as T[])[0];
+};
 export const useMotionValue = <T,>(value: T) => passthroughMotionValue(value);
+export const useMotionValueEvent = () => {};
 export const useInView = () => true;
 export const useReducedMotion = () => false;
 export const useAnimation = () => ({ start: () => Promise.resolve(), stop: () => {} });

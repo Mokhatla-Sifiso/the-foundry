@@ -36,6 +36,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: {
     "/api/cv": ["./private/cv/**/*"],
+    // HeroCodeWall reads these at request time to render them under the
+    // hero's page curl. Keep in sync with HERO_CODE_FILES.
+    "/": [
+      "./src/components/sections/Hero.tsx",
+      "./src/components/sections/HeroPeel.tsx",
+      "./src/lib/peel.ts",
+      "./src/components/sections/HeroCodeWall.tsx",
+      "./src/lib/highlight.ts",
+    ],
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

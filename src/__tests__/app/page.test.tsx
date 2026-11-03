@@ -13,10 +13,11 @@ describe("HomePage composition", () => {
     window.localStorage.clear();
     document.documentElement.removeAttribute("data-theme");
   });
-  it("renders the Hero h1 with the spec headline", () => {
-    render(<HomePage />);
+  it("renders the under-construction Hero h1 with the real code wall under the curl", () => {
+    const { container } = render(<HomePage />);
     const h1 = screen.getByRole("heading", { level: 1 });
-    expect(h1).toHaveTextContent(/Turning ideas into\s+digital realities\./i);
+    expect(h1).toHaveTextContent(/Work in progress\.\s+Peel back the page\./i);
+    expect(container.querySelector(".hero-peel .code-wall .tk-keyword")).not.toBeNull();
   });
   it("renders the Statement, Contact, and Footer signatures", () => {
     render(<HomePage />);

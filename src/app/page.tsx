@@ -7,6 +7,7 @@ import { Experience } from "@/components/sections/Experience";
 import { Faq } from "@/components/sections/Faq";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { HeroCodeWall } from "@/components/sections/HeroCodeWall";
 import { Recruiters } from "@/components/sections/Recruiters";
 import { Services } from "@/components/sections/Services";
 import { Statement } from "@/components/sections/Statement";
@@ -18,7 +19,7 @@ export default function HomePage(): React.ReactElement {
       <Progress />
       <NavMenu />
       <main>
-        <Hero />
+        <Hero underlay={<HeroCodeWall />} />
         <Statement />
         <Services />
         <Work />
