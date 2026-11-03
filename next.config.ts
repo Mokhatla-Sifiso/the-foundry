@@ -36,6 +36,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: {
     "/api/cv": ["./private/cv/**/*"],
+    "/": [
+      "./src/components/sections/Hero.tsx",
+      "./src/components/sections/HeroPeel.tsx",
+      "./src/lib/peel.ts",
+      "./src/components/sections/HeroCodeWall.tsx",
+      "./src/lib/highlight.ts",
+    ],
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
