@@ -26,8 +26,8 @@ describe("Nav", () => {
     await user.click(screen.getByRole("button", { name: /menu/i }));
     expect(open).toHaveBeenCalledTimes(1);
   });
-  it("renders the theme button with an accessible label", () => {
+  it("renders the theme switch", () => {
     render(<Nav onOpenMenu={() => {}} />);
-    expect(screen.getByRole("button", { name: /toggle theme/i })).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: "Dark mode" })).toBeInTheDocument();
   });
 });

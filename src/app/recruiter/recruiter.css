@@ -95,27 +95,6 @@ input {
   gap: 10px;
   align-items: center;
 }
-.tbtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--glass-line);
-  background: var(--glass);
-  color: var(--fg);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform 0.2s;
-}
-.tbtn:hover {
-  transform: translateY(-1px) rotate(8deg);
-}
-.tbtn svg {
-  width: 18px;
-  height: 18px;
-}
 .backlink {
   display: inline-flex;
   align-items: center;
