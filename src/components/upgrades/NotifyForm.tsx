@@ -106,7 +106,7 @@ export function NotifyForm({
             </span>
             <span>
               Email me once when the new version is live. I can unsubscribe at any time. See the{" "}
-              <Link href="/legal/privacy">privacy policy</Link>.
+              <Link href="/legal/privacy#launch-updates">privacy policy</Link>.
             </span>
           </label>
           {consentError ? (
