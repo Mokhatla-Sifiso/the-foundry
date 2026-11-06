@@ -363,11 +363,13 @@ Request:
 { "token": "string" }
 ```
 
-The response is a 303 redirect to `/updates/confirm?status=confirmed|expired|invalid`.
+The token may also arrive as a form field, since the confirm page posts a plain form. The response is a 303 redirect to `/updates/confirm?status=confirmed|expired|invalid|limited|error`. `limited` (the `updates-confirm` policy) and `error` (an unexpected failure, logged on the server) are not on the approved page boards; the page shows them with the dialog's approved lines, "A few attempts in a short window. Try again shortly." and "Something went wrong. Try again.", pending your approval in PR 3. A foreign `Origin` gets 403.
 
 ### 7.3 `POST /api/updates/unsubscribe`
 
-Takes `{ "token": string }`, or the RFC 8058 body `List-Unsubscribe=One-Click` with the token in the query string. Answers with a 303 redirect to `/updates/unsubscribe?status=removed|invalid`, or 200 for one-click requests.
+Takes `{ "token": string }`, or the RFC 8058 body `List-Unsubscribe=One-Click` with the token in the query string. Answers with a 303 redirect to `/updates/unsubscribe?status=removed|invalid|error`, or a bare 200 for one-click requests, never a redirect (RFC 8058 section 3.1), and 500 when the database fails so the provider retries.
+
+`GET /api/updates/unsubscribe?token=…`, sent by mail clients that open the header link in a browser, only redirects to the unsubscribe page with the token. A GET never deletes anything, so link scanners cannot unsubscribe anyone.
 
 ### 7.4 `POST /api/site-access`
 
