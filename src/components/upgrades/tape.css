@@ -1,0 +1,165 @@
+/*
+ * Caution tape (spec UG 4.2, G3, G12). Three strips in one 3D context, close to the viewer.
+ * Per-strip geometry arrives as custom properties computed by lib/tape/geometry; the
+ * perspective values here must match the constants there.
+ */
+.ug-tapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1200px;
+  perspective-origin: 50% 46%;
+  transform-style: preserve-3d;
+}
+
+.ug-tape {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--len);
+  height: var(--thick);
+  margin: calc(var(--thick) / -2) 0 0 calc(var(--len) / -2);
+  /* rotateX tilts each strip against the light, the way strung tape never lies flat. */
+  transform: translateY(var(--cy)) rotateZ(var(--rz)) rotateY(var(--ry)) rotateX(var(--rx))
+    translateZ(var(--tz));
+  transform-style: preserve-3d;
+}
+
+/* The whole strip drifts slowly along its own length, out of phase with the others (G3, D7). */
+.ug-tape__slide {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: ug-tape-drift 16s ease-in-out var(--delay) infinite alternate;
+}
+@keyframes ug-tape-drift {
+  from {
+    transform: translateX(calc(var(--drift) * -1));
+  }
+  to {
+    transform: translateX(var(--drift));
+  }
+}
+
+/* Cast shadow: a wide soft one plus a tight contact shadow, falling on whatever is behind. */
+.ug-tape__shadow {
+  position: absolute;
+  inset: 4% 0;
+  background: var(--ug-tape-shadow);
+  filter: blur(calc(var(--thick) * 0.2));
+  transform: translate3d(0, calc(var(--thick) * 0.3), -70px);
+}
+.ug-tape__shadow::before {
+  content: "";
+  position: absolute;
+  inset: 18% 0 -6%;
+  background: var(--ug-tape-shadow-contact);
+  filter: blur(calc(var(--thick) * 0.05));
+  transform: translateY(calc(var(--thick) * -0.18));
+}
+
+/* The film. */
+.ug-tape__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ug-tape-film);
+}
+/* Grain of the plastic, below the threshold of reading as texture. */
+.ug-tape__face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: var(--ug-tape-grain);
+}
+/* Gloss sits above the ink, as the coating does: edge lines, a sharp specular line, a broad sheen. */
+.ug-tape__face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      var(--ug-tape-edge-hi) 0,
+      var(--ug-tape-edge-hi) 1.5px,
+      transparent 2.5px
+    ),
+    linear-gradient(
+      0deg,
+      var(--ug-tape-edge-lo) 0,
+      var(--ug-tape-edge-lo) 1.5px,
+      transparent 2.5px
+    ),
+    linear-gradient(180deg, transparent 8%, var(--ug-tape-spec) 11.5%, transparent 15.5%),
+    linear-gradient(180deg, transparent 9%, var(--ug-tape-sheen) 19%, transparent 33%),
+    linear-gradient(180deg, transparent 86%, var(--ug-tape-bounce) 94%, transparent 99%);
+}
+
+.ug-tape__print {
+  position: absolute;
+  top: 50%;
+  left: var(--phase);
+  display: flex;
+  /* Must match PRINT_GAP_EM in lib/tape/fit. */
+  gap: 0.75em;
+  transform: translateY(-47%);
+  color: var(--ug-tape-print);
+  font: 900 calc(var(--thick) * var(--print-scale)) / 1 var(--font);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/*
+ * Measures the phrase in the real font at 100px; the geometry scales that to each strip. Same
+ * type settings as the print, but its own font declaration: --thick is not defined here.
+ */
+.ug-tape__measure {
+  position: absolute;
+  visibility: hidden;
+  font: 900 100px / 1 var(--font);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Depth of field: a sharp copy and a blurred copy, crossfaded toward the far end. */
+.ug-tape__face--sharp {
+  mask-image: linear-gradient(90deg, #000 0 57%, transparent 80%);
+}
+.ug-tape__face--soft {
+  filter: blur(var(--dof));
+  mask-image: linear-gradient(90deg, transparent 0 57%, #000 80%);
+}
+.ug-tape--far-left .ug-tape__face--sharp {
+  mask-image: linear-gradient(90deg, transparent 0 20%, #000 43%);
+}
+.ug-tape--far-left .ug-tape__face--soft {
+  mask-image: linear-gradient(90deg, #000 0 20%, transparent 43%);
+}
+
+/* Light along the length. It does not drift, so the strip slides under a fixed light like film. */
+.ug-tape__light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--ug-tape-dim) 0%,
+    transparent calc(var(--bloom) - 22%),
+    var(--ug-tape-bloom) var(--bloom),
+    transparent calc(var(--bloom) + 16%),
+    var(--ug-tape-dim) calc(var(--bloom) + 38%),
+    transparent calc(var(--bloom) + 58%),
+    var(--ug-tape-bloom-soft) calc(var(--bloom) + 70%),
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ug-tape__slide {
+    animation: none;
+  }
+}
