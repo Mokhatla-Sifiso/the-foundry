@@ -41,7 +41,7 @@ describe("NotifyForm", () => {
     expect(consent()).not.toBeChecked();
     expect(screen.getByRole("link", { name: "privacy policy" })).toHaveAttribute(
       "href",
-      "/legal/privacy",
+      "/legal/privacy#launch-updates",
     );
   });
 
