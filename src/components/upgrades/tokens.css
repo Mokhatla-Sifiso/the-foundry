@@ -1,6 +1,7 @@
 html[data-theme="light"] {
   --ug-bg-page: #f4f4f5;
   --ug-text-primary: #08080a;
+  --ug-text-secondary: #5c5e63;
   --ug-scene-glow: radial-gradient(65% 70% at 50% 46%, #ffffff 0%, rgb(255 255 255 / 0) 70%);
   --ug-vignette: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgb(0 0 0 / 0.05) 100%);
 
@@ -36,6 +37,7 @@ html[data-theme="light"] {
 html[data-theme="dark"] {
   --ug-bg-page: #08080a;
   --ug-text-primary: #fafafa;
+  --ug-text-secondary: #97999e;
   --ug-scene-glow: radial-gradient(60% 70% at 50% 46%, #1f2023 0%, rgb(31 32 35 / 0) 72%);
   --ug-vignette: radial-gradient(120% 90% at 50% 40%, transparent 50%, rgb(0 0 0 / 0.5) 100%);
 
