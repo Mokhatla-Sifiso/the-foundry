@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ACCESS_COOKIE, GATE_PATH, RETURN_HEADER, hasAccess, isExempt } from "@/lib/gate/access";
 
 export function proxy(request: NextRequest): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -32,7 +33,17 @@ export function proxy(request: NextRequest): NextResponse {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  // The site gate (spec UG FR-UG-01): without access, every page shows the gate in its place.
+  // The address bar keeps the URL the visitor asked for, and the gate learns it from a header.
+  const { pathname, search } = request.nextUrl;
+  const gated = !isExempt(pathname) && !hasAccess(request.cookies.get(ACCESS_COOKIE)?.value);
+  if (gated) requestHeaders.set(RETURN_HEADER, `${pathname}${search}`);
+
+  const response = gated
+    ? NextResponse.rewrite(new URL(GATE_PATH, request.url), {
+        request: { headers: requestHeaders },
+      })
+    : NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }
