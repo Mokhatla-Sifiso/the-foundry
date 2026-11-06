@@ -460,7 +460,7 @@ Every frame is exported as an image for your review, because artifact links do n
 
 ## 12. Delivery plan
 
-Each pull request stays under 400 changed lines. They are stacked, each built on the previous one, and none merges without your approval. The backend was planned as one pull request and split into 2a to 2d to stay under that limit.
+Each pull request stays under 400 changed lines. They are stacked, each built on the previous one, and none merges without your approval. Pull requests planned as one were split to stay under that limit, and on 2026-11-06 the tape and gate page moved ahead of PR 3 at your request, so the gate can be seen running sooner. The table is in stack order.
 
 | PR | Branch | Contents |
 | --- | --- | --- |
@@ -468,10 +468,16 @@ Each pull request stays under 400 changed lines. They are stacked, each built on
 | 2a | `feature/UG-02a-migrations` | Versioned migrations, the baseline and the `update_subscriber` table (D9), with the runbook |
 | 2b | `feature/UG-02b-updates-core` | Link tokens, sign-up validation and the confirmation email, with tests |
 | 2c | `feature/UG-02c-updates-service` | Subscribe, confirm, unsubscribe and purge service, rate-limit policies, with tests |
-| 2d | `feature/UG-02d-updates-routes` | Subscribe, confirm and unsubscribe routes (section 7), with tests |
-| 3 | `feature/UG-03-updates-pages` | Confirm and unsubscribe pages, notify dialog, privacy policy section |
-| 4 | `feature/UG-04-tape` | Tape geometry library and renderer, with tests |
-| 5 | `feature/UG-05-gate-page` | Gate page composition: top bar, tape, buttons, notify dialog wiring |
+| 2d | `feature/UG-02d-updates-routes` | Subscribe route (7.1) and the shared POST helpers, with tests |
+| 2e | `feature/UG-02e-updates-routes` | Confirm and unsubscribe routes (7.2, 7.3), with tests |
+| 4a | `feature/UG-04a-tape-geometry` | Tape presets and projection, with tests |
+| 4b | `feature/UG-04b-tape-fit` | Fitting the strips clear of the buttons, and the print layout, with tests |
+| 4c | `feature/UG-04c-tape-layout` | The hook that lays the tape out for the live page, with tests |
+| 4d | `feature/UG-04d-tape-component` | The tape component, its tokens and styles, with tests |
+| 5a | `feature/UG-05a-gate-page` | The gate page at `/upgrades`: top bar, tape, the two buttons, shared button styles |
+| 5b | `feature/UG-05b-gate-consent` | The gate keeps clear of the consent banner (G6) |
+| 3 | `feature/UG-03-updates-pages` | Notify dialog wired to the gate, confirm and unsubscribe pages, privacy policy section |
+| 2f | `feature/UG-02f-updates-purge` | A daily Vercel cron calling a protected purge route, so unconfirmed sign-ups go after 7 days as FR-UG-10 promises (decided 2026-11-06) |
 | 6 | `feature/UG-06-site-gate` | Proxy gating, `/api/site-access`, cookie inventory. This is the switch that makes the gate live, so it lands last. |
 | 7 | `feature/UG-07-announce` | Announce script and runbook |
 
