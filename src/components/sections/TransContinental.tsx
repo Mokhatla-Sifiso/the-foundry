@@ -212,7 +212,8 @@ export function TransContinental(): React.ReactElement {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="trans-h">
-            Two countries,<br />
+            Two countries,
+            <br />
             <span className="em">one team at a time.</span>
           </h2>
         </Reveal>
@@ -232,12 +233,7 @@ export function TransContinental(): React.ReactElement {
               aria-hidden="true"
             >
               <defs>
-                <pattern
-                  id="trans-grid"
-                  width="22"
-                  height="22"
-                  patternUnits="userSpaceOnUse"
-                >
+                <pattern id="trans-grid" width="22" height="22" patternUnits="userSpaceOnUse">
                   <circle cx="2" cy="2" r="1.1" fill="currentColor" opacity="0.18" />
                 </pattern>
                 <radialGradient id="trans-glow" cx="50%" cy="50%" r="50%">

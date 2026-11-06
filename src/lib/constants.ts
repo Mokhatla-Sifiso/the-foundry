@@ -134,7 +134,11 @@ export const XP: ReadonlyArray<XpRow> = [
 export type WorkflowStep = Readonly<{ n: string; title: string; line: string }>;
 export const AI_WORKFLOW: ReadonlyArray<WorkflowStep> = [
   { n: "01", title: "Edit", line: "Agents draft and refactor in the editor. I set the direction." },
-  { n: "02", title: "Pair", line: "Claude on the hard parts: architecture, tricky refactors, edge cases." },
+  {
+    n: "02",
+    title: "Pair",
+    line: "Claude on the hard parts: architecture, tricky refactors, edge cases.",
+  },
   { n: "03", title: "Verify", line: "Tests and CI must be green. Nothing ships on vibes." },
   { n: "04", title: "Ship", line: "Every diff reviewed by me, then merged and live." },
 ];

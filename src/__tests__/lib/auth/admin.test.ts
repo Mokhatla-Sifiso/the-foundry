@@ -73,7 +73,10 @@ describe("getSessionContext", () => {
 describe("requireAdmin", () => {
   it("throws a 401 HttpError when there is no session context", async () => {
     getSession.mockResolvedValue(null);
-    await expect(requireAdmin()).rejects.toMatchObject({ status: 401, message: "Sign in required" });
+    await expect(requireAdmin()).rejects.toMatchObject({
+      status: 401,
+      message: "Sign in required",
+    });
   });
 
   it("throws a 403 HttpError when the user is not an admin", async () => {
