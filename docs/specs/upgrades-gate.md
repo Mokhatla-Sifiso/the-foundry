@@ -476,7 +476,12 @@ Each pull request stays under 400 changed lines. They are stacked, each built on
 | 4d | `feature/UG-04d-tape-component` | The tape component, its tokens and styles, with tests |
 | 5a | `feature/UG-05a-gate-page` | The gate page at `/upgrades`: top bar, tape, the two buttons, shared button styles |
 | 5b | `feature/UG-05b-gate-consent` | The gate keeps clear of the consent banner (G6) |
-| 3 | `feature/UG-03-updates-pages` | Notify dialog wired to the gate, confirm and unsubscribe pages, privacy policy section |
+| 3a | `feature/UG-03a-notify-signup` | The sign-up logic behind the notify dialog, with tests |
+| 3b | `feature/UG-03b-notify-styles` | The dialog and form styles, the alert icon and the busy button |
+| 3c | `feature/UG-03c-notify-form` | The notify form, with tests |
+| 3d | `feature/UG-03d-notify-dialog` | The notify dialog and confirmation, wired to the gate, with tests (TC-08) |
+| 3e | `feature/UG-03e-updates-pages` | Confirm and unsubscribe pages |
+| 3f | `feature/UG-03f-privacy` | Privacy policy section for launch updates (FR-UG-10) |
 | 2f | `feature/UG-02f-updates-purge` | A daily Vercel cron calling a protected purge route, so unconfirmed sign-ups go after 7 days as FR-UG-10 promises (decided 2026-11-06) |
 | 6 | `feature/UG-06-site-gate` | Proxy gating, `/api/site-access`, cookie inventory. This is the switch that makes the gate live, so it lands last. |
 | 7 | `feature/UG-07-announce` | Announce script and runbook |
