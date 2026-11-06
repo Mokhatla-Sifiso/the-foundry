@@ -7,7 +7,11 @@ export const metadata: Metadata = {
 };
 export default function PrivacyPage(): React.ReactElement {
   return (
-    <LegalLayout title="Privacy Policy" version={PRIVACY_POLICY_VERSION} updatedAt="17 July 2026">
+    <LegalLayout
+      title="Privacy Policy"
+      version={PRIVACY_POLICY_VERSION}
+      updatedAt="6 November 2026"
+    >
       <h2>Who I am</h2>
       <p>
         This site is operated personally by <strong>{DATA_CONTROLLER.name}</strong>, based in{" "}
@@ -67,7 +71,8 @@ export default function PrivacyPage(): React.ReactElement {
           accessed the CV, and anonymous cookieless performance monitoring (Vercel Speed Insights).
         </li>
         <li>
-          <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies and Google Analytics.
+          <strong>Consent</strong> (Art. 6(1)(a)), non-essential cookies, Google Analytics, and the
+          launch update email.
         </li>
       </ul>
 
@@ -78,7 +83,12 @@ export default function PrivacyPage(): React.ReactElement {
           logs.
         </li>
         <li>
-          <strong>Resend</strong>, delivers the one-time verification code to your inbox.
+          <strong>Resend</strong>, delivers the one-time verification code, and the launch update
+          confirmation and announcement, to your inbox.
+        </li>
+        <li>
+          <strong>Upstash</strong> (Redis), keeps short-lived attempt counters that rate limit
+          sign-in and sign-up forms.
         </li>
         <li>
           <strong>Vercel</strong> (Vercel Inc.), hosts the site and routes traffic, and processes
@@ -94,6 +104,33 @@ export default function PrivacyPage(): React.ReactElement {
         Each of these is a data processor under a Data Processing Agreement and only handles data on
         documented instructions.
       </p>
+
+      <h2 id="launch-updates">Launch updates</h2>
+      <p>
+        If you ask to be told when the new version of this site is live, I send you one email when
+        it launches, and nothing else.
+      </p>
+      <ul>
+        <li>
+          <strong>What I store</strong>: your email address, when you gave consent, and which
+          version of this policy you agreed to, plus one-time codes for the confirm and unsubscribe
+          links, kept only in scrambled (hashed) form. No IP address or browser details are stored
+          with your sign-up. To stop abuse, the form counts attempts per IP address in counters that
+          expire within 10 minutes.
+        </li>
+        <li>
+          <strong>Lawful basis</strong>: your consent, given with the tick box and confirmed with
+          the link I email you.
+        </li>
+        <li>
+          <strong>How long</strong>: until the launch email is sent, then your address is deleted. A
+          sign-up you never confirm is deleted after 7 days.
+        </li>
+        <li>
+          <strong>Withdrawing</strong>: use the unsubscribe link in any of these emails, or email
+          me. Your address is deleted straight away.
+        </li>
+      </ul>
 
       <h2>Retention</h2>
       <p>
