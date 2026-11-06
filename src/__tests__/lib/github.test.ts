@@ -2,7 +2,9 @@ import { buildTracker, completeThrough, relTime, toPull } from "@/lib/github";
 
 describe("toPull", () => {
   it("marks a PR merged when merged_at is set, else uses its state", () => {
-    expect(toPull({ title: "x", state: "closed", merged_at: "2026-07-09T00:00:00Z" }).state).toBe("merged");
+    expect(toPull({ title: "x", state: "closed", merged_at: "2026-07-09T00:00:00Z" }).state).toBe(
+      "merged",
+    );
     expect(toPull({ title: "x", state: "open", merged_at: null }).state).toBe("open");
     expect(toPull({ title: "x", state: "closed", merged_at: null }).state).toBe("closed");
   });
