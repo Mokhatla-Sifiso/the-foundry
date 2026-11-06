@@ -329,7 +329,7 @@ The privacy policy gains a section for launch updates:
 | --- | --- |
 | Accessibility | WCAG 2.2 AA. Visible focus on everything interactive; contrast per D8 and at least 4.5:1 for button labels; `prefers-reduced-motion` stops all ambient motion and shows a still frame; no information conveyed by motion alone. |
 | Performance | On a throttled mid-tier phone: LCP under 2.5 s, CLS under 0.1, INP under 200 ms. Imagery is served as AVIF or WebP at responsive sizes, and the cut-out is the LCP image with priority loading. Ambient motion pauses when the tab is hidden or the page is off screen. Rendering the tape costs under 4 ms per frame on that phone. |
-| Security | The existing CSP with nonce is unchanged. Rate limits use the existing Upstash limiter, with new policies `updates-subscribe` and `updates-confirm`. Tokens are 32 random bytes and only their SHA-256 hash is stored. POST routes check `Origin`. Responses do not reveal which addresses are on the list. |
+| Security | The existing CSP with nonce is unchanged. Rate limits use the existing Upstash limiter, with new policies `updates-subscribe` and `updates-confirm`. Tokens are 32 random bytes and only their SHA-256 hash is stored. POST routes check `Origin` the way Next checks Server Actions: when present, its host must match `Host` or the first `X-Forwarded-Host`; an opaque or malformed `Origin` fails; a request without one passes, because browsers always send it cross-site and a handcrafted request carries no visitor's credentials. The RFC 8058 one-click POST is exempt, since mail providers send it from their servers. Responses do not reveal which addresses are on the list. |
 | Privacy | Data minimisation as FR-UG-10. No new third parties: Neon and Resend are already processors. |
 | Theming | Both themes are specified for every element. There is no flash of the wrong theme on load (the existing `ThemeScript`). |
 | Browsers | Last two versions of Chrome, Edge, Firefox and Safari, plus iOS Safari 17 and later. |
@@ -350,7 +350,7 @@ Request:
 | Status | Body | When |
 | --- | --- | --- |
 | 202 | `{ "ok": true }` | Accepted. Same response for new, pending and confirmed addresses. |
-| 400 | `{ "message": string }` | Invalid email, or consent not given |
+| 400 | `{ "message": string, "field": "email" \| "consent" }` | Invalid email, or consent not given. `field` places the message next to its control, as the dialog boards show. |
 | 403 | `{ "message": string }` | `Origin` is not this site |
 | 429 | `{ "message": string }` | Rate limited |
 | 500 | `{ "message": string }` | Unexpected failure; the details are logged on the server only |
