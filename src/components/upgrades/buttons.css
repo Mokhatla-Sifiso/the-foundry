@@ -119,8 +119,37 @@ html[data-theme="dark"] {
   outline-offset: 3px;
 }
 
+/* Full width, label left and icon right, as in the dialog. */
+.ug-btn--block {
+  justify-content: space-between;
+  width: 100%;
+}
+/* Busy (Notify only): it keeps focus, so it is marked disabled rather than made disabled. */
+.ug-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.ug-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ug-spin 0.8s linear infinite;
+}
+@keyframes ug-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ug-btn {
     transition: none;
+  }
+  .ug-spinner {
+    animation-duration: 2.4s;
   }
 }
