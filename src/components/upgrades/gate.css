@@ -4,10 +4,13 @@
   color: var(--ug-text-primary);
 }
 
-/* One screen tall; a viewport too short for the content scrolls rather than clipping it (4.1). */
+/*
+ * One screen tall; a viewport too short for the content scrolls rather than clipping it (4.1).
+ * While the consent banner is open the stage gives up its bottom, so nothing sits under it (G6).
+ */
 .ug-stage {
   position: relative;
-  height: 100svh;
+  height: calc(100svh - var(--ug-consent-inset, 0px));
   min-height: 360px;
   overflow: hidden;
   isolation: isolate;
