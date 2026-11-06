@@ -1,0 +1,77 @@
+/* Upgrades gate (spec UG 4.1): the stage, the top bar and where the two buttons sit. */
+.ug-root {
+  background: var(--ug-bg-page);
+  color: var(--ug-text-primary);
+}
+
+/* One screen tall; a viewport too short for the content scrolls rather than clipping it (4.1). */
+.ug-stage {
+  position: relative;
+  height: 100svh;
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ug-bg-page);
+}
+.ug-glow,
+.ug-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ug-glow {
+  background: var(--ug-scene-glow);
+}
+.ug-vignette {
+  background: var(--ug-vignette);
+}
+.ug-stage .ug-tapes {
+  z-index: 1;
+}
+
+/* Brand and theme toggle only (D3). */
+.ug-bar {
+  position: absolute;
+  inset: 14px 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1320px, 100% - 44px);
+  height: 50px;
+  margin-inline: auto;
+}
+
+.ug-actions {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  transform: translateX(-50%);
+}
+.ug-actions > form {
+  display: flex;
+}
+
+/* Phones (the tape's mobile layout starts at the same width): stacked, full width, primary on
+   top, and the long labels wrap in balanced lines instead of running off the screen (G7). */
+@media (max-width: 719.98px) {
+  .ug-actions {
+    right: 16px;
+    left: 16px;
+    flex-direction: column;
+    transform: none;
+  }
+  .ug-actions .ug-btn {
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    min-height: 56px;
+    padding: 8px 8px 8px 20px;
+    font-size: 15px;
+    white-space: normal;
+    text-align: left;
+  }
+}
