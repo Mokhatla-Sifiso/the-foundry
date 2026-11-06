@@ -1,0 +1,72 @@
+.ug-root {
+  background: var(--ug-bg-page);
+  color: var(--ug-text-primary);
+}
+
+.ug-stage {
+  position: relative;
+  height: 100svh;
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ug-bg-page);
+}
+.ug-glow,
+.ug-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ug-glow {
+  background: var(--ug-scene-glow);
+}
+.ug-vignette {
+  background: var(--ug-vignette);
+}
+.ug-stage .ug-tapes {
+  z-index: 1;
+}
+
+.ug-bar {
+  position: absolute;
+  inset: 14px 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1320px, 100% - 44px);
+  height: 50px;
+  margin-inline: auto;
+}
+
+.ug-actions {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  transform: translateX(-50%);
+}
+.ug-actions > form {
+  display: flex;
+}
+
+@media (max-width: 719.98px) {
+  .ug-actions {
+    right: 16px;
+    left: 16px;
+    flex-direction: column;
+    transform: none;
+  }
+  .ug-actions .ug-btn {
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    min-height: 56px;
+    padding: 8px 8px 8px 20px;
+    font-size: 15px;
+    white-space: normal;
+    text-align: left;
+  }
+}
