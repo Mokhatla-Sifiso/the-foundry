@@ -1,6 +1,7 @@
 import { act, render, renderHook } from "@testing-library/react";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { MEASURE_SIZE, useTapeScene, type TapeScene } from "@/hooks/useTapeScene";
+import { PAGE_PRESETS } from "@/lib/tape/geometry";
 
 type Box = { left: number; top: number; width: number; height: number };
 
@@ -24,9 +25,12 @@ function place(el: HTMLElement, box: Box, client?: { width: number; height: numb
 function Harness({
   onScene,
   stageSize = { width: 1440, height: 900 },
+  pages = false,
 }: {
   onScene: (scene: TapeScene | null) => void;
   stageSize?: { width: number; height: number };
+  /** Lay out the pages' single strip with nothing to avoid. */
+  pages?: boolean;
 }): React.ReactElement {
   const stage = useRef<HTMLDivElement>(null);
   const ceiling = useRef<HTMLDivElement>(null);
@@ -41,8 +45,16 @@ function Harness({
     place(a, { left: 390, top: stageSize.height - 96, width: 660, height: 56 });
     place(m, { left: 0, top: 0, width: 12.72 * MEASURE_SIZE, height: 100 });
   }, [stageSize]);
-  const boxes = useMemo(() => [avoid], [avoid]);
-  onScene(useTapeScene({ stage, ceiling, avoid: boxes, measure }));
+  const boxes = useMemo(() => (pages ? [] : [avoid]), [avoid, pages]);
+  onScene(
+    useTapeScene({
+      stage,
+      ceiling,
+      avoid: boxes,
+      measure,
+      presets: pages ? PAGE_PRESETS : undefined,
+    }),
+  );
   return (
     <div ref={stage}>
       <div ref={ceiling} />
@@ -112,6 +124,15 @@ describe("useTapeScene", () => {
     const before = scenes.length;
     await act(async () => fontsReady());
     expect(scenes.length).toBeGreaterThan(before);
+  });
+
+  it("lays the pages' single strip low across the whole stage when there is nothing to avoid", () => {
+    const scenes: Array<TapeScene | null> = [];
+    render(<Harness onScene={(s) => scenes.push(s)} pages />);
+    const strips = scenes.at(-1)?.strips ?? [];
+    expect(strips).toHaveLength(1);
+    // The scene box runs from the bar (64px) to the bottom of the 900px stage.
+    expect(strips[0].geometry.cy).toBeCloseTo(64 + (900 - 64) * 0.88);
   });
 
   it("draws no strips when the buttons leave no room for the scene", () => {

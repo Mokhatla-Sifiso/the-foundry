@@ -74,7 +74,7 @@ describe("POST /api/updates/confirm", () => {
   it("sends a rate-limited visitor back with the limited status", async () => {
     limit.mockResolvedValue(false);
     expect(await landing(await POST(post(TOKEN)))).toBe(
-      "https://mzwakhe.dev/updates/confirm?status=limited",
+      `https://mzwakhe.dev/updates/confirm?status=limited&token=${TOKEN}`,
     );
     expect(service).not.toHaveBeenCalled();
   });
@@ -89,7 +89,7 @@ describe("POST /api/updates/confirm", () => {
     const error = jest.spyOn(console, "error").mockImplementation(() => {});
     service.mockRejectedValue(new Error("db down"));
     expect(await landing(await POST(post(TOKEN)))).toBe(
-      "https://mzwakhe.dev/updates/confirm?status=error",
+      `https://mzwakhe.dev/updates/confirm?status=error&token=${TOKEN}`,
     );
     expect(error).toHaveBeenCalledWith("[updates/confirm]", expect.any(Error));
     error.mockRestore();
