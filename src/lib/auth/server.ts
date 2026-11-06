@@ -19,7 +19,11 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 14,
     updateAge: 60 * 60 * 24,
-    cookieCache: { enabled: true, maxAge: 60 * 5 },
+    // No cookie cache: every request validates the session against the database,
+    // so revoking a session (deleting its row) takes effect on the very next
+    // request instead of lingering for the cache window. One extra query per
+    // authenticated request, which is negligible at this traffic.
+    cookieCache: { enabled: false },
   },
   plugins: [
     emailOTP({

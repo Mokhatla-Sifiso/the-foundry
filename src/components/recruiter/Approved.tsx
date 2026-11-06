@@ -40,6 +40,14 @@ export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): Reac
     if (onDeleted) onDeleted();
     else onSignOut();
   };
+  const handleSignOutAll = async (): Promise<void> => {
+    const res = await apiFetch<{ ok: true; revoked: number }>("/api/recruiter/signout-all", {
+      method: "POST",
+    });
+    if (!res.ok) return;
+    toast.success("Signed out on every device.");
+    onSignOut();
+  };
   return (
     <>
       <Dots step={3} />
@@ -79,6 +87,9 @@ export function Approved({ account, onSignOut, onDeleted }: ApprovedProps): Reac
       <div style={{ textAlign: "center" }}>
         <button type="button" className="signout" onClick={onSignOut}>
           Not you? Sign out
+        </button>
+        <button type="button" className="signout" onClick={() => void handleSignOutAll()}>
+          Sign out of all devices
         </button>
       </div>
 
