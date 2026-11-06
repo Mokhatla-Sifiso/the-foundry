@@ -11,7 +11,7 @@ export const FIT_MARGIN = 12;
 export const PRINT_GAP_EM = 0.75;
 
 export interface FitOptions {
-  avoid: Rect;
+  avoid: readonly Rect[];
   ceiling: number;
   margin?: number;
 }
@@ -28,17 +28,19 @@ export function fitTapes(
 ): FitResult {
   let current = geoms.map((g) => ({ ...g }));
   for (let round = 0; round < 40; round++) {
-    let lowest = -Infinity;
+    let lift = -Infinity;
     let highest = Infinity;
     for (const g of current) {
       for (const drift of [-g.drift, g.drift]) {
-        const bottom = edgeExtremeIn(stripEdge(g, stage, 1, drift), avoid.left, avoid.right, "max");
-        if (bottom !== null) lowest = Math.max(lowest, bottom);
+        const bottomEdge = stripEdge(g, stage, 1, drift);
+        for (const box of avoid) {
+          const bottom = edgeExtremeIn(bottomEdge, box.left, box.right, "max");
+          if (bottom !== null) lift = Math.max(lift, bottom - (box.top - margin));
+        }
         const top = edgeExtremeIn(stripEdge(g, stage, -1, drift), 0, stage.width, "min");
         if (top !== null) highest = Math.min(highest, top);
       }
     }
-    const lift = lowest - (avoid.top - margin);
     if (lift <= 0) return { geoms: current, ok: true };
     current =
       highest - ceiling >= lift

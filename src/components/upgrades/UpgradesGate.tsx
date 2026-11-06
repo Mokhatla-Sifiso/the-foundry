@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 import { Arrow, Bell } from "@/components/primitives/icons";
 import { useConsentInset } from "@/hooks/useConsentInset";
+import { LaunchDate } from "./LaunchDate";
 import { NotifyDialog } from "./NotifyDialog";
 import { Tape } from "./Tape";
 import "./tokens.css";
@@ -18,6 +19,8 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
   const stage = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
   const actions = useRef<HTMLDivElement>(null);
+  const date = useRef<HTMLParagraphElement>(null);
+  const avoid = useMemo(() => [actions, date], [actions, date]);
   const [notifyOpen, setNotifyOpen] = useState(false);
   useConsentInset(stage);
 
@@ -26,7 +29,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
       <div ref={stage} className="ug-stage">
         <div className="ug-glow" aria-hidden="true" />
         <div className="ug-vignette" aria-hidden="true" />
-        <Tape stage={stage} ceiling={bar} avoid={actions} />
+        <Tape stage={stage} ceiling={bar} avoid={avoid} />
         <header ref={bar} className="ug-bar">
           <Link href="/" className="brand" prefetch={false}>
             mzwakhe<span className="d">.</span>
@@ -35,27 +38,30 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
         </header>
         <main>
           <h1 className="sr-only">Upgrades in progress</h1>
-          <div ref={actions} className="ug-actions">
-            <form method="post" action="/api/site-access">
-              <input type="hidden" name="return" value={returnPath} />
-              <button type="submit" className="ug-btn ug-btn--primary">
-                <span className="ug-btn__label">Go to previous portfolio version for now</span>
+          <div className="ug-footer">
+            <div ref={actions} className="ug-actions">
+              <form method="post" action="/api/site-access">
+                <input type="hidden" name="return" value={returnPath} />
+                <button type="submit" className="ug-btn ug-btn--primary">
+                  <span className="ug-btn__label">Go to previous portfolio version for now</span>
+                  <span className="ug-btn__ic">
+                    <Arrow />
+                  </span>
+                </button>
+              </form>
+              <button
+                type="button"
+                className="ug-btn ug-btn--secondary"
+                aria-haspopup="dialog"
+                onClick={() => setNotifyOpen(true)}
+              >
+                <span className="ug-btn__label">Notify me when the updates are done</span>
                 <span className="ug-btn__ic">
-                  <Arrow />
+                  <Bell />
                 </span>
               </button>
-            </form>
-            <button
-              type="button"
-              className="ug-btn ug-btn--secondary"
-              aria-haspopup="dialog"
-              onClick={() => setNotifyOpen(true)}
-            >
-              <span className="ug-btn__label">Notify me when the updates are done</span>
-              <span className="ug-btn__ic">
-                <Bell />
-              </span>
-            </button>
+            </div>
+            <LaunchDate ref={date} />
           </div>
         </main>
       </div>

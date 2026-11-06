@@ -29,7 +29,7 @@ export interface TapeScene {
 export interface TapeSceneRefs {
   stage: RefObject<HTMLElement | null>;
   ceiling: RefObject<HTMLElement | null>;
-  avoid: RefObject<HTMLElement | null>;
+  avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
   measure: RefObject<HTMLElement | null>;
 }
 
@@ -49,9 +49,10 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
   useEffect(() => {
     const stageEl = stage.current;
     const ceilingEl = ceiling.current;
-    const avoidEl = avoid.current;
     const measureEl = measure.current;
-    if (!stageEl || !ceilingEl || !avoidEl || !measureEl) return;
+    const boxes = avoid.map((ref) => ref.current).filter((el): el is HTMLElement => el !== null);
+    if (!stageEl || !ceilingEl || !measureEl) return;
+    if (boxes.length === 0 || boxes.length !== avoid.length) return;
 
     let frame = 0;
     let live = true;
@@ -60,9 +61,10 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
       if (width === 0 || height === 0) return;
       const frameRect = stageEl.getBoundingClientRect();
       const top = relativeRect(ceilingEl, frameRect).bottom;
-      const box = relativeRect(avoidEl, frameRect);
+      const rects = boxes.map((el) => relativeRect(el, frameRect));
+      const bottom = Math.min(...rects.map((r) => r.top));
       const layout = layoutFor(width);
-      const s: Stage = { width, height, boxTop: top, boxHeight: box.top - BOX_GAP - top };
+      const s: Stage = { width, height, boxTop: top, boxHeight: bottom - BOX_GAP - top };
       if (s.boxHeight <= 0) {
         setScene({ layout, strips: [], fitted: false });
         return;
@@ -70,7 +72,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
       const perPx = measureEl.getBoundingClientRect().width / MEASURE_SIZE;
       const phraseWidth = (size: number): number => size * perPx;
       const fit = fitTapes(resolveTapes(s, PRESETS[layout], PRINT_SCALE[layout]), s, {
-        avoid: box,
+        avoid: rects,
         ceiling: top,
       });
       setScene({
@@ -89,7 +91,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
 
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
     observer?.observe(stageEl);
-    observer?.observe(avoidEl);
+    for (const el of boxes) observer?.observe(el);
     void document.fonts?.ready.then(() => {
       if (live) schedule();
     });

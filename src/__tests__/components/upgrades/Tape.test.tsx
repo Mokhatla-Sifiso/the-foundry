@@ -9,7 +9,7 @@ jest.mock("@/hooks/useTapeScene", () => ({
 }));
 
 const scene = useTapeScene as jest.Mock;
-const refs = { stage: { current: null }, ceiling: { current: null }, avoid: { current: null } };
+const refs = { stage: { current: null }, ceiling: { current: null }, avoid: [] };
 
 function laidOut(): TapeScene {
   const stage = { width: 1440, height: 900, boxTop: 64, boxHeight: 724 };
