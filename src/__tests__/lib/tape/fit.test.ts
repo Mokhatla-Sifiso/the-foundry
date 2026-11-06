@@ -69,7 +69,7 @@ describe("fitTapes", () => {
       const { stage, avoid } = scene(w, h, actions);
       const layout = layoutFor(w);
       const fit = fitTapes(resolveTapes(stage, PRESETS[layout], PRINT_SCALE[layout]), stage, {
-        avoid,
+        avoid: [avoid],
         ceiling: stage.boxTop,
       });
       expect(fit.ok).toBe(true);
@@ -83,7 +83,7 @@ describe("fitTapes", () => {
     const { stage } = scene(1440, 900, { width: 660, height: 56 });
     const geoms = resolveTapes(stage, PRESETS.desktop, 0.62);
     const fit = fitTapes(geoms, stage, {
-      avoid: { left: 0, right: 10, top: 5000, bottom: 5050 },
+      avoid: [{ left: 0, right: 10, top: 5000, bottom: 5050 }],
       ceiling: 64,
     });
     expect(fit).toEqual({ geoms, ok: true });
@@ -95,7 +95,7 @@ describe("fitTapes", () => {
   it("lifts all strips together when there is room above them", () => {
     const { stage } = scene(1440, 900, { width: 660, height: 56 });
     const geoms = resolveTapes(stage, PRESETS.desktop, 0.62);
-    const fit = fitTapes(geoms, stage, { avoid: raised, ceiling: 64 });
+    const fit = fitTapes(geoms, stage, { avoid: [raised], ceiling: 64 });
     expect(fit.ok).toBe(true);
     const lifts = fit.geoms.map((g, i) => geoms[i].cy - g.cy);
     expect(lifts[0]).toBeGreaterThan(0);
@@ -104,10 +104,24 @@ describe("fitTapes", () => {
     expect(extent(fit.geoms, stage, raised).lowest).toBeLessThanOrEqual(700 - FIT_MARGIN + 0.5);
   });
 
+  it("keeps clear of every element it is given, such as the date in the corner", () => {
+    const { stage, avoid } = scene(1440, 900, { width: 660, height: 56 });
+    const geoms = resolveTapes(stage, PRESETS.desktop, 0.62);
+    const corner = { left: 1300, right: 1418, top: 640, bottom: 660 };
+    const buttonsOnly = fitTapes(geoms, stage, { avoid: [avoid], ceiling: 64 });
+    const withCorner = fitTapes(geoms, stage, { avoid: [avoid, corner], ceiling: 64 });
+    expect(buttonsOnly.geoms.map((g) => g.cy)).toEqual(geoms.map((g) => g.cy));
+    expect(withCorner.ok).toBe(true);
+    expect(withCorner.geoms[2].cy).toBeLessThan(geoms[2].cy);
+    expect(extent(withCorner.geoms, stage, corner).lowest).toBeLessThanOrEqual(
+      corner.top - FIT_MARGIN + 0.5,
+    );
+  });
+
   it("thins the strips instead when lifting would push them under the bar", () => {
     const { stage } = scene(1440, 900, { width: 660, height: 56 });
     const geoms = resolveTapes(stage, PRESETS.desktop, 0.62);
-    const fit = fitTapes(geoms, stage, { avoid: raised, ceiling: 250 });
+    const fit = fitTapes(geoms, stage, { avoid: [raised], ceiling: 250 });
     fit.geoms.forEach((g, i) => {
       expect(g.thick).toBeLessThan(geoms[i].thick);
       expect(g.drift).toBe(Math.round(g.thick * 0.35));
@@ -117,7 +131,7 @@ describe("fitTapes", () => {
   it("reports failure instead of looping when the constraint cannot be met", () => {
     const { stage } = scene(1440, 900, { width: 660, height: 56 });
     const fit = fitTapes(resolveTapes(stage, PRESETS.desktop, 0.62), stage, {
-      avoid: { left: 0, right: 1440, top: -500, bottom: 900 },
+      avoid: [{ left: 0, right: 1440, top: -500, bottom: 900 }],
       ceiling: 0,
     });
     expect(fit.ok).toBe(false);

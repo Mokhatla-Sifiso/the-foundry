@@ -8,7 +8,7 @@ import "./tape.css";
 export interface TapeProps {
   stage: RefObject<HTMLElement | null>;
   ceiling: RefObject<HTMLElement | null>;
-  avoid: RefObject<HTMLElement | null>;
+  avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
 }
 
 export function Tape({ stage, ceiling, avoid }: TapeProps): React.ReactElement {
