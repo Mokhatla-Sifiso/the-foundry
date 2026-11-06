@@ -14,14 +14,18 @@ export async function POST(request: Request): Promise<Response> {
   if (!isSameOrigin(request.headers)) {
     return NextResponse.json({ message: "Requests must come from this site." }, { status: 403 });
   }
+  let token: string | null = null;
+  // Limited and error keep the token, so the page can offer Confirm again straight away.
+  const retry = (status: "limited" | "error"): Response =>
+    seeOther(request, PAGE, token ? { status, token } : { status });
   try {
+    token = parseToken((await readFields(request)).token);
     if (!(await rateLimit("updates-confirm", `ip:${clientIp(request.headers)}`))) {
-      return seeOther(request, PAGE, { status: "limited" });
+      return retry("limited");
     }
-    const token = parseToken((await readFields(request)).token);
     return seeOther(request, PAGE, { status: token ? await confirm(token) : "invalid" });
   } catch (err) {
     console.error("[updates/confirm]", err);
-    return seeOther(request, PAGE, { status: "error" });
+    return retry("error");
   }
 }

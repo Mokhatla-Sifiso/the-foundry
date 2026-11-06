@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { isSameOrigin } from "@/lib/request";
+import { RATE_LIMITED, SERVER_ERROR } from "@/lib/updates/messages";
 import { subscribe } from "@/lib/updates/subscribers";
 import { parseSubscribe } from "@/lib/updates/validation";
-
-const LIMITED = "A few attempts in a short window. Try again shortly.";
 
 /**
  * Launch-update sign-up (spec UG 7.1). New, pending and confirmed addresses all get the same
@@ -23,12 +22,12 @@ export async function POST(request: Request): Promise<Response> {
     const allowed =
       (await rateLimit("updates-subscribe", `ip:${clientIp(request.headers)}`)) &&
       (await rateLimit("updates-subscribe", `email:${input.email}`));
-    if (!allowed) return NextResponse.json({ message: LIMITED }, { status: 429 });
+    if (!allowed) return NextResponse.json({ message: RATE_LIMITED }, { status: 429 });
     await subscribe(input.email);
     return accepted();
   } catch (err) {
     console.error("[updates/subscribe]", err);
-    return NextResponse.json({ message: "Something went wrong. Try again." }, { status: 500 });
+    return NextResponse.json({ message: SERVER_ERROR }, { status: 500 });
   }
 }
 
