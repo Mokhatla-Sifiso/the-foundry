@@ -139,8 +139,10 @@ export function buildTracker(deployed: boolean, merged: number, open: number): T
   const phases = PHASE_DEFS.map((def, i): Phase => {
     let status: PhaseStatus;
     if (i < completeCount) status = "complete";
-    else if (deployed && i >= OPERATE_START) status = "active"; // monitor + iterate: the live loop
-    else if (i === completeCount) status = "active"; // the current frontier
+    else if (deployed && i >= OPERATE_START)
+      status = "active"; // monitor + iterate: the live loop
+    else if (i === completeCount)
+      status = "active"; // the current frontier
     else status = "upcoming";
     return { name: def.name, deliverable: def.deliverable, status };
   });
