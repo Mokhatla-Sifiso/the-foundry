@@ -458,12 +458,15 @@ Every frame is exported as an image for your review, because artifact links do n
 
 ## 12. Delivery plan
 
-Each pull request stays under 400 changed lines. They are stacked, each built on the previous one, and none merges without your approval.
+Each pull request stays under 400 changed lines. They are stacked, each built on the previous one, and none merges without your approval. The backend was planned as one pull request and split into 2a to 2d to stay under that limit.
 
 | PR | Branch | Contents |
 | --- | --- | --- |
 | 1 | `feature/UG-01-theme-toggle` | The toggle component, its styles and tests, replacing the current button (D4) |
-| 2 | `feature/UG-02-updates-backend` | Schema and migration (D9), token library, subscribe, confirm and unsubscribe routes, emails, rate-limit policies, tests |
+| 2a | `feature/UG-02a-migrations` | Versioned migrations, the baseline and the `update_subscriber` table (D9), with the runbook |
+| 2b | `feature/UG-02b-updates-core` | Link tokens, sign-up validation and the confirmation email, with tests |
+| 2c | `feature/UG-02c-updates-service` | Subscribe, confirm, unsubscribe and purge service, rate-limit policies, with tests |
+| 2d | `feature/UG-02d-updates-routes` | Subscribe, confirm and unsubscribe routes (section 7), with tests |
 | 3 | `feature/UG-03-updates-pages` | Confirm and unsubscribe pages, notify dialog, privacy policy section |
 | 4 | `feature/UG-04-tape` | Tape geometry library and renderer, with tests |
 | 5 | `feature/UG-05-gate-page` | Gate page composition: top bar, tape, buttons, notify dialog wiring |
