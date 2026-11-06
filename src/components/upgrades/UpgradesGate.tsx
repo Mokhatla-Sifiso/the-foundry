@@ -28,7 +28,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
         <div className="ug-vignette" aria-hidden="true" />
         <Tape stage={stage} ceiling={bar} avoid={actions} />
         <header ref={bar} className="ug-bar">
-          <Link href="/" className="brand">
+          <Link href="/" className="brand" prefetch={false}>
             mzwakhe<span className="d">.</span>
           </Link>
           <ThemeToggle />

@@ -35,6 +35,15 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     duration: "12 months",
   },
   {
+    name: "site-access",
+    storage: "cookie",
+    category: "necessary",
+    party: "first",
+    purpose:
+      'Remembers that you chose "Go to previous portfolio version for now", so the upgrades page does not stand in front of the site on every visit.',
+    duration: "30 days",
+  },
+  {
     name: "studio-theme",
     storage: "localStorage",
     category: "functional",
