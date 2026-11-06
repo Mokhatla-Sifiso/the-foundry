@@ -40,6 +40,46 @@ describe("proxy CSP", () => {
   });
 });
 
+describe("proxy site gate (FR-UG-01)", () => {
+  const rewrittenTo = (res: Response): string | null => res.headers.get("x-middleware-rewrite");
+  const withAccess = (path: string, value = "v1"): NextRequest => {
+    const r = req(path);
+    r.cookies.set("site-access", value);
+    return r;
+  };
+
+  it("shows the gate in place of any page without the access cookie, keeping the URL", () => {
+    for (const path of ["/", "/recruiter", "/guest?token=x"]) {
+      expect(rewrittenTo(proxy(req(path)))).toBe("https://www.mzwakhemokhatla.co.za/upgrades");
+    }
+  });
+
+  it("passes the page asked for to the gate, query string included", () => {
+    const res = proxy(req("/guest?token=x"));
+    expect(res.headers.get("x-middleware-request-x-gate-return")).toBe("/guest?token=x");
+  });
+
+  it("still applies the CSP to the gate", () => {
+    expect(proxy(req("/")).headers.get("content-security-policy")).toMatch(/'nonce-[^']+'/);
+  });
+
+  it("lets a visitor with access through", () => {
+    const res = proxy(withAccess("/recruiter"));
+    expect(rewrittenTo(res)).toBeNull();
+    expect(res.headers.get("x-middleware-request-x-gate-return")).toBeNull();
+  });
+
+  it("gates again when the cookie is from an older version", () => {
+    expect(rewrittenTo(proxy(withAccess("/", "v0")))).not.toBeNull();
+  });
+
+  it("never gates the legal pages or the pages sign-up emails open", () => {
+    for (const path of ["/legal/privacy", "/updates/confirm?token=x", "/robots.txt"]) {
+      expect(rewrittenTo(proxy(req(path)))).toBeNull();
+    }
+  });
+});
+
 describe("proxy matcher", () => {
   it("covers a dotted path that 404s, so error pages still get a CSP", () => {
     // The exact probe a header scanner uses; this is the regression under test.
