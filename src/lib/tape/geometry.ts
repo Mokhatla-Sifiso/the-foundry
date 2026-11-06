@@ -57,6 +57,14 @@ export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   ],
 };
 
+/** The confirm and unsubscribe pages: one quieter strip low across the screen, from the boards. */
+const PAGE_STRIP = { rz: -3, ry: 12, tz: 40, far: "left", offset: 0, delay: 0 } as const;
+export const PAGE_PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
+  desktop: [{ ...PAGE_STRIP, cy: 0.88, thick: 0.085 }],
+  tablet: [{ ...PAGE_STRIP, cy: 0.88, thick: 0.085 }],
+  mobile: [{ ...PAGE_STRIP, cy: 0.9, thick: 0.06 }],
+};
+
 /**
  * Print size as a share of strip thickness. Smaller on phones so one whole phrase fits across
  * the screen (G14); on wider screens it fills the strip like the reference.

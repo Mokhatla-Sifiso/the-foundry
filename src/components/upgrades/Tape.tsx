@@ -1,7 +1,7 @@
 "use client";
 import { useRef, type CSSProperties, type RefObject } from "react";
 import { useTapeScene, type PlacedStrip } from "@/hooks/useTapeScene";
-import { PHRASE } from "@/lib/tape/geometry";
+import { PHRASE, type TapeLayout, type TapePreset } from "@/lib/tape/geometry";
 import "./tokens.css";
 import "./tape.css";
 
@@ -10,18 +10,19 @@ export interface TapeProps {
   stage: RefObject<HTMLElement | null>;
   /** No strip rises above this element's bottom edge. */
   ceiling: RefObject<HTMLElement | null>;
-  /** No strip passes behind this element. */
   /** No strip passes behind these elements. Pass a stable array. */
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
+  /** The strips to draw, per layout. The gate's three by default. */
+  presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
 }
 
 /**
- * The three glossy caution-tape strips (spec UG 4.2, G12 to G14). Decorative and hidden from
- * assistive technology: the page's own heading carries the message.
+ * The glossy caution-tape strips (spec UG 4.2, G12 to G14): the gate's three, or the pages' one.
+ * Decorative and hidden from assistive technology: the page's own heading carries the message.
  */
-export function Tape({ stage, ceiling, avoid }: TapeProps): React.ReactElement {
+export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.ReactElement {
   const measure = useRef<HTMLSpanElement>(null);
-  const scene = useTapeScene({ stage, ceiling, avoid, measure });
+  const scene = useTapeScene({ stage, ceiling, avoid, measure, presets });
   return (
     <div
       className="ug-tapes"

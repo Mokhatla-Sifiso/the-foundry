@@ -1,5 +1,7 @@
 /* Upgrades gate (spec UG 4.1): the stage, the top bar and where the two buttons sit. */
+/* Full height, so the strip of screen behind an open consent banner is the gate's own colour. */
 .ug-root {
+  min-height: 100svh;
   background: var(--ug-bg-page);
   color: var(--ug-text-primary);
 }

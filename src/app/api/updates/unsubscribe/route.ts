@@ -28,10 +28,9 @@ export async function POST(request: Request): Promise<Response> {
       : seeOther(request, PAGE, { status: outcome });
   } catch (err) {
     console.error("[updates/unsubscribe]", err);
-    // A 5xx lets the mail provider retry a one-click request later.
-    return oneClick
-      ? new Response(null, { status: 500 })
-      : seeOther(request, PAGE, { status: "error" });
+    // A 5xx lets the mail provider retry a one-click request later; the page offers it again.
+    if (oneClick) return new Response(null, { status: 500 });
+    return seeOther(request, PAGE, token ? { status: "error", token } : { status: "error" });
   }
 }
 
