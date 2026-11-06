@@ -41,6 +41,19 @@ cookies, and the CSP stays fully locked down.
 To verify: set the ID, open the site, click **Accept all** — a `_ga` cookie
 appears and the visit shows up in GA Realtime within a few seconds.
 
+## Launch updates (the upgrades gate)
+
+"Notify me when the updates are done" stores sign-ups in Neon and emails through Resend. Before
+it works in production:
+
+1. Apply the `update_subscriber` migration with [the runbook](docs/runbooks/prisma-migrations.md).
+2. In **Vercel → Settings → Environment Variables**, set `CRON_SECRET` for Production (letters
+   and digits, 16 or more), then redeploy. The daily cron in `vercel.json` sends it to
+   `/api/updates/purge`, which deletes sign-ups left unconfirmed for 7 days, as the privacy
+   policy promises.
+3. Check that `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the `KV_REST_API_*`
+   pair) are set, or the sign-up form is not rate limited.
+
 ## Recruiter auth setup
 
 The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.
