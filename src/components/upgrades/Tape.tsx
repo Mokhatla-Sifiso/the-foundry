@@ -11,7 +11,8 @@ export interface TapeProps {
   /** No strip rises above this element's bottom edge. */
   ceiling: RefObject<HTMLElement | null>;
   /** No strip passes behind this element. */
-  avoid: RefObject<HTMLElement | null>;
+  /** No strip passes behind these elements. Pass a stable array. */
+  avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
 }
 
 /**
