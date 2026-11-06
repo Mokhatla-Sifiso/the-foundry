@@ -1,0 +1,67 @@
+html[data-theme="light"] {
+  --ug-bg-page: #f4f4f5;
+  --ug-text-primary: #08080a;
+  --ug-scene-glow: radial-gradient(65% 70% at 50% 46%, #ffffff 0%, rgb(255 255 255 / 0) 70%);
+  --ug-vignette: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgb(0 0 0 / 0.05) 100%);
+
+  --ug-tape-film: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e4e5e8 4%,
+    #f7f7f8 9%,
+    #ffffff 12%,
+    #d9dade 16.5%,
+    #e3e4e7 30%,
+    #eaebed 50%,
+    #d4d6da 63%,
+    #cdd0d4 80%,
+    #bfc1c6 92%,
+    #e2e3e6 96%,
+    #b0b2b7 100%
+  );
+  --ug-tape-print: #6e7075;
+  --ug-tape-spec: rgb(255 255 255 / 1);
+  --ug-tape-sheen: rgb(255 255 255 / 0.7);
+  --ug-tape-bounce: rgb(255 255 255 / 0.7);
+  --ug-tape-edge-hi: rgb(255 255 255 / 1);
+  --ug-tape-edge-lo: rgb(0 0 0 / 0.22);
+  --ug-tape-bloom: rgb(255 255 255 / 0.55);
+  --ug-tape-bloom-soft: rgb(255 255 255 / 0.35);
+  --ug-tape-dim: rgb(0 0 0 / 0.1);
+  --ug-tape-grain: 0.09;
+  --ug-tape-shadow: rgb(16 18 22 / 0.2);
+  --ug-tape-shadow-contact: rgb(16 18 22 / 0.18);
+}
+
+html[data-theme="dark"] {
+  --ug-bg-page: #08080a;
+  --ug-text-primary: #fafafa;
+  --ug-scene-glow: radial-gradient(60% 70% at 50% 46%, #1f2023 0%, rgb(31 32 35 / 0) 72%);
+  --ug-vignette: radial-gradient(120% 90% at 50% 40%, transparent 50%, rgb(0 0 0 / 0.5) 100%);
+
+  --ug-tape-film: linear-gradient(
+    180deg,
+    #45464b 0%,
+    #252629 6%,
+    #17181a 22%,
+    #0f0f11 46%,
+    #060607 58%,
+    #151618 66%,
+    #08080a 80%,
+    #030304 90%,
+    #1f2023 95%,
+    #000000 100%
+  );
+  --ug-tape-print: #7a7c81;
+  --ug-tape-spec: rgb(255 255 255 / 0.62);
+  --ug-tape-sheen: rgb(255 255 255 / 0.13);
+  --ug-tape-bounce: rgb(255 255 255 / 0.16);
+  --ug-tape-edge-hi: rgb(255 255 255 / 0.35);
+  --ug-tape-edge-lo: rgb(0 0 0 / 0.8);
+  --ug-tape-bloom: rgb(255 255 255 / 0.1);
+  --ug-tape-bloom-soft: rgb(255 255 255 / 0.06);
+  --ug-tape-dim: rgb(0 0 0 / 0.35);
+  --ug-tape-grain: 0.12;
+  --ug-tape-shadow: rgb(0 0 0 / 0.6);
+  --ug-tape-shadow-contact: rgb(0 0 0 / 0.7);
+}
