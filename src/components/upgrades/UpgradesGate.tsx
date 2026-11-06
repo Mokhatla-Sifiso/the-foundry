@@ -1,12 +1,11 @@
 "use client";
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 import { Arrow, Bell } from "@/components/primitives/icons";
 import { useConsentInset } from "@/hooks/useConsentInset";
 import { LaunchDate } from "./LaunchDate";
 import { NotifyDialog } from "./NotifyDialog";
 import { Tape } from "./Tape";
+import { TopBar } from "./TopBar";
 import "./tokens.css";
 import "./buttons.css";
 import "./gate.css";
@@ -36,13 +35,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
         <div className="ug-glow" aria-hidden="true" />
         <div className="ug-vignette" aria-hidden="true" />
         <Tape stage={stage} ceiling={bar} avoid={avoid} />
-        <header ref={bar} className="ug-bar">
-          {/* No prefetch: prefetches skip the proxy, so one would fetch the gated home page. */}
-          <Link href="/" className="brand" prefetch={false}>
-            mzwakhe<span className="d">.</span>
-          </Link>
-          <ThemeToggle />
-        </header>
+        <TopBar ref={bar} />
         <main>
           <h1 className="sr-only">Upgrades in progress</h1>
           <div className="ug-footer">
