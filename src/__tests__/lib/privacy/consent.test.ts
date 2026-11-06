@@ -62,9 +62,7 @@ describe("parseConsent: invalid input", () => {
     expect(parseConsent(raw)).toBeNull();
   });
   it("returns null when choices is missing", () => {
-    const raw = encodeURIComponent(
-      JSON.stringify({ v: COOKIE_POLICY_VERSION, ts: Date.now() }),
-    );
+    const raw = encodeURIComponent(JSON.stringify({ v: COOKIE_POLICY_VERSION, ts: Date.now() }));
     expect(parseConsent(raw)).toBeNull();
   });
   it("returns null when choices is null", () => {

@@ -9,20 +9,8 @@ let mockPathname = "/";
 
 jest.mock("next/script", () => ({
   __esModule: true,
-  default: ({
-    children,
-    src,
-    id,
-  }: {
-    children?: React.ReactNode;
-    src?: string;
-    id?: string;
-  }) =>
-    src ? (
-      <script data-testid={id} data-src={src} />
-    ) : (
-      <script data-testid={id}>{children}</script>
-    ),
+  default: ({ children, src, id }: { children?: React.ReactNode; src?: string; id?: string }) =>
+    src ? <script data-testid={id} data-src={src} /> : <script data-testid={id}>{children}</script>,
 }));
 jest.mock("next/navigation", () => ({ usePathname: () => mockPathname }));
 jest.mock("@/components/privacy/ConsentProvider", () => ({

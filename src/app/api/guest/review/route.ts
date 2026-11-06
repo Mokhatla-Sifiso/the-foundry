@@ -5,7 +5,10 @@ import { reviewCard, reviewEmpty, reviewPage, reviewResult } from "@/lib/access/
 export async function GET(request: Request): Promise<Response> {
   const token = new URL(request.url).searchParams.get("token") ?? "";
   if (!token) {
-    return reviewPage("Guest access", reviewEmpty("Invalid link", "No request token was provided."));
+    return reviewPage(
+      "Guest access",
+      reviewEmpty("Invalid link", "No request token was provided."),
+    );
   }
   const req = await pendingRequestByToken(token);
   if (!req) {
@@ -51,6 +54,9 @@ export async function POST(request: Request): Promise<Response> {
     return reviewPage("Guest access", reviewResult(result.ok, result.message));
   } catch (err) {
     console.error("[guest/review]", err);
-    return reviewPage("Guest access", reviewEmpty("Something went wrong", "Please try that again."));
+    return reviewPage(
+      "Guest access",
+      reviewEmpty("Something went wrong", "Please try that again."),
+    );
   }
 }
