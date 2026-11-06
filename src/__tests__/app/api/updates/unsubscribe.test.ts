@@ -57,7 +57,7 @@ describe("POST /api/updates/unsubscribe from the page", () => {
     service.mockRejectedValue(new Error("db down"));
     const res = await POST(formPost(TOKEN));
     expect(res.headers.get("location")).toBe(
-      "https://mzwakhe.dev/updates/unsubscribe?status=error",
+      `https://mzwakhe.dev/updates/unsubscribe?status=error&token=${TOKEN}`,
     );
     error.mockRestore();
   });

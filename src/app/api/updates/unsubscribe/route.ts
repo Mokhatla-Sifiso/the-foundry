@@ -21,9 +21,8 @@ export async function POST(request: Request): Promise<Response> {
       : seeOther(request, PAGE, { status: outcome });
   } catch (err) {
     console.error("[updates/unsubscribe]", err);
-    return oneClick
-      ? new Response(null, { status: 500 })
-      : seeOther(request, PAGE, { status: "error" });
+    if (oneClick) return new Response(null, { status: 500 });
+    return seeOther(request, PAGE, token ? { status: "error", token } : { status: "error" });
   }
 }
 

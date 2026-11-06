@@ -10,6 +10,7 @@ import {
   type Stage,
   type TapeGeometry,
   type TapeLayout,
+  type TapePreset,
 } from "@/lib/tape/geometry";
 
 const BOX_GAP = 16;
@@ -31,6 +32,7 @@ export interface TapeSceneRefs {
   ceiling: RefObject<HTMLElement | null>;
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
   measure: RefObject<HTMLElement | null>;
+  presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
 }
 
 function relativeRect(el: HTMLElement, frame: DOMRect): Rect {
@@ -43,7 +45,13 @@ function relativeRect(el: HTMLElement, frame: DOMRect): Rect {
   };
 }
 
-export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs): TapeScene | null {
+export function useTapeScene({
+  stage,
+  ceiling,
+  avoid,
+  measure,
+  presets = PRESETS,
+}: TapeSceneRefs): TapeScene | null {
   const [scene, setScene] = useState<TapeScene | null>(null);
 
   useEffect(() => {
@@ -52,7 +60,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
     const measureEl = measure.current;
     const boxes = avoid.map((ref) => ref.current).filter((el): el is HTMLElement => el !== null);
     if (!stageEl || !ceilingEl || !measureEl) return;
-    if (boxes.length === 0 || boxes.length !== avoid.length) return;
+    if (boxes.length !== avoid.length) return;
 
     let frame = 0;
     let live = true;
@@ -62,7 +70,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
       const frameRect = stageEl.getBoundingClientRect();
       const top = relativeRect(ceilingEl, frameRect).bottom;
       const rects = boxes.map((el) => relativeRect(el, frameRect));
-      const bottom = Math.min(...rects.map((r) => r.top));
+      const bottom = rects.length ? Math.min(...rects.map((r) => r.top)) : height + BOX_GAP;
       const layout = layoutFor(width);
       const s: Stage = { width, height, boxTop: top, boxHeight: bottom - BOX_GAP - top };
       if (s.boxHeight <= 0) {
@@ -71,7 +79,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
       }
       const perPx = measureEl.getBoundingClientRect().width / MEASURE_SIZE;
       const phraseWidth = (size: number): number => size * perPx;
-      const fit = fitTapes(resolveTapes(s, PRESETS[layout], PRINT_SCALE[layout]), s, {
+      const fit = fitTapes(resolveTapes(s, presets[layout], PRINT_SCALE[layout]), s, {
         avoid: rects,
         ceiling: top,
       });
@@ -101,7 +109,7 @@ export function useTapeScene({ stage, ceiling, avoid, measure }: TapeSceneRefs):
       cancelAnimationFrame(frame);
       observer?.disconnect();
     };
-  }, [stage, ceiling, avoid, measure]);
+  }, [stage, ceiling, avoid, measure, presets]);
 
   return scene;
 }

@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
+import { RATE_LIMITED, SERVER_ERROR } from "@/lib/updates/messages";
 import { parseSubscribe } from "@/lib/updates/validation";
 
-export const RATE_LIMITED = "A few attempts in a short window. Try again shortly.";
-export const SERVER_ERROR = "Something went wrong. Try again.";
+export { RATE_LIMITED, SERVER_ERROR };
 
 export type NotifyState =
   | Readonly<{ status: "idle" }>
