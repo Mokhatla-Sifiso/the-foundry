@@ -66,6 +66,24 @@ export function Arrow({ className }: IconProps): React.ReactElement {
     </svg>
   );
 }
+export function IconAlert({ className }: IconProps): React.ReactElement {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      {...ROUND}
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5v5.5M12 16.5v.01" />
+    </svg>
+  );
+}
 export function Bell({ className }: IconProps): React.ReactElement {
   return (
     <svg
