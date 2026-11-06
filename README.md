@@ -54,6 +54,8 @@ The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.
    npx prisma migrate deploy
    npx prisma db seed
    ```
+   The schema is versioned in `prisma/migrations`. A database created earlier with `db push` is
+   adopted once with a baseline; see [docs/runbooks/prisma-migrations.md](docs/runbooks/prisma-migrations.md).
    `mokhatla.mzwakhe@gmail.com` (Mzwakhe Mokhatla) is seeded as the founding admin.
    Additional admins can be added via `POST /api/admin/whitelist { email, name }`
    from any signed-in admin session.
