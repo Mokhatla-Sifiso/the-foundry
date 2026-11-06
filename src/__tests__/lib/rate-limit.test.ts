@@ -6,9 +6,7 @@ function mockUpstash(limitImpl: LimitImpl): {
   ratelimitCtor: jest.Mock & { slidingWindow: jest.Mock };
 } {
   const redisCtor = jest.fn().mockImplementation(() => ({ __redis: true }));
-  const ratelimitCtor = jest
-    .fn()
-    .mockImplementation(() => ({ limit: limitImpl })) as jest.Mock & {
+  const ratelimitCtor = jest.fn().mockImplementation(() => ({ limit: limitImpl })) as jest.Mock & {
     slidingWindow: jest.Mock;
   };
   ratelimitCtor.slidingWindow = jest.fn().mockReturnValue("sliding-window");

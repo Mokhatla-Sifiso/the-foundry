@@ -71,8 +71,7 @@ export function Contact(): React.ReactElement {
             </Reveal>
             <Reveal delay={0.1}>
               <p className="collab-alt">
-                Prefer email?{" "}
-                <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                Prefer email? <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
               </p>
             </Reveal>
           </div>
@@ -129,7 +128,10 @@ export function Contact(): React.ReactElement {
 
                 <label className="collab-field">
                   <span className="collab-label">What&apos;s this about?</span>
-                  <select value={intent} onChange={(e) => setIntent(e.target.value as ContactIntent)}>
+                  <select
+                    value={intent}
+                    onChange={(e) => setIntent(e.target.value as ContactIntent)}
+                  >
                     {CONTACT_INTENTS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}

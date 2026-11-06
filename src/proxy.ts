@@ -10,9 +10,7 @@ export function proxy(request: NextRequest): NextResponse {
   const gaConnect = gaEnabled
     ? " https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com"
     : "";
-  const gaImg = gaEnabled
-    ? " https://www.googletagmanager.com https://*.google-analytics.com"
-    : "";
+  const gaImg = gaEnabled ? " https://www.googletagmanager.com https://*.google-analytics.com" : "";
 
   const csp = [
     `default-src 'self'`,

@@ -118,9 +118,7 @@ describe("transport error handling", () => {
     mockSend.mockResolvedValue({ data: null, error: { message: "rejected" } });
     (process.env as Record<string, string>).NODE_ENV = "production";
     const mod = await loadModule();
-    await expect(mod.sendOtpEmail("jordan@acme.co", "555000")).rejects.toThrow(
-      "rejected",
-    );
+    await expect(mod.sendOtpEmail("jordan@acme.co", "555000")).rejects.toThrow("rejected");
   });
 });
 

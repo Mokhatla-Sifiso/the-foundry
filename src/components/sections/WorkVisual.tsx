@@ -24,7 +24,12 @@ const ACCENT = "var(--candy, #b2d5e5)";
 
 function PlatformVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="pv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -35,14 +40,30 @@ function PlatformVisual(): React.ReactElement {
 
       <rect x="32" y="32" width="116" height="348" rx="14" fill={FG_TINT} />
       {[64, 100, 136, 172, 208].map((y, i) => (
-        <rect key={y} x="50" y={y} width={i === 0 ? 80 : 64 + (i % 2) * 12} height="10" rx="5" fill={i === 0 ? ACCENT : FG_LINE} opacity={i === 0 ? 1 : 0.7} />
+        <rect
+          key={y}
+          x="50"
+          y={y}
+          width={i === 0 ? 80 : 64 + (i % 2) * 12}
+          height="10"
+          rx="5"
+          fill={i === 0 ? ACCENT : FG_LINE}
+          opacity={i === 0 ? 1 : 0.7}
+        />
       ))}
 
       {[0, 1, 2].map((i) => (
         <g key={i} transform={`translate(${172 + i * 132}, 32)`}>
           <rect width="120" height="92" rx="14" fill={FG_TINT} />
           <rect x="14" y="18" width="56" height="8" rx="4" fill={FG_TEXT} opacity="0.4" />
-          <rect x="14" y="40" width={36 + i * 8} height="18" rx="4" fill={i === 1 ? ACCENT : "rgba(255,255,255,0.9)"} />
+          <rect
+            x="14"
+            y="40"
+            width={36 + i * 8}
+            height="18"
+            rx="4"
+            fill={i === 1 ? ACCENT : "rgba(255,255,255,0.9)"}
+          />
           <rect x="14" y="70" width="40" height="6" rx="3" fill={FG_TEXT} opacity="0.35" />
         </g>
       ))}
@@ -80,7 +101,12 @@ function PlatformVisual(): React.ReactElement {
 
 function PortalVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="bv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -128,7 +154,12 @@ function PortalVisual(): React.ReactElement {
 
 function FintechVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="fv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -142,7 +173,13 @@ function FintechVisual(): React.ReactElement {
       <rect width="600" height="412" fill="url(#fv-bg)" />
 
       <g transform="translate(60, 70) rotate(-6 130 80)">
-        <rect width="260" height="160" rx="18" fill="url(#fv-card)" stroke="rgba(255,255,255,0.08)" />
+        <rect
+          width="260"
+          height="160"
+          rx="18"
+          fill="url(#fv-card)"
+          stroke="rgba(255,255,255,0.08)"
+        />
         <rect x="22" y="34" width="36" height="26" rx="6" fill={ACCENT} opacity="0.85" />
         <rect x="28" y="40" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
         <rect x="28" y="46" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
@@ -167,7 +204,15 @@ function FintechVisual(): React.ReactElement {
             <circle cx="14" cy="18" r="5" fill={i === 0 ? ACCENT : FG_LINE} />
             <rect x="36" y="8" width="120" height="8" rx="4" fill={FG_TEXT} opacity="0.55" />
             <rect x="36" y="22" width="80" height="6" rx="3" fill={FG_TEXT} opacity="0.3" />
-            <rect x="160" y="14" width={32 + (i % 2) * 10} height="8" rx="4" fill={i % 2 === 0 ? ACCENT : "rgba(255,255,255,0.8)"} opacity={i % 2 === 0 ? 0.85 : 0.65} />
+            <rect
+              x="160"
+              y="14"
+              width={32 + (i % 2) * 10}
+              height="8"
+              rx="4"
+              fill={i % 2 === 0 ? ACCENT : "rgba(255,255,255,0.8)"}
+              opacity={i % 2 === 0 ? 0.85 : 0.65}
+            />
           </g>
         ))}
       </g>
@@ -190,28 +235,63 @@ function GisVisual(): React.ReactElement {
     { x: 360, y: 360, r: 5 },
   ];
   const edges = [
-    [0, 1], [1, 2], [2, 3], [3, 4],
-    [1, 5], [2, 6], [3, 7], [4, 8],
-    [5, 9], [6, 9], [6, 10], [7, 10], [8, 7],
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7],
+    [4, 8],
+    [5, 9],
+    [6, 9],
+    [6, 10],
+    [7, 10],
+    [8, 7],
   ];
 
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="gv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
           <stop offset="100%" stopColor={BG_DARK} />
         </linearGradient>
         <pattern id="gv-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.045)" strokeWidth="1" />
+          <path
+            d="M 40 0 L 0 0 0 40"
+            fill="none"
+            stroke="rgba(255,255,255,0.045)"
+            strokeWidth="1"
+          />
         </pattern>
       </defs>
       <rect width="600" height="412" fill="url(#gv-bg)" />
       <rect width="600" height="412" fill="url(#gv-grid)" />
 
-      <path d="M 0 280 Q 150 240, 300 270 T 600 250" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
-      <path d="M 0 320 Q 180 290, 320 310 T 600 295" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
-      <path d="M 0 200 Q 200 160, 380 190 T 600 180" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
+      <path
+        d="M 0 280 Q 150 240, 300 270 T 600 250"
+        fill="none"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M 0 320 Q 180 290, 320 310 T 600 295"
+        fill="none"
+        stroke="rgba(255,255,255,0.06)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M 0 200 Q 200 160, 380 190 T 600 180"
+        fill="none"
+        stroke="rgba(255,255,255,0.06)"
+        strokeWidth="1.5"
+      />
 
       {edges.map(([a, b], i) => {
         const A = nodes[a];
@@ -233,7 +313,13 @@ function GisVisual(): React.ReactElement {
 
       {nodes.map((n, i) => (
         <g key={i}>
-          <circle cx={n.x} cy={n.y} r={n.r + 6} fill={n.accent ? ACCENT : "rgba(255,255,255,0.05)"} opacity={n.accent ? 0.18 : 1} />
+          <circle
+            cx={n.x}
+            cy={n.y}
+            r={n.r + 6}
+            fill={n.accent ? ACCENT : "rgba(255,255,255,0.05)"}
+            opacity={n.accent ? 0.18 : 1}
+          />
           <circle cx={n.x} cy={n.y} r={n.r} fill={n.accent ? ACCENT : "rgba(255,255,255,0.85)"} />
         </g>
       ))}
