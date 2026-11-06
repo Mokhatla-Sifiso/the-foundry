@@ -1,5 +1,5 @@
 import { act, render, renderHook } from "@testing-library/react";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { MEASURE_SIZE, useTapeScene, type TapeScene } from "@/hooks/useTapeScene";
 
 type Box = { left: number; top: number; width: number; height: number };
@@ -41,7 +41,8 @@ function Harness({
     place(a, { left: 390, top: stageSize.height - 96, width: 660, height: 56 });
     place(m, { left: 0, top: 0, width: 12.72 * MEASURE_SIZE, height: 100 });
   }, [stageSize]);
-  onScene(useTapeScene({ stage, ceiling, avoid, measure }));
+  const boxes = useMemo(() => [avoid], [avoid]);
+  onScene(useTapeScene({ stage, ceiling, avoid: boxes, measure }));
   return (
     <div ref={stage}>
       <div ref={ceiling} />
@@ -136,7 +137,7 @@ describe("useTapeScene", () => {
       useTapeScene({
         stage: { current: null },
         ceiling: { current: null },
-        avoid: { current: null },
+        avoid: [{ current: null }],
         measure: { current: null },
       }),
     );
