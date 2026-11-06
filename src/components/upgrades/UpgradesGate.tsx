@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 import { Arrow, Bell } from "@/components/primitives/icons";
 import { useConsentInset } from "@/hooks/useConsentInset";
+import { NotifyDialog } from "./NotifyDialog";
 import { Tape } from "./Tape";
 import "./tokens.css";
 import "./buttons.css";
@@ -17,6 +18,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
   const stage = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
   const actions = useRef<HTMLDivElement>(null);
+  const [notifyOpen, setNotifyOpen] = useState(false);
   useConsentInset(stage);
 
   return (
@@ -43,7 +45,12 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
                 </span>
               </button>
             </form>
-            <button type="button" className="ug-btn ug-btn--secondary" aria-haspopup="dialog">
+            <button
+              type="button"
+              className="ug-btn ug-btn--secondary"
+              aria-haspopup="dialog"
+              onClick={() => setNotifyOpen(true)}
+            >
               <span className="ug-btn__label">Notify me when the updates are done</span>
               <span className="ug-btn__ic">
                 <Bell />
@@ -52,6 +59,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
           </div>
         </main>
       </div>
+      <NotifyDialog open={notifyOpen} onClose={() => setNotifyOpen(false)} />
     </div>
   );
 }

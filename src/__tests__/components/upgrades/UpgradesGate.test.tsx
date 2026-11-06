@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { UpgradesGate } from "@/components/upgrades/UpgradesGate";
 
 jest.mock("@/hooks/useTapeScene", () => ({
@@ -54,5 +54,16 @@ describe("UpgradesGate", () => {
     for (const selector of [".ug-tapes", ".ug-glow", ".ug-vignette"]) {
       expect(container.querySelector(selector)).toHaveAttribute("aria-hidden", "true");
     }
+  });
+
+  it("opens the notify dialog from the second button", () => {
+    HTMLDialogElement.prototype.showModal = jest.fn(function (this: HTMLDialogElement) {
+      this.setAttribute("open", "");
+    });
+    render(<UpgradesGate />);
+    fireEvent.click(screen.getByRole("button", { name: "Notify me when the updates are done" }));
+    expect(screen.getByRole("dialog", { name: "Get one email when it's live" })).toHaveAttribute(
+      "open",
+    );
   });
 });
