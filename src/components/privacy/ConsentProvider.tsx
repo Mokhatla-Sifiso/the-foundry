@@ -39,6 +39,13 @@ export function useConsent(): ConsentContextValue {
   const ctx = useContext(ConsentContext);
   return ctx ?? NOOP_CONSENT;
 }
+export const CONSENT_BANNER_ID = "consent-banner";
+export function bannerVisible({
+  resolved,
+  open,
+}: Pick<ConsentContextValue, "resolved" | "open">): boolean {
+  return !resolved || open;
+}
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));

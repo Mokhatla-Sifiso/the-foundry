@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 import { Arrow, Bell } from "@/components/primitives/icons";
+import { useConsentInset } from "@/hooks/useConsentInset";
 import { Tape } from "./Tape";
 import "./tokens.css";
 import "./buttons.css";
@@ -16,6 +17,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
   const stage = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
   const actions = useRef<HTMLDivElement>(null);
+  useConsentInset(stage);
 
   return (
     <div className="ug-root">
