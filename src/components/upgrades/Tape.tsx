@@ -1,7 +1,7 @@
 "use client";
 import { useRef, type CSSProperties, type RefObject } from "react";
 import { useTapeScene, type PlacedStrip } from "@/hooks/useTapeScene";
-import { PHRASE } from "@/lib/tape/geometry";
+import { PHRASE, type TapeLayout, type TapePreset } from "@/lib/tape/geometry";
 import "./tokens.css";
 import "./tape.css";
 
@@ -9,11 +9,12 @@ export interface TapeProps {
   stage: RefObject<HTMLElement | null>;
   ceiling: RefObject<HTMLElement | null>;
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
+  presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
 }
 
-export function Tape({ stage, ceiling, avoid }: TapeProps): React.ReactElement {
+export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.ReactElement {
   const measure = useRef<HTMLSpanElement>(null);
-  const scene = useTapeScene({ stage, ceiling, avoid, measure });
+  const scene = useTapeScene({ stage, ceiling, avoid, measure, presets });
   return (
     <div
       className="ug-tapes"
