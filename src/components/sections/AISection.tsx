@@ -93,7 +93,6 @@ export function AISection({
             <b>CI pipeline</b> were built exactly this way.
           </p>
         </Reveal>
-
       </div>
     </section>
   );

@@ -14,8 +14,6 @@ describe("RootLayout metadata", () => {
     expect(metadata.description).toMatch(/turning ideas into digital realities/i);
   });
   it("opts into indexing", () => {
-    expect(metadata.robots).toEqual(
-      expect.objectContaining({ index: true, follow: true }),
-    );
+    expect(metadata.robots).toEqual(expect.objectContaining({ index: true, follow: true }));
   });
 });
