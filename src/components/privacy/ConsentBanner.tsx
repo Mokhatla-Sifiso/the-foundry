@@ -2,7 +2,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useConsent, ACCEPT_ALL, DEFAULT_REJECTED } from "./ConsentProvider";
+import {
+  useConsent,
+  bannerVisible,
+  ACCEPT_ALL,
+  CONSENT_BANNER_ID,
+  DEFAULT_REJECTED,
+} from "./ConsentProvider";
 import {
   CATEGORY_META,
   CATEGORY_ORDER,
@@ -15,7 +21,7 @@ export function ConsentBanner(): React.ReactElement | null {
   const { record, resolved, save, open, close } = useConsent();
   const [customising, setCustomising] = useState(false);
   const [draft, setDraft] = useState<ConsentChoices>(() => record?.choices ?? DEFAULT_REJECTED);
-  const visible = !resolved || open;
+  const visible = bannerVisible({ resolved, open });
   const openCustomise = (): void => {
     setDraft(record?.choices ?? DEFAULT_REJECTED);
     setCustomising(true);
@@ -32,6 +38,7 @@ export function ConsentBanner(): React.ReactElement | null {
     <AnimatePresence>
       {visible ? (
         <motion.aside
+          id={CONSENT_BANNER_ID}
           className="consent"
           role="dialog"
           aria-modal="false"
