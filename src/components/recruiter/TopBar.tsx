@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
-import { IconBack, Moon, Sun } from "@/components/primitives/icons";
-import { useTheme } from "@/hooks/useTheme";
+import { IconBack } from "@/components/primitives/icons";
+import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 export function TopBar(): React.ReactElement {
-  const { theme, toggle } = useTheme();
   return (
     <div className="topbar">
       <div className="topbar-in">
@@ -11,9 +10,7 @@ export function TopBar(): React.ReactElement {
           mzwakhe<span className="d">.</span>
         </Link>
         <div className="top-actions">
-          <button type="button" className="tbtn" aria-label="Toggle theme" onClick={toggle}>
-            {theme === "light" ? <Moon /> : <Sun />}
-          </button>
+          <ThemeToggle />
           <Link href="/" className="backlink">
             <IconBack />
             Back to site
