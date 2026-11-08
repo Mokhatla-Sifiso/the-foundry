@@ -89,11 +89,10 @@ export function AISection({
         </Reveal>
         <Reveal delay={0.08}>
           <p className="ai-proof">
-            Not a demo: this site&apos;s own access system, its <b>329 tests</b>, and its{" "}
+            Not a demo: this site&apos;s own access system, its <b>415 tests</b>, and its{" "}
             <b>CI pipeline</b> were built exactly this way.
           </p>
         </Reveal>
-
       </div>
     </section>
   );

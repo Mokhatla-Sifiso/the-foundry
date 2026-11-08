@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ACCESS_COOKIE, GATE_PATH, RETURN_HEADER, hasAccess, isExempt } from "@/lib/gate/access";
 
 export function proxy(request: NextRequest): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -9,9 +10,7 @@ export function proxy(request: NextRequest): NextResponse {
   const gaConnect = gaEnabled
     ? " https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com"
     : "";
-  const gaImg = gaEnabled
-    ? " https://www.googletagmanager.com https://*.google-analytics.com"
-    : "";
+  const gaImg = gaEnabled ? " https://www.googletagmanager.com https://*.google-analytics.com" : "";
 
   const csp = [
     `default-src 'self'`,
@@ -32,7 +31,15 @@ export function proxy(request: NextRequest): NextResponse {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  const { pathname, search } = request.nextUrl;
+  const gated = !isExempt(pathname) && !hasAccess(request.cookies.get(ACCESS_COOKIE)?.value);
+  if (gated) requestHeaders.set(RETURN_HEADER, `${pathname}${search}`);
+
+  const response = gated
+    ? NextResponse.rewrite(new URL(GATE_PATH, request.url), {
+        request: { headers: requestHeaders },
+      })
+    : NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }
@@ -40,7 +47,7 @@ export function proxy(request: NextRequest): NextResponse {
 export const config = {
   matcher: [
     {
-      source: "/((?!api|_next/static|_next/image|.*\\..*).*)",
+      source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

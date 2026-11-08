@@ -1,7 +1,14 @@
 import { Ratelimit, type Duration } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-type Kind = "otp-send" | "otp-verify" | "cv-download" | "access-request" | "contact";
+type Kind =
+  | "otp-send"
+  | "otp-verify"
+  | "cv-download"
+  | "access-request"
+  | "contact"
+  | "updates-subscribe"
+  | "updates-confirm";
 
 const POLICY: Record<Kind, { limit: number; window: Duration }> = {
   "otp-send": { limit: 5, window: "10 m" },
@@ -9,6 +16,8 @@ const POLICY: Record<Kind, { limit: number; window: Duration }> = {
   "cv-download": { limit: 30, window: "10 m" },
   "access-request": { limit: 8, window: "10 m" },
   contact: { limit: 4, window: "10 m" },
+  "updates-subscribe": { limit: 5, window: "10 m" },
+  "updates-confirm": { limit: 10, window: "10 m" },
 };
 
 let redis: Redis | null | undefined;
