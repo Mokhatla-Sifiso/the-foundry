@@ -1,0 +1,181 @@
+/* Upgrades gate (spec UG 4.1): the stage, the top bar and where the two buttons sit. */
+/* Full height, so the strip of screen behind an open consent banner is the gate's own colour. */
+.ug-root {
+  min-height: 100svh;
+  background: var(--ug-bg-page);
+  color: var(--ug-text-primary);
+}
+
+/*
+ * One screen tall; a viewport too short for the content scrolls rather than clipping it (4.1).
+ * While the consent banner is open the stage gives up its bottom, so nothing sits under it (G6).
+ */
+.ug-stage {
+  position: relative;
+  height: calc(100svh - var(--ug-consent-inset, 0px));
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ug-bg-page);
+}
+.ug-glow,
+.ug-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ug-glow {
+  background: var(--ug-scene-glow);
+}
+.ug-vignette {
+  background: var(--ug-vignette);
+}
+.ug-stage .ug-tapes {
+  z-index: 1;
+}
+
+/* Brand and theme toggle only (D3). */
+.ug-bar {
+  position: absolute;
+  inset: 14px 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1320px, 100% - 44px);
+  height: 50px;
+  margin-inline: auto;
+}
+
+/* The bottom row: the two buttons centred, the date in the right-hand corner. */
+.ug-footer {
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(1320px, 100% - 44px);
+  margin-inline: auto;
+}
+.ug-actions {
+  display: flex;
+  grid-column: 2;
+  gap: 12px;
+}
+.ug-actions > form {
+  display: flex;
+}
+
+/* Printed finely: small, regular weight, in the secondary grey. */
+.ug-date {
+  grid-column: 3;
+  justify-self: end;
+  color: var(--ug-text-secondary);
+  font: 400 13px/1 var(--font);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+.ug-date__x {
+  position: relative;
+  display: inline-block;
+}
+/* Two sliced copies of a stand-in glyph, shifted apart, flicker over the X while it glitches. */
+.ug-date__x::before,
+.ug-date__x::after {
+  content: attr(data-glyph);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.ug-date__x.is-glitching {
+  animation: ug-glitch 200ms steps(1, end);
+}
+.ug-date__x.is-glitching::before {
+  color: var(--ug-text-primary);
+  animation: ug-glitch-a 200ms steps(1, end);
+}
+.ug-date__x.is-glitching::after {
+  animation: ug-glitch-b 200ms steps(1, end);
+}
+@keyframes ug-glitch {
+  25% {
+    transform: translateX(1px) skewX(-10deg);
+  }
+  50% {
+    opacity: 0.35;
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(0.5px);
+  }
+}
+@keyframes ug-glitch-a {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 0 55% 0);
+    transform: translateX(-2px);
+  }
+  40% {
+    opacity: 1;
+    clip-path: inset(30% 0 30% 0);
+    transform: translateX(2px);
+  }
+  70% {
+    opacity: 1;
+    clip-path: inset(60% 0 0 0);
+    transform: translateX(-1px);
+  }
+}
+@keyframes ug-glitch-b {
+  0% {
+    opacity: 0.8;
+    clip-path: inset(50% 0 0 0);
+    transform: translateX(2px);
+  }
+  50% {
+    opacity: 0.8;
+    clip-path: inset(0 0 60% 0);
+    transform: translateX(-2px);
+  }
+}
+
+/* Phones (the tape's mobile layout starts at the same width): stacked, full width, primary on
+   top, the long labels wrap in balanced lines (G7), and the date sits above the buttons. */
+@media (max-width: 719.98px) {
+  .ug-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: calc(100% - 32px);
+  }
+  .ug-actions {
+    flex-direction: column;
+  }
+  .ug-date {
+    order: -1;
+    align-self: flex-end;
+  }
+  .ug-actions .ug-btn {
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    min-height: 56px;
+    padding: 8px 8px 8px 20px;
+    font-size: 15px;
+    white-space: normal;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ug-date__x.is-glitching,
+  .ug-date__x.is-glitching::before,
+  .ug-date__x.is-glitching::after {
+    animation: none;
+  }
+}

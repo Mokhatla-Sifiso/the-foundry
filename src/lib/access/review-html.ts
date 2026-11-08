@@ -82,10 +82,7 @@ export function reviewCard(args: {
 }): string {
   const fields = args.fields
     .filter((f) => f.value)
-    .map(
-      (f) =>
-        `<dt>${esc(f.label)}</dt><dd${f.accent ? ' class="res"' : ""}>${esc(f.value)}</dd>`,
-    )
+    .map((f) => `<dt>${esc(f.label)}</dt><dd${f.accent ? ' class="res"' : ""}>${esc(f.value)}</dd>`)
     .join("");
   const button = (action: string, cls: string, label: string): string =>
     `<form method="POST"><input type="hidden" name="token" value="${esc(args.token)}">` +

@@ -6,9 +6,7 @@ function mockUpstash(limitImpl: LimitImpl): {
   ratelimitCtor: jest.Mock & { slidingWindow: jest.Mock };
 } {
   const redisCtor = jest.fn().mockImplementation(() => ({ __redis: true }));
-  const ratelimitCtor = jest
-    .fn()
-    .mockImplementation(() => ({ limit: limitImpl })) as jest.Mock & {
+  const ratelimitCtor = jest.fn().mockImplementation(() => ({ limit: limitImpl })) as jest.Mock & {
     slidingWindow: jest.Mock;
   };
   ratelimitCtor.slidingWindow = jest.fn().mockReturnValue("sliding-window");
@@ -103,6 +101,23 @@ describe("rate-limit", () => {
       await rateLimit("access-request", "a");
       await rateLimit("access-request", "b");
       expect(ratelimitCtor).toHaveBeenCalledTimes(1);
+    });
+
+    it("applies the launch-update policies under their own prefixes", async () => {
+      process.env.UPSTASH_REDIS_REST_URL = "https://example.upstash.io";
+      process.env.UPSTASH_REDIS_REST_TOKEN = "token-abc";
+      const { ratelimitCtor } = mockUpstash(async () => ({ success: true }));
+      const { rateLimit } = await import("@/lib/rate-limit");
+      await rateLimit("updates-subscribe", "1.2.3.4");
+      await rateLimit("updates-confirm", "1.2.3.4");
+      expect(ratelimitCtor.slidingWindow.mock.calls).toEqual([
+        [5, "10 m"],
+        [10, "10 m"],
+      ]);
+      expect(ratelimitCtor.mock.calls.map(([options]) => options.prefix)).toEqual([
+        "rl:updates-subscribe",
+        "rl:updates-confirm",
+      ]);
     });
 
     it("fails open (returns true) when the limiter throws", async () => {

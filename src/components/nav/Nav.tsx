@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Chat, Dots, Moon, Sun } from "@/components/primitives/icons";
+import { Chat, Dots } from "@/components/primitives/icons";
 import { EASE } from "@/components/primitives/Reveal";
-import { useTheme } from "@/hooks/useTheme";
+import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 import { motion } from "framer-motion";
 type NavProps = Readonly<{
   onOpenMenu: () => void;
@@ -48,7 +48,6 @@ function useBackdropTone(ref: React.RefObject<HTMLElement | null>): Tone {
 }
 
 export function Nav({ onOpenMenu }: NavProps): React.ReactElement {
-  const { theme, toggle } = useTheme();
   const brandRef = useRef<HTMLAnchorElement>(null);
   const tone = useBackdropTone(brandRef);
   return (
@@ -63,9 +62,7 @@ export function Nav({ onOpenMenu }: NavProps): React.ReactElement {
           mzwakhe<span className="d">.</span>
         </a>
         <div className="pills">
-          <button type="button" className="tbtn" aria-label="Toggle theme" onClick={toggle}>
-            {theme === "light" ? <Moon /> : <Sun />}
-          </button>
+          <ThemeToggle />
           <a href="#contact" className="pill pill-light">
             <span className="t">Let&apos;s talk</span>
             <span className="ic">

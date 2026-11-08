@@ -35,7 +35,8 @@ export function Laptop(): React.ReactElement {
                 <span className="g">18</span>
                 <span>
                   <span className="kw">export async function</span>{" "}
-                  <span className="fn">createGuestRequest</span>(<span className="var">args</span>) {"{"}
+                  <span className="fn">createGuestRequest</span>(<span className="var">args</span>){" "}
+                  {"{"}
                 </span>
               </div>
               <div className="vsc-ln">

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 export default function CookiePage(): React.ReactElement {
   return (
-    <LegalLayout title="Cookie Policy" version={COOKIE_POLICY_VERSION} updatedAt="16 July 2026">
+    <LegalLayout title="Cookie Policy" version={COOKIE_POLICY_VERSION} updatedAt="6 November 2026">
       <h2>About this list</h2>
       <p>
         Every cookie and browser-storage key this site sets is listed below. The list is rendered
@@ -60,10 +60,10 @@ export default function CookiePage(): React.ReactElement {
 
       <h2>Changing your mind</h2>
       <p>
-        Click <strong>&ldquo;Cookie preferences&rdquo;</strong>{" "}
-        in the footer at any time to reopen the consent banner. Withdrawing consent does not
-        retroactively erase data we already had your permission to process &mdash; see the{" "}
-        <a href="/legal/privacy">Privacy Policy</a> for that.
+        Click <strong>&ldquo;Cookie preferences&rdquo;</strong> in the footer at any time to reopen
+        the consent banner. Withdrawing consent does not retroactively erase data we already had
+        your permission to process &mdash; see the <a href="/legal/privacy">Privacy Policy</a> for
+        that.
       </p>
     </LegalLayout>
   );
