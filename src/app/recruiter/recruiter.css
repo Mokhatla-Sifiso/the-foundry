@@ -108,7 +108,6 @@ input {
   font-weight: 600;
   white-space: nowrap;
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   transition: transform 0.2s;
 }
 .backlink:hover {
