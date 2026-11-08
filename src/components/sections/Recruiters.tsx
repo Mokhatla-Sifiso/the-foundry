@@ -135,30 +135,30 @@ export function Recruiters(): React.ReactElement {
               href={t.path}
               aria-label={`${t.audience}: ${t.desc}`}
             >
-                <span className="pass-sheen" aria-hidden="true" />
-                <div className="pass-head">
-                  <span className="pass-kicker">{t.tier}</span>
-                  <span className="pass-chip">
-                    <IconLock />
-                    Locked
-                  </span>
-                </div>
-                <div className="pass-holder">
-                  <span className="pass-ey">Access tier</span>
-                  <span className="pass-name">{t.audience}</span>
-                  <span className="pass-role">{t.desc}</span>
-                </div>
-                <ul className="pass-unlocks">
-                  {t.unlocks.map((u) => (
-                    <li key={u}>{u}</li>
-                  ))}
-                </ul>
-                <div className="pass-foot">
-                  <span className="pass-issued">Issued to · —</span>
-                  <span className="pass-go">
-                    Get access <span aria-hidden="true">&rarr;</span>
-                  </span>
-                </div>
+              <span className="pass-sheen" aria-hidden="true" />
+              <div className="pass-head">
+                <span className="pass-kicker">{t.tier}</span>
+                <span className="pass-chip">
+                  <IconLock />
+                  Locked
+                </span>
+              </div>
+              <div className="pass-holder">
+                <span className="pass-ey">Access tier</span>
+                <span className="pass-name">{t.audience}</span>
+                <span className="pass-role">{t.desc}</span>
+              </div>
+              <ul className="pass-unlocks">
+                {t.unlocks.map((u) => (
+                  <li key={u}>{u}</li>
+                ))}
+              </ul>
+              <div className="pass-foot">
+                <span className="pass-issued">Issued to · —</span>
+                <span className="pass-go">
+                  Get access <span aria-hidden="true">&rarr;</span>
+                </span>
+              </div>
             </a>
           ))}
         </div>

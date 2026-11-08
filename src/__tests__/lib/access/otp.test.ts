@@ -1,9 +1,11 @@
 /**
  * @jest-environment node
  */
-import { startOtp, verifyOtp } from "@/lib/access/otp";
+import { hasAcceptedAgreements, startOtp, verifyOtp } from "@/lib/access/otp";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
+import { logConsent } from "@/lib/privacy/log";
+import { PRIVACY_POLICY_VERSION, TERMS_VERSION } from "@/lib/privacy/policy";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 jest.mock("next/headers", () => ({
@@ -25,14 +27,27 @@ jest.mock("@/lib/rate-limit", () => ({
 jest.mock("@/lib/db", () => ({
   db: { user: { update: jest.fn() } },
 }));
+jest.mock("@/lib/privacy/log", () => ({ logConsent: jest.fn() }));
 
 const sendVerificationOTP = auth.api.sendVerificationOTP as unknown as jest.Mock;
 const signInEmailOTP = auth.api.signInEmailOTP as unknown as jest.Mock;
 const userUpdate = db.user.update as unknown as jest.Mock;
 const mockRateLimit = rateLimit as jest.Mock;
 const mockClientIp = clientIp as jest.Mock;
+const mockLogConsent = logConsent as jest.Mock;
 
-function post(body: unknown): Request {
+const CONSENT = { acceptedTerms: true, acceptedPrivacy: true } as const;
+
+// Consent rides along by default so each test exercises the thing it names; the
+// agreement gate itself is asserted explicitly in its own describe block.
+function post(body: Record<string, unknown>): Request {
+  return new Request("http://localhost/api", {
+    method: "POST",
+    body: JSON.stringify({ ...CONSENT, ...body }),
+  });
+}
+
+function postRaw(body: unknown): Request {
   return new Request("http://localhost/api", { method: "POST", body: JSON.stringify(body) });
 }
 
@@ -42,11 +57,91 @@ beforeEach(() => {
   mockClientIp.mockReturnValue("1.2.3.4");
   sendVerificationOTP.mockResolvedValue(undefined);
   userUpdate.mockResolvedValue({});
+  mockLogConsent.mockResolvedValue(undefined);
   jest.spyOn(console, "error").mockImplementation(() => undefined);
 });
 
 afterEach(() => {
   (console.error as jest.Mock).mockRestore?.();
+});
+
+describe("hasAcceptedAgreements", () => {
+  it("passes only when both flags are boolean true", () => {
+    expect(hasAcceptedAgreements(CONSENT)).toBe(true);
+  });
+
+  it.each([
+    ["neither box ticked", {}],
+    ["terms only", { acceptedTerms: true }],
+    ["privacy only", { acceptedPrivacy: true }],
+    ["both explicitly refused", { acceptedTerms: false, acceptedPrivacy: false }],
+    ["truthy strings rather than booleans", { acceptedTerms: "true", acceptedPrivacy: "yes" }],
+    ["truthy numbers rather than booleans", { acceptedTerms: 1, acceptedPrivacy: 1 }],
+  ])("refuses %s", (_label, payload) => {
+    expect(hasAcceptedAgreements(payload)).toBe(false);
+  });
+
+  it("treats a missing body as a refusal rather than throwing", () => {
+    expect(hasAcceptedAgreements(null)).toBe(false);
+    expect(hasAcceptedAgreements(undefined)).toBe(false);
+  });
+});
+
+describe("the agreement gate", () => {
+  it("sends no code when startOtp gets no consent", async () => {
+    const res = await startOtp(postRaw({ email: "jordan@acme.co", name: "Jordan" }), "test");
+    expect(res.status).toBe(400);
+    await expect(res.json()).resolves.toEqual({
+      message: "Please accept the Terms of Use and the Privacy Policy to continue.",
+      field: "consent",
+    });
+    expect(sendVerificationOTP).not.toHaveBeenCalled();
+  });
+
+  it("refuses before spending a rate-limit token", async () => {
+    await startOtp(postRaw({ email: "jordan@acme.co", name: "Jordan" }), "test");
+    expect(mockRateLimit).not.toHaveBeenCalled();
+  });
+
+  it("issues no session when a code is replayed straight at verifyOtp without consent", async () => {
+    const res = await verifyOtp(postRaw({ email: "jordan@acme.co", otp: "123456" }), "test");
+    expect(res.status).toBe(400);
+    await expect(res.json()).resolves.toEqual({
+      message: "Please accept the Terms of Use and the Privacy Policy to continue.",
+      field: "consent",
+    });
+    expect(signInEmailOTP).not.toHaveBeenCalled();
+    expect(mockLogConsent).not.toHaveBeenCalled();
+  });
+
+  it("still rejects a malformed email even when both boxes are ticked", async () => {
+    const res = await startOtp(post({ email: "nope", name: "Jordan" }), "test");
+    expect(res.status).toBe(400);
+    expect(sendVerificationOTP).not.toHaveBeenCalled();
+  });
+
+  it("records both agreements against the verified user, tagged with the journey", async () => {
+    signInEmailOTP.mockResolvedValue({ user: { id: "u1", name: "Jordan" } });
+    const res = await verifyOtp(post({ email: "jordan@acme.co", otp: "123456" }), "executive");
+    expect(res.status).toBe(200);
+    expect(mockLogConsent).toHaveBeenCalledWith({
+      userId: "u1",
+      action: "accept_terms",
+      payload: { version: TERMS_VERSION, journey: "executive" },
+    });
+    expect(mockLogConsent).toHaveBeenCalledWith({
+      userId: "u1",
+      action: "accept_privacy",
+      payload: { version: PRIVACY_POLICY_VERSION, journey: "executive" },
+    });
+  });
+
+  it("logs no consent when the code itself is rejected", async () => {
+    signInEmailOTP.mockRejectedValue(new Error("OTP expired"));
+    const res = await verifyOtp(post({ email: "jordan@acme.co", otp: "123456" }), "guest");
+    expect(res.status).toBe(401);
+    expect(mockLogConsent).not.toHaveBeenCalled();
+  });
 });
 
 describe("startOtp", () => {
@@ -86,7 +181,9 @@ describe("startOtp", () => {
   });
 
   it("returns 429 when only the email bucket is exhausted", async () => {
-    mockRateLimit.mockImplementationOnce(async () => true).mockImplementationOnce(async () => false);
+    mockRateLimit
+      .mockImplementationOnce(async () => true)
+      .mockImplementationOnce(async () => false);
     const res = await startOtp(post({ email: "jordan@acme.co", name: "Jordan" }), "test");
     expect(res.status).toBe(429);
   });

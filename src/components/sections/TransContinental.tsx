@@ -102,9 +102,9 @@ const LOCATIONS: ReadonlyArray<Location> = [
     country: "South Africa",
     org: "MTN Group",
     role: "Software Engineer · Acting Tech Lead",
-    when: "Mar 2024 to Present",
+    when: "Mar 2024 to Apr 2026",
     dayToDay:
-      "Leading StudioSync sprints, reviews and mentoring while building microfrontends across MTN's internal platforms.",
+      "Led StudioSync sprints, reviews and mentoring while building microfrontends across MTN's internal platforms.",
     core: [
       "Acting Technical Lead on StudioSync (payroll & contract platform)",
       "Microfrontends for Kente, Bayobab BSP Portal, HR Assist, Knowledge Base",
@@ -129,9 +129,9 @@ const LOCATIONS: ReadonlyArray<Location> = [
     country: "South Africa",
     org: "Accenture",
     role: "Software Product & Platform Engineer",
-    when: "Mar 2024 to Present",
+    when: "Mar 2024 to Apr 2026",
     dayToDay:
-      "Shaping the Bayobab Client Portal's architecture and moving its backend from Java to TypeScript.",
+      "Shaped the Bayobab Client Portal's architecture and moved its backend from Java to TypeScript.",
     core: [
       "Frontend architecture for the Bayobab Client Portal",
       "Java to TypeScript backend migration",
@@ -212,7 +212,8 @@ export function TransContinental(): React.ReactElement {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="trans-h">
-            Two countries,<br />
+            Two countries,
+            <br />
             <span className="em">one team at a time.</span>
           </h2>
         </Reveal>
@@ -232,12 +233,7 @@ export function TransContinental(): React.ReactElement {
               aria-hidden="true"
             >
               <defs>
-                <pattern
-                  id="trans-grid"
-                  width="22"
-                  height="22"
-                  patternUnits="userSpaceOnUse"
-                >
+                <pattern id="trans-grid" width="22" height="22" patternUnits="userSpaceOnUse">
                   <circle cx="2" cy="2" r="1.1" fill="currentColor" opacity="0.18" />
                 </pattern>
                 <radialGradient id="trans-glow" cx="50%" cy="50%" r="50%">

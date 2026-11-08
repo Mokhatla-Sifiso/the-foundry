@@ -1,0 +1,144 @@
+/*
+ * Upgrades form controls (spec UG 4.7), from the approved boards. Errors use the page's one
+ * non-monochrome colour, always with an icon and text (G9).
+ */
+html[data-theme="light"] {
+  --ug-bg-field: #ffffff;
+  --ug-border-field: #7a7c81;
+  --ug-text-error: #b3261e;
+  --ug-border-error: #b3261e;
+}
+html[data-theme="dark"] {
+  --ug-bg-field: #08080a;
+  --ug-border-field: #6e7075;
+  --ug-text-error: #f2b8b5;
+  --ug-border-error: #f2b8b5;
+}
+
+.ug-form {
+  display: grid;
+  gap: 20px;
+}
+.ug-field {
+  display: grid;
+  gap: 8px;
+}
+.ug-field label {
+  font: 500 14px/20px var(--font);
+}
+.ug-input {
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--ug-border-field);
+  border-radius: 14px;
+  background: var(--ug-bg-field);
+  color: var(--ug-text-primary);
+  font: 400 16px/24px var(--font);
+}
+.ug-input:focus-visible {
+  outline: 2px solid var(--ug-focus-ring);
+  outline-offset: 1px;
+}
+.ug-input[aria-invalid="true"] {
+  padding-left: 15px;
+  border: 2px solid var(--ug-border-error);
+}
+.ug-input:read-only {
+  opacity: 0.6;
+}
+
+/* A real checkbox, drawn by the box beside it, so it keeps native semantics and keyboard use. */
+.ug-consent {
+  display: grid;
+  gap: 8px;
+}
+.ug-check {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  align-items: start;
+  color: var(--ug-text-secondary);
+  font: 400 14px/21px var(--font);
+  cursor: pointer;
+}
+.ug-check__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.ug-check__box {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--ug-border-field);
+  border-radius: 6px;
+  background: var(--ug-bg-field);
+  color: transparent;
+}
+.ug-check__box svg {
+  width: 14px;
+  height: 14px;
+}
+.ug-check__input:checked + .ug-check__box {
+  border-color: var(--ug-button-primary-bg);
+  background: var(--ug-button-primary-bg);
+  color: var(--ug-button-primary-fg);
+}
+.ug-check__input[aria-invalid="true"] + .ug-check__box {
+  border: 2px solid var(--ug-border-error);
+}
+.ug-check__input:focus-visible + .ug-check__box {
+  outline: 2px solid var(--ug-focus-ring);
+  outline-offset: 2px;
+}
+.ug-check a {
+  color: var(--ug-text-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ug-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--ug-text-error);
+  font: 500 13px/18px var(--font);
+}
+.ug-error svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.ug-alert {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--ug-border-error);
+  border-radius: 12px;
+  color: var(--ug-text-error);
+  font: 500 14px/20px var(--font);
+}
+.ug-alert svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+/* Off screen and out of the tab order; only bots fill it in. */
+.ug-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

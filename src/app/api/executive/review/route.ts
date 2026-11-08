@@ -50,7 +50,10 @@ export async function POST(request: Request): Promise<Response> {
     const raw = String(form.get("action") ?? "");
     const action = raw === "approve" ? "approve" : raw === "reject" ? "reject" : null;
     if (!token || !action) {
-      return reviewPage("Executive request", reviewEmpty("Invalid request", "Something was missing."));
+      return reviewPage(
+        "Executive request",
+        reviewEmpty("Invalid request", "Something was missing."),
+      );
     }
     const result = await reviewExecutiveRequest(token, action);
     return reviewPage("Executive request", reviewResult(result.ok, result.message));

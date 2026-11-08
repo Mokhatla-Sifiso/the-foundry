@@ -2,8 +2,8 @@
 
 > **Purpose of this document.** This is a single-file, exhaustive reconstruction spec for the project codenamed **the-foundry** — the personal portfolio + recruiter-access web application of **Mzwakhe Mokhatla**. It is written so that, given only this file, an engineer (or an AI) could regenerate the project **1:1** — functionality, logic, UI, calculations, data model, styling, tooling, and deployment. It has two halves:
 >
-> 1. **The Narrative (Sections 0–28)** — the *why* and *how*: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
-> 2. **The Source Appendix (Section 29)** — the *ground truth*: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
+> 1. **The Narrative (Sections 0–28)** — the _why_ and _how_: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
+> 2. **The Source Appendix (Section 29)** — the _ground truth_: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
 >
 > Binary assets (the portrait PNG, the CV PDF, the favicon) cannot be represented as text and are documented by path, purpose, and dimensions in Section 5; supply your own.
 
@@ -38,30 +38,36 @@ The project is intentionally comment-free across every source file (a deliberate
 ## 2. Tech stack (exact versions)
 
 **Runtime / framework**
+
 - **Next.js `16.2.9`** — App Router, Turbopack dev server, React Server Components by default. NOTE: this is a breaking-change-heavy Next major; conventions differ from Next 13–15 (see `AGENTS.md`).
 - **React `19.2.4`** / **react-dom `19.2.4`**.
 - **TypeScript `^5`**, `"strict": true`, `moduleResolution: "bundler"`, path alias `@/* → ./src/*`.
 - **Node 22** in CI; Node ≥20 locally.
 
 **Styling**
+
 - **Tailwind CSS v4** (`tailwindcss@^4`, `@tailwindcss/postcss@^4`) — used via `@import "tailwindcss"` and the new `@theme inline` / `@variant` CSS-first configuration (no `tailwind.config.js`). The vast majority of styling is hand-written CSS in `globals.css` and a few component CSS files; Tailwind is present mostly for its reset + token bridge.
 - Font: **Onest** via `next/font/google` (weights 400–900), exposed as CSS var `--font-onest`.
 
 **Animation / scroll**
+
 - **framer-motion `^12.40.0`** — entrance/scroll animations, `AnimatePresence`, `useScroll`/`useTransform`/`useSpring`.
 - **lenis `^1.3.23`** — smooth wheel scrolling (touch left native).
 
 **Auth / data / email**
+
 - **better-auth `^1.6.20`** — email-OTP plugin, Prisma adapter, `nextCookies` plugin, Next.js catch-all handler.
 - **prisma `^7.8.0`** + **@prisma/client `^7.8.0`** + **@prisma/adapter-neon `^7.8.0`** + **@neondatabase/serverless `^1.1.0`** — Prisma 7 (breaking: no `url` in `schema.prisma`; driver-adapter required; `prisma.config.ts` replaces config in schema).
 - **Neon Postgres** — serverless Postgres (EU-West-2 in production).
 - **resend `^6.14.0`** — transactional email (the OTP code).
 
 **UI helpers**
+
 - **react-hot-toast `^2.6.0`** — all user-facing error/success feedback.
 - **simple-icons `^16.24.0`** — MIT monochrome brand SVG paths (Accenture, GE) rendered with `currentColor`.
 
 **Tooling / test**
+
 - **jest `^30`** + `jest-environment-jsdom` + Testing Library (`@testing-library/react|dom|jest-dom|user-event`), `next/jest`.
 - **eslint `^9`** + `eslint-config-next@16.2.9` (flat config).
 - **prettier `^3.8.4`** (printWidth 100, double quotes, trailing commas all, semicolons).
@@ -73,13 +79,13 @@ The Appendix `package.json` is the authoritative version list. `package-lock.jso
 
 ## 3. External services & accounts required
 
-| Service | Why | What to create |
-|---|---|---|
-| **Neon Postgres** | Primary DB (auth, whitelist, recruiter profiles, consent logs) | A project + database; grab **pooled** (`DATABASE_URL`) and **direct** (`DIRECT_URL`) connection strings |
-| **Resend** | Sends the OTP email | API key + a **verified sender domain**; set `RESEND_FROM` to a verified sender |
-| **Vercel** | Hosting + CI deploy target | Import the GitHub repo; set env vars; optionally attach a custom domain |
-| **GitHub** | Source + Actions CI | Repo `Mokhatla-Sifiso/the-foundry`; Actions runs type-check/lint/test/build |
-| **Custom domain** (optional, v1) | Canonical URLs | Buy + attach in Vercel; set `NEXT_PUBLIC_SITE_URL` |
+| Service                          | Why                                                            | What to create                                                                                          |
+| -------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Neon Postgres**                | Primary DB (auth, whitelist, recruiter profiles, consent logs) | A project + database; grab **pooled** (`DATABASE_URL`) and **direct** (`DIRECT_URL`) connection strings |
+| **Resend**                       | Sends the OTP email                                            | API key + a **verified sender domain**; set `RESEND_FROM` to a verified sender                          |
+| **Vercel**                       | Hosting + CI deploy target                                     | Import the GitHub repo; set env vars; optionally attach a custom domain                                 |
+| **GitHub**                       | Source + Actions CI                                            | Repo `Mokhatla-Sifiso/the-foundry`; Actions runs type-check/lint/test/build                             |
+| **Custom domain** (optional, v1) | Canonical URLs                                                 | Buy + attach in Vercel; set `NEXT_PUBLIC_SITE_URL`                                                      |
 
 If `RESEND_API_KEY` is missing in **non-production**, the OTP is logged to the server console instead of emailed (a dev convenience — see `src/lib/auth/email.ts`).
 
@@ -89,16 +95,16 @@ If `RESEND_API_KEY` is missing in **non-production**, the OTP is logged to the s
 
 All secrets live in `.env.local` (gitignored). `.env.example` is the committed template (Appendix). Priority for the canonical URL is implemented in `src/lib/site-url.ts`.
 
-| Var | Required | Purpose / format |
-|---|---|---|
-| `DATABASE_URL` | Yes (runtime) | Neon **pooled** connection string. Used by the app's Prisma client (`src/lib/db.ts`) and seed. |
-| `DIRECT_URL` | Yes (migrations) | Neon **direct** connection string. Used by `prisma.config.ts` for migrate/seed via the CLI. |
-| `BETTER_AUTH_SECRET` | Yes | `openssl rand -base64 32`. Falls back to an insecure dev default if unset. |
-| `BETTER_AUTH_URL` | Yes (prod) | Public base URL the auth server trusts (e.g. `http://localhost:3000` in dev, the domain in prod). |
-| `RESEND_API_KEY` | Yes (prod) | Resend API key. If absent in dev, OTP prints to console. |
-| `RESEND_FROM` | Yes (prod) | Verified sender, e.g. `Mzwakhe Mokhatla <noreply@your-domain>`. |
-| `NEXT_PUBLIC_SITE_URL` | Optional | Canonical origin once a custom domain is attached (e.g. `https://mzwakhe.dev`). Highest priority in `site-url.ts`. |
-| `NEXT_PUBLIC_AUTH_URL` | Optional | Base URL for the BetterAuth **client** (`src/lib/auth/client.ts`); defaults to `/`. |
+| Var                    | Required         | Purpose / format                                                                                                   |
+| ---------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `DATABASE_URL`         | Yes (runtime)    | Neon **pooled** connection string. Used by the app's Prisma client (`src/lib/db.ts`) and seed.                     |
+| `DIRECT_URL`           | Yes (migrations) | Neon **direct** connection string. Used by `prisma.config.ts` for migrate/seed via the CLI.                        |
+| `BETTER_AUTH_SECRET`   | Yes              | `openssl rand -base64 32`. Falls back to an insecure dev default if unset.                                         |
+| `BETTER_AUTH_URL`      | Yes (prod)       | Public base URL the auth server trusts (e.g. `http://localhost:3000` in dev, the domain in prod).                  |
+| `RESEND_API_KEY`       | Yes (prod)       | Resend API key. If absent in dev, OTP prints to console.                                                           |
+| `RESEND_FROM`          | Yes (prod)       | Verified sender, e.g. `Mzwakhe Mokhatla <noreply@your-domain>`.                                                    |
+| `NEXT_PUBLIC_SITE_URL` | Optional         | Canonical origin once a custom domain is attached (e.g. `https://mzwakhe.dev`). Highest priority in `site-url.ts`. |
+| `NEXT_PUBLIC_AUTH_URL` | Optional         | Base URL for the BetterAuth **client** (`src/lib/auth/client.ts`); defaults to `/`.                                |
 
 **`site-url.ts` resolution order** (no trailing slash): `NEXT_PUBLIC_SITE_URL` → `https://$VERCEL_PROJECT_PRODUCTION_URL` → `https://$VERCEL_URL` → `http://localhost:3000`.
 
@@ -107,6 +113,7 @@ All secrets live in `.env.local` (gitignored). `.env.example` is the committed t
 ## 5. Project structure (annotated)
 
 Root:
+
 ```
 the-foundry/
 ├─ .github/workflows/ci.yml        # GitHub Actions: type-check · lint · test · build
@@ -164,6 +171,7 @@ the-foundry/
 ```
 
 **Binary assets to supply:**
+
 - `public/img/Potrait.png` — portrait, rendered `object-fit: cover` in a rounded frame; used as OG/Twitter image and apple-touch icon (so ideally ≥1200×630 usable). Filename is literally `Potrait.png` (historical typo, referenced as `SITE.portrait`).
 - `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf` — the CV the recruiter flow ultimately offers.
 - `src/app/favicon.ico` — site favicon.
@@ -207,6 +215,7 @@ Seed (`prisma/seed.ts`, run via `tsx`): upserts one founding admin into `admin_w
 Defined at the top of `src/app/globals.css`. **Everything themes off CSS custom properties** switched by `html[data-theme="light"|"dark"]`.
 
 **Global tokens (`:root`)**
+
 - `--onyx: #020202`, `--candy: #b2d5e5` (the one accent), `--font: var(--font-onest), "Onest", system-ui, sans-serif`, `--ease: cubic-bezier(0.22, 1, 0.36, 1)`, `--r: 30px` (base radius).
 
 **Reset & base**: universal `box-sizing:border-box; margin:0; padding:0`; `html { scroll-behavior: smooth }`; `body` uses `--bg` + `--bg-grad` (fixed attachment), `--fg`, font 18px/1.5, antialiased, `overflow-x: clip`, with a 0.6s eased color/background transition (theme cross-fade). `::selection` uses `--candy`. `.wrap` is the content container: `width: min(1320px, 100% - 44px); margin-inline:auto`.
@@ -228,6 +237,7 @@ Defined at the top of `src/app/globals.css`. **Everything themes off CSS custom 
 App Router, RSC-by-default. Client components are explicitly `"use client"` (all animated/interactive ones).
 
 **Route map**
+
 - `/` → `app/page.tsx` (home). Public.
 - `/recruiter` → `app/recruiter/page.tsx` (client state machine). Public entry, gated content.
 - `/legal/privacy`, `/legal/cookies`, `/legal/terms` → static legal pages via `LegalLayout`.
@@ -255,9 +265,14 @@ Three moving parts:
 
 1. **`components/ThemeScript.tsx`** — renders an inline `<script>` that runs **before** hydration:
    ```js
-   (()=>{try{var t=localStorage.getItem('studio-theme')||'light';
-   document.documentElement.setAttribute('data-theme',t);}
-   catch(e){document.documentElement.setAttribute('data-theme','light');}})()
+   (() => {
+     try {
+       var t = localStorage.getItem("studio-theme") || "light";
+       document.documentElement.setAttribute("data-theme", t);
+     } catch (e) {
+       document.documentElement.setAttribute("data-theme", "light");
+     }
+   })();
    ```
    This paints the correct theme immediately (no flash of wrong theme).
 2. **`hooks/useTheme.ts`** — React state mirror. Initial state `"light"`; on mount reads `localStorage('studio-theme')` and adopts it if not light; an effect writes `data-theme` to `<html>` and persists to localStorage on every change. Exposes `{ theme, toggle, setTheme }`. `toggle` flips light↔dark.
@@ -280,6 +295,7 @@ The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a
 ## 13. The home page — section by section
 
 `app/page.tsx` composition, in order, all inside `<SmoothScroll>`:
+
 ```
 <Progress/> <NavMenu/>
 <main>
@@ -290,6 +306,7 @@ The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a
 ```
 
 **Content data lives in `src/lib/constants.ts`** (all verbatim in Appendix), notably:
+
 - `SITE` — name, email `mokhatla.mzwakhe@gmail.com`, phone `067 980 1166` / `tel:+27679801166`, location "Pretoria, South Africa", tagline, `cvHref:"/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf"`, `portrait:"/img/Potrait.png"`.
 - `NAVLINKS` — 01 Work `#work`, 02 Services `#services`, 03 AI Workflow `#ai`, 04 Experience `#experience`, 05 Contact `#contact`.
 - `SERVICES` (4) — Frontend Engineering / Full-Stack & Cloud / Technical Leadership / Platform & DevOps, each with `pills[]` and a description `d`.
@@ -299,7 +316,9 @@ The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a
 - `ASSISTANT_NAME = "Clerk"`, `PEAK_COLOR = "#020202"`.
 
 ### Hero (`sections/Hero.tsx`) — parallax
+
 Client component. `useScroll({ target: heroRef, offset: ["start start","end start"] })` drives three `useTransform`s over scroll progress 0→1:
+
 - `yRender = [0, -40]` — the portrait drifts up.
 - `yMark = [0, 80]` — the giant "mzwakhe" wordmark drifts down (parallax split).
 - `cueFade = [0,0.7] → [1,0]` — the "Scroll" cue fades out over the first 70% of the hero.
@@ -307,32 +326,41 @@ Client component. `useScroll({ target: heroRef, offset: ["start start","end star
 Entrance: wordmark `opacity 0→1, scale 1.04→1` (1.1 s); portrait `opacity 0→1, y 60→0` (1 s, delay 0.25 s) inside `.hero-render-wrap` with a `next/image` `fill priority` (sizes `(min-width:1280px) 620px, (min-width:768px) 40vw, 64vw`, `object-fit:cover`, radius 26) and a `.glowpad`; H1 "Turning ideas into **digital realities.**" fades up (delay 0.5 s); the scroll cue has a pulsing dot (`scale [1,0.5,1]`, infinite 1.6 s).
 
 ### Statement (`sections/Statement.tsx`)
-`#about`. Eyebrow "About" + a large statement: "I'm a full-stack engineer focused on turning your vision into **production-ready** *software*." (`.em` candy, `.mut` muted).
+
+`#about`. Eyebrow "About" + a large statement: "I'm a full-stack engineer focused on turning your vision into **production-ready** _software_." (`.em` candy, `.mut` muted).
 
 ### Services (`sections/Services.tsx`) + StackScaleEffect
+
 `#services`. Header eyebrow + statement ("What I do: front-end-focused, **full-stack capable.**"). Then a `.stack` of `.svc-card` articles built from `SERVICES`. Each card: inline style `{ zIndex: i+1, "--i": i, marginTop: i>0 ? "12vh" : undefined }`, a `NN / 04` counter, an `<h3>` with two lines (`w1`/`w2`), the pills, and a description with a `✳` asterisk. A trailing `.stack-spacer`. The stacking/scale behavior is the **StackScaleEffect** (Section 14). This is the marquee interaction and its correctness (no jitter) was hard-won.
 
 ### Work (`sections/Work.tsx`) + LogoBar + WorkVisual
+
 `#work`. Heading "A track record of turning ideas into **digital realities.**" + lede. Then **`LogoBar`** and a `.work-grid` of 4 cards from `WORK`. Each card: `motion.div` with `whileHover={{ y: -6 }}`, an `.image-slot[data-slot]` containing **`<WorkVisual slot={w.slot} />`** (Section 16), and an overlay with tag/name/org.
 
 **LogoBar** (`sections/LogoBar.tsx`): "Trusted across" + a `.logo-bar` list of 7 brands. Two render kinds: `icon` (an inline `<svg>` using a `simple-icons` path with `fill="currentColor"` — Accenture `siAccenture.path`, GE `siGeneralelectric.path`) and `text` (a typographic wordmark — MTN Group, NMB Bank, Bayobab, Nybble, IST). Dimmed via `opacity:0.5`, brightening on hover; theme-aware through `currentColor`.
 
 ### Experience (`sections/Experience.tsx`)
+
 `#experience`. "Five years building **at scale.**" + an `.xp-list` from `XP`; rows with `now` show a candy `●` marker.
 
 ### TransContinental (`sections/TransContinental.tsx`) — the interactive map
+
 See Section 15 for the full math. `#transcontinental`. A hand-drawn SVG map of five work locations across South Africa + Tanzania, with a chronological "journey" arc, tappable pins + chips, and a side panel that updates to the active location.
 
 ### AISection (`sections/AISection.tsx`) — peak + device mocks
+
 `#ai`. Props `{ showPhone=true, showDesktop=true, threshold=0.25 }`. An **IntersectionObserver** (thresholds `[0, t/2, t, t*1.5, 1]` filtered ≤1) sets `peakActive = ratio ≥ threshold`, toggling the `ai--peak` class that transitions the section toward `PEAK_COLOR` (`#020202`) as it dominates the viewport. Content: eyebrow, "AI is part of **how I build.**", lede, an `.ai-showcase` with device mockups (`Laptop`, `PhoneDevice`, `WatchDevice`, `TabletDevice` from `components/devices`, each wrapped in `Reveal`) and floating `.dev-label`s, then an `.ai-grid` of the 4 `AIITEMS` (numbered, title, desc, tool chips). `showPhone`/`showDesktop` allow responsive hiding of heavy mockups on small screens.
 
 ### Contact (`sections/Contact.tsx`)
+
 `#contact`. A `.contact-card` (with a `.blob`), eyebrow "Contact · Available 2026", big "Don't be **shy.**", two CTAs — "Start a conversation" (`mailto:`) and "Download CV" (→ `/recruiter`) — and a `.c-meta` block (email/phone/located).
 
 ### Footer (`sections/Footer.tsx`)
+
 Big wordmark, subtitle, a links bar (Email/Phone/Work), a "Go up" button (`scrollTo top smooth`), and legal links (Privacy/Cookies/Terms) plus a **"Cookie preferences"** button that calls `useConsent().reopen()` to re-open the consent banner.
 
 ### Nav & Menu
+
 `NavMenu` holds open state and renders `Nav` + `Menu`. **`Nav`**: brand, a **theme toggle** (`useTheme`, Moon/Sun icon), a "Let's talk" pill (→ `#contact`), and a "Menu" pill (opens the overlay). Entrance via framer-motion. **`Menu`**: a full-screen overlay animated with `clipPath: inset(0 0 100%/0% 0)`; locks body scroll and closes on `Escape`; staggered `NAVLINKS`; a footer with Download CV, email, phone, and a theme-mode toggle.
 
 ---
@@ -342,6 +370,7 @@ Big wordmark, subtitle, a links bar (Email/Phone/Work), a "Go up" button (`scrol
 This is the site's signature interaction and the source of a long jitter saga; the final architecture is deliberately simple and **jitter-proof by construction**.
 
 **CSS side (in `globals.css`):**
+
 ```css
 .svc-card {
   position: sticky;
@@ -350,40 +379,47 @@ This is the site's signature interaction and the source of a long jitter saga; t
   /* …visual styling… */
 }
 ```
+
 Position is handled **entirely by native CSS `position: sticky`** — the browser pins each card on the compositor thread at a per-index offset (`--i` set inline). Because the compositor owns pinning, a card **can never lag the scroll** — that lag was the historical jitter.
 
 **JS side (`primitives/StackScaleEffect.tsx`)** — writes **only `scale()`**, never position. Constants:
+
 ```
 BASE_TOP = 80    STEP = 48    SCALE_PER_LAYER = 0.05    SCALE_RANGE = 320
 ```
+
 Algorithm:
+
 1. `cards = [...document.querySelectorAll(".svc-card")]`; bail if `< 2`.
 2. `absTop(el)` = document-absolute layout top: sum `offsetTop` up the `offsetParent` chain. (Uses layout position, **unaffected by sticky pinning**, so dock points stay valid even while pinned.)
-3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)` — the exact `window.scrollY` at which card *i* reaches its sticky top.
-4. `apply()`: let `y = window.scrollY`. For each card *i*, accumulate a `reduction` over **later** cards *j > i*:
+3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)` — the exact `window.scrollY` at which card _i_ reaches its sticky top.
+4. `apply()`: let `y = window.scrollY`. For each card _i_, accumulate a `reduction` over **later** cards _j > i_:
    - `remaining = dock[j] − y`.
-   - if `remaining ≤ 0` (card *j* has fully docked): `reduction += 0.05`.
-   - else if `remaining < 320`: `reduction += 0.05 * (1 − remaining/320)` (ramp in as *j* approaches).
+   - if `remaining ≤ 0` (card _j_ has fully docked): `reduction += 0.05`.
+   - else if `remaining < 320`: `reduction += 0.05 * (1 − remaining/320)` (ramp in as _j_ approaches).
    - Then `cards[i].style.transform = reduction > 0 ? scale(1 − reduction) : ""` (4-dp).
-   Net effect: as later cards dock on top, each earlier card shrinks ~5% per layer, producing a stacked-depth cue (≈ 0.9 / 0.95 / 1.0 scales).
+     Net effect: as later cards dock on top, each earlier card shrinks ~5% per layer, producing a stacked-depth cue (≈ 0.9 / 0.95 / 1.0 scales).
 5. Scroll handling is `requestAnimationFrame`-coalesced (one pending frame max). `resize` re-runs `measure()` + `apply()` (heights are vh-based). Cleanup cancels rAF, unbinds, and clears transforms.
 
-**Why it can't jitter:** `scale()` is anchored at `transform-origin: top center`, so even a scale value a frame behind the scroll keeps the pinned **top edge** fixed — position and scale are fully decoupled. All previous jitter came from JS *positioning* cards against a scroll value that diverged from the browser's real scroll (especially on mobile, where Lenis leaves touch scrolling native). The fix was to stop positioning in JS at all.
+**Why it can't jitter:** `scale()` is anchored at `transform-origin: top center`, so even a scale value a frame behind the scroll keeps the pinned **top edge** fixed — position and scale are fully decoupled. All previous jitter came from JS _positioning_ cards against a scroll value that diverged from the browser's real scroll (especially on mobile, where Lenis leaves touch scrolling native). The fix was to stop positioning in JS at all.
 
 ---
 
 ## 15. TransContinental — the map projection & journey math
 
 **Canvas:** SVG `viewBox="0 0 800 500"` (`VB_W=800, VB_H=500`). A rectangular equirectangular-ish projection over a hand-tuned bounding box:
+
 ```
 LAT_TOP = -4    LAT_BOTTOM = -32    LNG_LEFT = 17    LNG_RIGHT = 43
 project(lat, lng):
   x = ((lng - 17) / (43 - 17)) * 800
   y = ((-4 - lat) / (-4 - (-32))) * 500      // = ((-4 - lat) / 28) * 500
 ```
+
 (A slightly compressed box so the South-African cluster stays legible next to Tanzania.)
 
 **Locations** (`LOCATIONS`, chronological `order`), each `{lat, lng, offsetX?, offsetY?, labelAnchor?}`; the pixel `offset*` nudges resolve the Gauteng cluster so pins don't overlap:
+
 1. Pretoria (IST, Junior Software Developer, Jan 2021–Dec 2022) — lat −25.73, lng 28.19, offset (+70, −110), label start.
 2. Bryanston (Nybble, Frontend Engineer, Dec 2022–Jun 2023) — −26.05, 28.03, offset (−90, −30), label end.
 3. Dar es Salaam (Nybble · NMB Bank, e-Teller, Dec 2022–Jun 2023) — −6.79, 39.21, offset (−30, 0), label end.
@@ -400,18 +436,19 @@ project(lat, lng):
 
 **Pins & interaction:** each location is a `<g transform="translate(x,y)">` with `.trans-pin` (halo circle r22 using `#trans-glow`, ring r10, dot r5, and a `<text>` label anchored per `labelAnchor`). `role="button"`, `tabIndex=0`, `aria-pressed`, click and Enter/Space set `activeId`. Below the map, a `.trans-chips` list mirrors the pins as buttons. An `aside.trans-panel` (`aria-live="polite"`) shows the active location's city/country/org/role/dates.
 
-**Critical CSS invariant (documented in `globals.css`):** *never* put a CSS `transform` on `.trans-pin` itself. Each pin group is positioned via its SVG `transform="translate(x,y)"` **attribute**; a CSS `transform` **property** overrides that attribute entirely, snapping the pin to the SVG origin (0,0). A former `.trans-pin:hover { transform: translate(var(--tx),var(--ty)) }` rule with undefined vars caused a hover→snap→unhover→snap jitter loop; it was removed. Hover feedback lives only on the inner halo/dot.
+**Critical CSS invariant (documented in `globals.css`):** _never_ put a CSS `transform` on `.trans-pin` itself. Each pin group is positioned via its SVG `transform="translate(x,y)"` **attribute**; a CSS `transform` **property** overrides that attribute entirely, snapping the pin to the SVG origin (0,0). A former `.trans-pin:hover { transform: translate(var(--tx),var(--ty)) }` rule with undefined vars caused a hover→snap→unhover→snap jitter loop; it was removed. Hover feedback lives only on the inner halo/dot.
 
 ---
 
 ## 16. WorkVisual — the four abstract card illustrations
 
 `sections/WorkVisual.tsx` maps a `slot` string to one of four hand-built abstract SVG scenes (600×412, `preserveAspectRatio="xMidYMid slice"`, `.work-visual`, `aria-hidden`). Shared palette constants: `BG_LIGHT = var(--card-soft,#2f3236)`, `BG_DARK = #0c1316`, `FG_TINT/FG_LINE/FG_TEXT` (white at low alpha), `ACCENT = var(--candy,#b2d5e5)`. The four scenes:
+
 - `work-studiosync` → **PlatformVisual**: dashboard with sidebar rail, KPI cards, a sparkline polyline + dots, status pills.
 - `work-bayobab` → **PortalVisual**: browser chrome, headline + form fields + a candy CTA, sidebar mini-cards.
 - `work-eteller` → **FintechVisual**: a rotated virtual payment card (chip, digit rows, labels) + a transaction list panel.
 - `work-gis` → **GisVisual**: a map grid with contour curves, pre-computed nodes + edges, and a mini scale bar.
-`default` → PlatformVisual. Pure geometry; no real product UI is depicted. They pick up `--card-*`/`--candy` so they stay on-theme in both modes.
+  `default` → PlatformVisual. Pure geometry; no real product UI is depicted. They pick up `--card-*`/`--candy` so they stay on-theme in both modes.
 
 ---
 
@@ -420,7 +457,9 @@ project(lat, lng):
 The most substantial subsystem: a passwordless, email-OTP recruiter access flow with a separate admin allowlist, backed by BetterAuth + Prisma + Neon + Resend. **Design philosophy:** no failure crashes the page — every non-200 becomes a toast (`lib/api.ts`), and the UI degrades gracefully.
 
 ### 17.1 Server auth config (`lib/auth/server.ts`)
+
 `betterAuth({ … })`:
+
 - `appName: "Mzwakhe Mokhatla, Recruiter Access"`, `baseURL: BETTER_AUTH_URL ?? http://localhost:3000`, `secret` (env or insecure dev default).
 - `database: prismaAdapter(db, { provider: "postgresql" })`.
 - `emailAndPassword: { enabled: false }` (OTP only).
@@ -431,9 +470,11 @@ The most substantial subsystem: a passwordless, email-OTP recruiter access flow 
 - **Client** (`lib/auth/client.ts`): `createAuthClient({ baseURL: NEXT_PUBLIC_AUTH_URL ?? "/", plugins:[emailOTPClient()] })`; re-exports `useSession`, `signOut`.
 
 ### 17.2 The client state machine (`app/recruiter/page.tsx`)
+
 `Step = "gate" | "signup" | "signin" | "otp" | "screening" | "approved"`; `Mode = "signup" | "signin"`. Renders `<TopBar/>` + a `.stage` card that cross-fades between step components with framer-motion (`AnimatePresence mode="wait"`, variants enter/center/exit y-slide, `EASE`, 0.45 s). Key state: `step`, `mode`, `signupDraft`, `signinEmail`, `account`, `otpError`, `resumed`.
 
 Flow:
+
 - **On mount** → `GET /api/recruiter/session` (silent). If it returns an `account`, jump straight to `approved` (session resume). Set `resumed=true` (until then, a busy placeholder).
 - **Gate** → choose "Request access" (→ signup) or "I already have access" (→ signin).
 - **SignUp** (`handleSignUpSubmit`) → `POST /signup/start` with the form; on success toast "Code sent" and go to `otp` (mode signup).
@@ -446,7 +487,9 @@ Flow:
 - **Approved** shows the account + a Download CV affordance; **Sign out** → `POST /signout`, reset state → `gate`.
 
 ### 17.3 Validation (`lib/auth/validation.ts`)
+
 `validateSignup(raw, { isAdmin })` returns `{ok:true, value}` or `{ok:false, error:{field,message}}`. Rules:
+
 - `EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/`.
 - **Work-email gate**: if **not** admin and the domain is in `FREE_DOMAINS` (a 23-entry set: gmail, googlemail, yahoo(.co.uk), hotmail(.co.uk), outlook, live, msn, icloud, me, mac, aol, proton.me, protonmail, gmx, mail.com, yandex, zoho, pm.me, hey, ymail), reject with "Please use your work email…". Admins bypass this.
 - `name ≥ 2`, `company ≥ 2`, `role ≥ 2`, `url ≥ 4` chars.
@@ -456,6 +499,7 @@ Flow:
 `lib/recruiter.ts` holds a parallel client-side copy (`FREE` set, `emailRe`, `domainOf`, `isFree`, `genCode`, localStorage helpers `LS_ACCOUNTS`/`LS_SESSION` + `loadAccounts`/`saveAccounts`) — a lightweight client mirror used by the recruiter form components; the **server** validation is the source of truth.
 
 ### 17.4 API routes (all under `app/api/recruiter/`)
+
 - **`signup/start` (POST)**: parse email, compute `adminGate = isWhitelisted(email)`, `validateSignup(payload, {isAdmin:adminGate})`; on invalid → 400 `{message, field}`; else `auth.api.sendVerificationOTP({ body:{ email, type:"sign-in" }, headers })` → `{ok:true}`. 500 on error.
 - **`signup/verify` (POST)**: require `OTP_RE=/^\d{6}$/`; re-validate; `auth.api.signInEmailOTP({ body:{email,otp}, asResponse:false })` (maps expired/invalid/attempt errors → friendly 401). Then a `db.$transaction([...])`: `user.update` (name, `emailVerified:true`, `acceptedTermsAt/PrivacyAt=now`, `acceptedTermsVer=TERMS_VERSION`, `acceptedPrivacyVer=PRIVACY_POLICY_VERSION`) + `recruiterProfile.upsert` (company/role/url). Then `logConsent` **accept_terms** and **accept_privacy** (Promise.all). Return `{ account: fetchAccount(userId) }`.
 - **`signin/start` (POST)**: valid email required; look up `user` **or** `isWhitelisted`; if neither → 404 "No access found… Request access instead."; else `sendVerificationOTP`.
@@ -467,18 +511,22 @@ Flow:
 - **`data` (GET)** — DSAR export: requires session; builds a JSON `snapshot` (`exportedAt`, `policyVersions`, `identity`, `consent` incl. the full `consentLogs`, `profile`, `sessions`) and returns it as a **downloadable attachment** (`Content-Disposition: attachment; filename="my-data-<id>.json"`, `Cache-Control:no-store`).
 
 ### 17.5 Admin whitelist (`app/api/admin/whitelist/route.ts`, `lib/auth/admin.ts`)
+
 - `isWhitelisted(email)` = a row exists in `admin_whitelist` (normalized lower-case).
 - `getSessionContext()` = `{ userId, email, name, isAdmin }` from the BetterAuth session (or null).
 - `requireAdmin()` throws `HttpError(401)` if unauthenticated, `HttpError(403)` if not admin.
 - **GET** (admin-only): list whitelist entries. **POST** (admin-only): upsert `{ email, name, addedBy: ctx.email }` (201). Bad input → `HttpError(400)`.
 
 ### 17.6 Account projection (`lib/auth/profile.ts`)
+
 `fetchAccount(userId)` joins `user` + `recruiterProfile` + `adminWhitelist` and returns a `RecruiterAccountDto` `{ name, email, company, role, url, verifiedAt(ms), isAdmin, screen }`. `screen` is the profile's `{decision, reason}`, or for a profile-less admin, `{decision:"approve", reason:"Admin allowlist."}`, else `null`. Admins with no profile get `role:"Admin"`.
 
 ### 17.7 OTP email (`lib/auth/email.ts`)
+
 `sendOtpEmail(to, otp)` lazily constructs a Resend client from `RESEND_API_KEY`. If the key is missing: in **non-production** it warns + logs the OTP to console (dev bypass); in production it throws. Subject "Your access code"; a plain-text + inline-HTML body showing the 6-digit code, "expires in 5 minutes". Resend send errors get the same dev-console fallback / prod-throw treatment. `FROM = RESEND_FROM ?? "Mzwakhe Mokhatla <noreply@example.com>"`.
 
 ### 17.8 The DB client (`lib/db.ts`)
+
 A **lazy singleton Proxy** over `PrismaClient`. On first property access it constructs `new PrismaClient({ adapter: new PrismaNeon({ connectionString: DATABASE_URL }), log:["warn","error"] })`, stored on `globalThis` (avoids exhausting connections during dev HMR). Throws a clear error if `DATABASE_URL` is unset. The Proxy binds methods to the real client. This lazy pattern also means importing `db` never crashes at build time when env is absent.
 
 ---
@@ -530,7 +578,7 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 
 ## 21. Testing
 
-- **`jest.config.ts`** via `next/jest`: `testEnvironment: jsdom`, `coverageProvider: v8`, `setupFilesAfterEach: jest.setup.ts`, `moduleNameMapper @/ → src/`. Coverage is **collected from `src/lib/**` and `src/hooks/**`** with **gates: lib & hooks ≥ 80% lines/statements/functions, ≥ 70% branches** (global thresholds 0 — the point is to gate the pure logic, not the presentational components).
+- **`jest.config.ts`** via `next/jest`: `testEnvironment: jsdom`, `coverageProvider: v8`, `setupFilesAfterEach: jest.setup.ts`, `moduleNameMapper @/ → src/`. Coverage is **collected from `src/lib/**`and`src/hooks/**`** with **gates: lib & hooks ≥ 80% lines/statements/functions, ≥ 70% branches** (global thresholds 0 — the point is to gate the pure logic, not the presentational components).
 - **`jest.setup.ts`**: imports `@testing-library/jest-dom` and shims `matchMedia`, `IntersectionObserver`, `ResizeObserver` for jsdom.
 - **`__mocks__/framer-motion.tsx`**: replaces `motion.*` with plain elements (strips animation props) so components render deterministically; `__mocks__/lenis.ts`: no-op.
 - **22 suites / 102 tests** mirror `src/` under `src/__tests__/…` — covering `lib` (colors, constants, recruiter validation), `hooks` (useInView, useTheme), components (Loader, ThemeScript, Nav/Menu, the recruiter components incl. Otp/SignUp/Screening/Approved/Gate/Field/Dots, and the section peak behavior in `AISection.peak.test.tsx`), and app (layout, page, recruiter-page). All 102 pass on the current tree.
@@ -570,6 +618,7 @@ npx prisma db push                # apply schema to Neon
 npx prisma db seed                # seed founding admin (mokhatla.mzwakhe@gmail.com)
 npm run dev                       # http://localhost:3000
 ```
+
 Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run lint`, `npm run format`, `npm run build`. Without `RESEND_API_KEY`, request an OTP and read it from the dev server console.
 
 ---
@@ -590,7 +639,7 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 1. Scaffold Next 16 + TS + Tailwind v4 (no `tailwind.config.js`); set `tsconfig` paths, `postcss`, `eslint`, `prettier`.
 2. `npm i` the exact deps (Appendix `package.json`).
 3. Add `prisma/schema.prisma` (Section 7) + `prisma.config.ts` + `prisma/seed.ts`; provision Neon; `db push`; `db seed`.
-4. Recreate `src/lib/**` (site-url, constants, colors, db, api, recruiter, lenis-bus, auth/*, privacy/*).
+4. Recreate `src/lib/**` (site-url, constants, colors, db, api, recruiter, lenis-bus, auth/_, privacy/_).
 5. Recreate `src/hooks/**`, then `src/components/**` (primitives → nav/sections/devices/legal/privacy/recruiter), then `src/app/**` (layout, page, error, api routes, legal, recruiter, robots/sitemap).
 6. Recreate `src/app/globals.css`, `src/app/recruiter/recruiter.css`, `src/components/legal/legal.css`, `src/components/privacy/consent.css` verbatim (Appendix).
 7. Supply binaries: `public/img/Potrait.png`, `public/cv/*.pdf`, `src/app/favicon.ico`.
@@ -620,14 +669,13 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 - `src/components/recruiter/*` — Gate, SignUp, SignIn, Otp, Screening, Approved, Field, Dots, Howto, TopBar.
 - `src/components/legal/LegalLayout.tsx` — shared legal-page shell.
 - `src/components/{Loader,ThemeScript}.tsx` — loader lifecycle, anti-flash theme script.
-- `src/app/*` — layout, page, error, robots, sitemap, globals.css, legal/*, recruiter/*, api/**.
+- `src/app/*` — layout, page, error, robots, sitemap, globals.css, legal/_, recruiter/_, api/\*\*.
 
 ---
 
 # 29. APPENDIX — Complete verbatim source
 
 > Every text file in the repository, byte-exact, follows below (excluding `package-lock.json` and binary assets). This is the authoritative source; the Narrative above explains it. Generated directly from disk.
-
 
 ---
 
@@ -761,13 +809,7 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-    "coverage/**",
-  ]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "coverage/**"]),
 ]);
 
 export default eslintConfig;
@@ -4240,8 +4282,7 @@ export function Otp({ email, onVerify, error, onResend }: OtpProps): React.React
       <Dots step={1} />
       <h1 className="t">Check your inbox</h1>
       <p className="sub">
-        Enter the 6-digit code sent to <b>{email}</b>{" "}
-        to confirm it&apos;s yours.
+        Enter the 6-digit code sent to <b>{email}</b> to confirm it&apos;s yours.
       </p>
 
       <div className="otp" aria-label="Verification code">
@@ -5366,7 +5407,8 @@ export function TransContinental(): React.ReactElement {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="trans-h">
-            Two countries,<br />
+            Two countries,
+            <br />
             <span className="em">one team at a time.</span>
           </h2>
         </Reveal>
@@ -5386,12 +5428,7 @@ export function TransContinental(): React.ReactElement {
               aria-hidden="true"
             >
               <defs>
-                <pattern
-                  id="trans-grid"
-                  width="22"
-                  height="22"
-                  patternUnits="userSpaceOnUse"
-                >
+                <pattern id="trans-grid" width="22" height="22" patternUnits="userSpaceOnUse">
                   <circle cx="2" cy="2" r="1.1" fill="currentColor" opacity="0.18" />
                 </pattern>
                 <radialGradient id="trans-glow" cx="50%" cy="50%" r="50%">
@@ -5583,7 +5620,12 @@ const ACCENT = "var(--candy, #b2d5e5)";
 
 function PlatformVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="pv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -5594,14 +5636,30 @@ function PlatformVisual(): React.ReactElement {
 
       <rect x="32" y="32" width="116" height="348" rx="14" fill={FG_TINT} />
       {[64, 100, 136, 172, 208].map((y, i) => (
-        <rect key={y} x="50" y={y} width={i === 0 ? 80 : 64 + (i % 2) * 12} height="10" rx="5" fill={i === 0 ? ACCENT : FG_LINE} opacity={i === 0 ? 1 : 0.7} />
+        <rect
+          key={y}
+          x="50"
+          y={y}
+          width={i === 0 ? 80 : 64 + (i % 2) * 12}
+          height="10"
+          rx="5"
+          fill={i === 0 ? ACCENT : FG_LINE}
+          opacity={i === 0 ? 1 : 0.7}
+        />
       ))}
 
       {[0, 1, 2].map((i) => (
         <g key={i} transform={`translate(${172 + i * 132}, 32)`}>
           <rect width="120" height="92" rx="14" fill={FG_TINT} />
           <rect x="14" y="18" width="56" height="8" rx="4" fill={FG_TEXT} opacity="0.4" />
-          <rect x="14" y="40" width={36 + i * 8} height="18" rx="4" fill={i === 1 ? ACCENT : "rgba(255,255,255,0.9)"} />
+          <rect
+            x="14"
+            y="40"
+            width={36 + i * 8}
+            height="18"
+            rx="4"
+            fill={i === 1 ? ACCENT : "rgba(255,255,255,0.9)"}
+          />
           <rect x="14" y="70" width="40" height="6" rx="3" fill={FG_TEXT} opacity="0.35" />
         </g>
       ))}
@@ -5639,7 +5697,12 @@ function PlatformVisual(): React.ReactElement {
 
 function PortalVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="bv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -5687,7 +5750,12 @@ function PortalVisual(): React.ReactElement {
 
 function FintechVisual(): React.ReactElement {
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="fv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
@@ -5701,7 +5769,13 @@ function FintechVisual(): React.ReactElement {
       <rect width="600" height="412" fill="url(#fv-bg)" />
 
       <g transform="translate(60, 70) rotate(-6 130 80)">
-        <rect width="260" height="160" rx="18" fill="url(#fv-card)" stroke="rgba(255,255,255,0.08)" />
+        <rect
+          width="260"
+          height="160"
+          rx="18"
+          fill="url(#fv-card)"
+          stroke="rgba(255,255,255,0.08)"
+        />
         <rect x="22" y="34" width="36" height="26" rx="6" fill={ACCENT} opacity="0.85" />
         <rect x="28" y="40" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
         <rect x="28" y="46" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.35)" />
@@ -5726,7 +5800,15 @@ function FintechVisual(): React.ReactElement {
             <circle cx="14" cy="18" r="5" fill={i === 0 ? ACCENT : FG_LINE} />
             <rect x="36" y="8" width="120" height="8" rx="4" fill={FG_TEXT} opacity="0.55" />
             <rect x="36" y="22" width="80" height="6" rx="3" fill={FG_TEXT} opacity="0.3" />
-            <rect x="160" y="14" width={32 + (i % 2) * 10} height="8" rx="4" fill={i % 2 === 0 ? ACCENT : "rgba(255,255,255,0.8)"} opacity={i % 2 === 0 ? 0.85 : 0.65} />
+            <rect
+              x="160"
+              y="14"
+              width={32 + (i % 2) * 10}
+              height="8"
+              rx="4"
+              fill={i % 2 === 0 ? ACCENT : "rgba(255,255,255,0.8)"}
+              opacity={i % 2 === 0 ? 0.85 : 0.65}
+            />
           </g>
         ))}
       </g>
@@ -5749,28 +5831,63 @@ function GisVisual(): React.ReactElement {
     { x: 360, y: 360, r: 5 },
   ];
   const edges = [
-    [0, 1], [1, 2], [2, 3], [3, 4],
-    [1, 5], [2, 6], [3, 7], [4, 8],
-    [5, 9], [6, 9], [6, 10], [7, 10], [8, 7],
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7],
+    [4, 8],
+    [5, 9],
+    [6, 9],
+    [6, 10],
+    [7, 10],
+    [8, 7],
   ];
 
   return (
-    <svg viewBox="0 0 600 412" preserveAspectRatio="xMidYMid slice" className="work-visual" aria-hidden="true">
+    <svg
+      viewBox="0 0 600 412"
+      preserveAspectRatio="xMidYMid slice"
+      className="work-visual"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id="gv-bg" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor={BG_LIGHT} />
           <stop offset="100%" stopColor={BG_DARK} />
         </linearGradient>
         <pattern id="gv-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.045)" strokeWidth="1" />
+          <path
+            d="M 40 0 L 0 0 0 40"
+            fill="none"
+            stroke="rgba(255,255,255,0.045)"
+            strokeWidth="1"
+          />
         </pattern>
       </defs>
       <rect width="600" height="412" fill="url(#gv-bg)" />
       <rect width="600" height="412" fill="url(#gv-grid)" />
 
-      <path d="M 0 280 Q 150 240, 300 270 T 600 250" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
-      <path d="M 0 320 Q 180 290, 320 310 T 600 295" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
-      <path d="M 0 200 Q 200 160, 380 190 T 600 180" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
+      <path
+        d="M 0 280 Q 150 240, 300 270 T 600 250"
+        fill="none"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M 0 320 Q 180 290, 320 310 T 600 295"
+        fill="none"
+        stroke="rgba(255,255,255,0.06)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M 0 200 Q 200 160, 380 190 T 600 180"
+        fill="none"
+        stroke="rgba(255,255,255,0.06)"
+        strokeWidth="1.5"
+      />
 
       {edges.map(([a, b], i) => {
         const A = nodes[a];
@@ -5792,7 +5909,13 @@ function GisVisual(): React.ReactElement {
 
       {nodes.map((n, i) => (
         <g key={i}>
-          <circle cx={n.x} cy={n.y} r={n.r + 6} fill={n.accent ? ACCENT : "rgba(255,255,255,0.05)"} opacity={n.accent ? 0.18 : 1} />
+          <circle
+            cx={n.x}
+            cy={n.y}
+            r={n.r + 6}
+            fill={n.accent ? ACCENT : "rgba(255,255,255,0.05)"}
+            opacity={n.accent ? 0.18 : 1}
+          />
           <circle cx={n.x} cy={n.y} r={n.r} fill={n.accent ? ACCENT : "rgba(255,255,255,0.85)"} />
         </g>
       ))}
@@ -8242,8 +8365,7 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 .trans-map-wrap {
   position: relative;
   background:
-    radial-gradient(80% 60% at 50% 50%, rgba(178, 213, 229, 0.06), transparent 70%),
-    var(--pill);
+    radial-gradient(80% 60% at 50% 50%, rgba(178, 213, 229, 0.06), transparent 70%), var(--pill);
   border: 1px solid var(--line);
   border-radius: 28px;
   padding: 18px;
@@ -8675,10 +8797,10 @@ export default function CookiePage(): React.ReactElement {
 
       <h2>Changing your mind</h2>
       <p>
-        Click <strong>&ldquo;Cookie preferences&rdquo;</strong>{" "}
-        in the footer at any time to reopen the consent banner. Withdrawing consent does not
-        retroactively erase data we already had your permission to process &mdash; see the{" "}
-        <a href="/legal/privacy">Privacy Policy</a> for that.
+        Click <strong>&ldquo;Cookie preferences&rdquo;</strong> in the footer at any time to reopen
+        the consent banner. Withdrawing consent does not retroactively erase data we already had
+        your permission to process &mdash; see the <a href="/legal/privacy">Privacy Policy</a> for
+        that.
       </p>
     </LegalLayout>
   );
@@ -10056,9 +10178,7 @@ describe("RootLayout metadata", () => {
     expect(metadata.description).toMatch(/turning ideas into digital realities/i);
   });
   it("opts into indexing", () => {
-    expect(metadata.robots).toEqual(
-      expect.objectContaining({ index: true, follow: true }),
-    );
+    expect(metadata.robots).toEqual(expect.objectContaining({ index: true, follow: true }));
   });
 });
 ```
