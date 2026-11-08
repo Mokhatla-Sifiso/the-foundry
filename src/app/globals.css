@@ -58,6 +58,11 @@ html[data-theme="light"] {
   --pill-line: rgba(255, 255, 255, 0.85);
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-line: rgba(255, 255, 255, 0.75);
+  --glass-sheen: rgba(255, 255, 255, 0.9);
+  --glass-edge: rgba(255, 255, 255, 0.95);
+  --glass-tint: rgba(255, 255, 255, 0.5);
+  --glass-glow: rgba(178, 213, 229, 0.14);
+  --glass-shadow: rgba(2, 8, 12, 0.16);
   --field-line: rgba(2, 8, 12, 0.14);
   --field-line-hover: rgba(2, 8, 12, 0.28);
   --card: #0a0e10;
@@ -106,6 +111,11 @@ html[data-theme="dark"] {
   --pill-line: rgba(178, 213, 229, 0.2);
   --glass-bg: rgba(178, 213, 229, 0.06);
   --glass-line: rgba(178, 213, 229, 0.18);
+  --glass-sheen: rgba(255, 255, 255, 0.42);
+  --glass-edge: rgba(178, 213, 229, 0.35);
+  --glass-tint: rgba(178, 213, 229, 0.1);
+  --glass-glow: rgba(178, 213, 229, 0.2);
+  --glass-shadow: rgba(0, 0, 0, 0.55);
   --field-line: rgba(178, 213, 229, 0.22);
   --field-line-hover: rgba(178, 213, 229, 0.4);
   --card: #0c1316;
@@ -276,11 +286,13 @@ html[data-theme="dark"] {
   transform: translateY(-1px);
 }
 .pill-light {
-  background: var(--pill);
-  border-color: var(--pill-line);
+  background: linear-gradient(150deg, var(--glass-tint), transparent 60%), var(--pill);
+  border-color: var(--glass-edge);
   color: var(--fg);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(185%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-sheen),
+    0 10px 26px -16px var(--glass-shadow);
   text-transform: uppercase;
   font-size: 12.5px;
   letter-spacing: 0.08em;
@@ -1696,9 +1708,13 @@ html[data-theme="light"] .ai-showcase .bg-fade {
 }
 .collab-formwrap {
   min-width: 0;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-line);
-  backdrop-filter: blur(20px);
+  background: linear-gradient(150deg, var(--glass-tint), transparent 62%), var(--glass-bg);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(22px) saturate(185%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-sheen),
+    inset 0 -18px 40px -30px var(--glass-glow),
+    0 20px 50px -24px var(--glass-shadow);
   border-radius: var(--r);
   padding: clamp(24px, 2.8vw, 40px);
 }
@@ -1734,11 +1750,12 @@ html[data-theme="light"] .ai-showcase .bg-fade {
   font: inherit;
   font-size: 15.5px;
   color: var(--fg);
-  background: var(--pill);
+  background: linear-gradient(150deg, var(--glass-tint), transparent 70%), var(--pill);
   border: 1px solid var(--field-line);
   border-radius: 14px;
   padding: 16px 18px;
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px) saturate(175%);
+  box-shadow: inset 0 1px 0 var(--glass-sheen);
   transition:
     border-color 0.2s var(--ease),
     box-shadow 0.2s var(--ease);
@@ -1845,10 +1862,14 @@ html[data-theme="dark"] .collab-error {
   color: var(--fg);
 }
 .faq-acc {
-  border: 1px solid var(--pill-line);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--r);
-  background: var(--pill);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(150deg, var(--glass-tint), transparent 62%), var(--glass-bg);
+  backdrop-filter: blur(22px) saturate(185%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-sheen),
+    inset 0 -18px 40px -30px var(--glass-glow),
+    0 20px 50px -24px var(--glass-shadow);
   overflow: hidden;
 }
 .faq-item + .faq-item {
