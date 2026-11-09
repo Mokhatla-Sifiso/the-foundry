@@ -71,6 +71,7 @@ describe("fitTapes", () => {
       const fit = fitTapes(resolveTapes(stage, PRESETS[layout], PRINT_SCALE[layout]), stage, {
         avoid: [avoid],
         ceiling: stage.boxTop,
+        dropBelowCeiling: layout === "mobile",
       });
       expect(fit.ok).toBe(true);
       const { lowest, highest } = extent(fit.geoms, stage, avoid);
@@ -125,6 +126,58 @@ describe("fitTapes", () => {
     fit.geoms.forEach((g, i) => {
       expect(g.thick).toBeLessThan(geoms[i].thick);
       expect(g.drift).toBe(Math.round(g.thick * 0.35));
+    });
+  });
+
+  it("keeps every phone strip under the bar and clear of the buttons on portrait phones", () => {
+    for (let w = 320; w <= 430; w += 10) {
+      for (let h = 568; h <= 1000; h += 16) {
+        const { stage, avoid } = scene(w, h, { width: w - 32, height: 152 });
+        const fit = fitTapes(resolveTapes(stage, PRESETS.mobile, PRINT_SCALE.mobile), stage, {
+          avoid: [avoid],
+          ceiling: stage.boxTop,
+          dropBelowCeiling: true,
+        });
+        expect(fit.ok).toBe(true);
+        const { lowest, highest } = extent(fit.geoms, stage, avoid);
+        expect(lowest).toBeLessThanOrEqual(avoid.top - FIT_MARGIN + 0.5);
+        expect(highest).toBeGreaterThanOrEqual(stage.boxTop - 0.5);
+      }
+    }
+  });
+
+  describe("dropping below the ceiling", () => {
+    const { stage, avoid } = scene(390, 424, { width: 358, height: 124 });
+    const high = resolveTapes(stage, PRESETS.mobile, PRINT_SCALE.mobile).map((g) => ({
+      ...g,
+      cy: g.cy - 12,
+    }));
+    const options = { avoid: [avoid], ceiling: stage.boxTop };
+
+    it("leaves a group that starts above the bar where it is without it, as desktop does", () => {
+      expect(fitTapes(high, stage, options).geoms).toEqual(high);
+    });
+
+    it("drops the group just under the bar, whole, when the buttons leave room", () => {
+      const fit = fitTapes(high, stage, { ...options, dropBelowCeiling: true });
+      expect(fit.ok).toBe(true);
+      const drop = fit.geoms[0].cy - high[0].cy;
+      expect(drop).toBeGreaterThan(0);
+      fit.geoms.forEach((g, i) => {
+        expect(g.cy - high[i].cy).toBeCloseTo(drop);
+        expect(g.thick).toBe(high[i].thick);
+      });
+      const { lowest, highest } = extent(fit.geoms, stage, avoid);
+      expect(highest).toBeGreaterThanOrEqual(stage.boxTop - 0.5);
+      expect(highest).toBeLessThan(stage.boxTop + 0.5);
+      expect(lowest).toBeLessThanOrEqual(avoid.top - FIT_MARGIN + 0.5);
+    });
+
+    it("leaves the group where it is, unthinned, when dropping would reach the buttons", () => {
+      const { lowest } = extent(high, stage, avoid);
+      const tight = { ...avoid, top: lowest + FIT_MARGIN + 2 };
+      const fit = fitTapes(high, stage, { ...options, avoid: [tight], dropBelowCeiling: true });
+      expect(fit).toEqual({ geoms: high, ok: true });
     });
   });
 
