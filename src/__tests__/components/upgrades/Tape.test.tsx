@@ -38,6 +38,13 @@ describe("Tape", () => {
     expect(container.firstElementChild).not.toHaveAttribute("data-fit");
   });
 
+  it("measures each word on its own, so a phone strip can centre one", () => {
+    scene.mockReturnValue(null);
+    const { container } = render(<Tape {...refs} />);
+    const words = container.querySelectorAll(".ug-tape__measure > span");
+    expect(Array.from(words, (w) => w.textContent)).toEqual(["Upgrades", "in", "progress"]);
+  });
+
   it("renders each strip with its geometry and a sharp and a soft face of the same print", () => {
     const laid = laidOut();
     scene.mockReturnValue(laid);

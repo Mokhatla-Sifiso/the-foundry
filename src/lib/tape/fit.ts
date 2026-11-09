@@ -1,6 +1,7 @@
 import {
   driftFor,
   edgeExtremeIn,
+  projectStripPoint,
   stripEdge,
   type Rect,
   type Stage,
@@ -11,6 +12,22 @@ import {
 export const FIT_MARGIN = 12;
 /** Space between repeats of the phrase, in em. Must match the print's `gap` in tape.css. */
 export const PRINT_GAP_EM = 0.75;
+/** Room kept between a centred word and each side of the screen, px: the gate's phone gutter. */
+export const WORD_MARGIN = 16;
+
+/** A stretch of the phrase, in em from its start. */
+export interface TextSpan {
+  left: number;
+  width: number;
+}
+
+/** The upper-case phrase measured in the print's real font, in em. */
+export interface PrintMetrics {
+  phrase: number;
+  /** Each word of the phrase, in order. */
+  words: readonly TextSpan[];
+}
+
 export interface FitOptions {
   /** What no strip may pass behind (the buttons, the date), in stage px. */
   avoid: readonly Rect[];
@@ -127,19 +144,60 @@ export interface PrintRun {
   repeats: number;
 }
 
+/** What a strip centres on screen: its word (G17) or, without one, the whole phrase (G14). */
+function focusOf(g: TapeGeometry, metrics: PrintMetrics): TextSpan | null {
+  if (g.word === undefined) return { left: 0, width: metrics.phrase };
+  return metrics.words[g.word] ?? null;
+}
+
 /**
- * Where the print starts so one whole phrase sits centred on screen (G14), shifted by the
- * strip's offset, with enough repeats either side to cover the whole strip.
- * `phraseWidth` measures the upper-case phrase at a font size, in the real font.
+ * Where the print starts so its focus, the strip's word or the whole phrase, sits centred on
+ * screen (G14, G17), shifted by the strip's offset, with enough repeats either side to cover the
+ * whole strip. A word that was not measured falls back to centring the phrase.
  */
-export function printLayout(g: TapeGeometry, phraseWidth: (size: number) => number): PrintRun {
+export function printLayout(g: TapeGeometry, metrics: PrintMetrics): PrintRun {
   const size = g.thick * g.printScale;
-  const phrase = phraseWidth(size);
-  const unit = phrase + PRINT_GAP_EM * size;
-  const centred = g.len / 2 - phrase / 2 + g.offset * unit;
+  const focus = focusOf(g, metrics) ?? { left: 0, width: metrics.phrase };
+  const unit = (metrics.phrase + PRINT_GAP_EM) * size;
+  // Left edge of the repeat whose focus is centred.
+  const centred = g.len / 2 - (focus.left + focus.width / 2) * size + g.offset * unit;
   const before = Math.ceil(centred / unit);
   return {
     start: centred - before * unit,
     repeats: before + Math.ceil((g.len - centred) / unit) + 1,
   };
+}
+
+/**
+ * Keeps a strip's centred word whole on screen (G17). The print scales with the strip, which
+ * scales with the screen's height, so on a phone taller and narrower than the reference frames
+ * the word would outgrow the width. This shrinks the print just enough, projecting the word's
+ * ends through the strip's transform with the strip at rest, and leaves the strip itself alone.
+ * Strips that centre the whole phrase keep their approved print size (G15).
+ */
+export function fitPrint(
+  g: TapeGeometry,
+  stage: Stage,
+  metrics: PrintMetrics,
+  margin = WORD_MARGIN,
+): TapeGeometry {
+  const word = g.word === undefined ? null : focusOf(g, metrics);
+  if (!word) return g;
+  const fits = (size: number): boolean => {
+    const mid = g.offset * (metrics.phrase + PRINT_GAP_EM) * size;
+    const half = (word.width * size) / 2;
+    const left = projectStripPoint(g, stage, mid - half, 0).x;
+    const right = projectStripPoint(g, stage, mid + half, 0).x;
+    return left >= margin && right <= stage.width - margin;
+  };
+  const size = g.thick * g.printScale;
+  if (fits(size)) return g;
+  let lo = 0;
+  let hi = size;
+  for (let step = 0; step < 24; step++) {
+    const mid = (lo + hi) / 2;
+    if (fits(mid)) lo = mid;
+    else hi = mid;
+  }
+  return { ...g, printScale: lo / g.thick };
 }
