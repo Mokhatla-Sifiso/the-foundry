@@ -8,6 +8,8 @@
  */
 
 export const PHRASE = "Upgrades in progress";
+/** The phrase's words, in order. A preset's `word` indexes this. */
+export const WORDS: readonly string[] = PHRASE.split(" ");
 /** Must match `perspective` and `perspective-origin` in tape.css. */
 export const PERSPECTIVE = 1200;
 export const PERSPECTIVE_ORIGIN = { x: 0.5, y: 0.46 } as const;
@@ -32,12 +34,19 @@ export interface TapePreset {
   offset: number;
   /** Animation delay, seconds. Negative values start a strip mid-drift, so strips move out of phase. */
   delay: number;
+  /** Index into WORDS of the one word this strip centres on screen. Omitted: the whole phrase. */
+  word?: number;
+  /** Print size as a share of thickness, in place of the layout's PRINT_SCALE. */
+  print?: number;
 }
+
+/** Phone strips: each centres one word, at a size that reads at arm's length (G17). */
+const PHONE = { offset: 0, print: 0.56 } as const;
 
 /**
  * Three strips crossing the middle of the screen, as in the reference: one high, one on the
  * diagonal, one low (G12). Positions are fractions of the scene box, the band between the top
- * bar and the buttons (G5).
+ * bar and the buttons (G5). On phones the three read the phrase a word each, top to bottom (G17).
  */
 export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   desktop: [
@@ -51,9 +60,9 @@ export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
     { cy: 0.78, rz: 2, ry: -12, tz: 60, thick: 0.18, far: "right", offset: 0, delay: -13 },
   ],
   mobile: [
-    { cy: 0.2, rz: 6, ry: -14, tz: 30, thick: 0.092, far: "right", offset: -0.06, delay: 0 },
-    { cy: 0.5, rz: -14, ry: 13, tz: 70, thick: 0.098, far: "left", offset: 0.04, delay: -7 },
-    { cy: 0.8, rz: 3, ry: -11, tz: 50, thick: 0.088, far: "right", offset: 0, delay: -13 },
+    { ...PHONE, cy: 0.2, rz: 6, ry: -14, tz: 30, thick: 0.17, far: "right", delay: 0, word: 0 },
+    { ...PHONE, cy: 0.5, rz: -14, ry: 13, tz: 70, thick: 0.18, far: "left", delay: -7, word: 1 },
+    { ...PHONE, cy: 0.8, rz: 3, ry: -11, tz: 50, thick: 0.165, far: "right", delay: -13, word: 2 },
   ],
 };
 
@@ -66,8 +75,9 @@ export const PAGE_PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> =
 };
 
 /**
- * Print size as a share of strip thickness. Smaller on phones so one whole phrase fits across
- * the screen (G14); on wider screens it fills the strip like the reference.
+ * Print size as a share of strip thickness, unless a preset sets its own. Smaller on phones so
+ * one whole phrase fits across the screen (G14), as on the pages' strip; on wider screens it
+ * fills the strip like the reference.
  */
 export const PRINT_SCALE: Readonly<Record<TapeLayout, number>> = {
   desktop: 0.62,
@@ -116,6 +126,8 @@ export interface TapeGeometry {
   far: FarEnd;
   offset: number;
   delay: number;
+  /** Index into WORDS of the word centred on screen. Omitted: the whole phrase. */
+  word?: number;
   /** Thickness, px, scaled back up for the tilt's foreshortening. */
   thick: number;
   /** Length, px: long enough that both ends stay off screen at every angle. */
@@ -150,12 +162,13 @@ export function resolveTapes(
       far: preset.far,
       offset: preset.offset,
       delay: preset.delay,
+      word: preset.word,
       thick,
       len: stage.width * 2.2,
       cy: stage.boxTop + stage.boxHeight * preset.cy,
       drift: driftFor(thick),
       bloom: BLOOM[i % BLOOM.length],
-      printScale,
+      printScale: preset.print ?? printScale,
     };
   });
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, type RefObject } from "react";
-import { fitTapes, printLayout, type PrintRun } from "@/lib/tape/fit";
+import { fitPrint, fitTapes, printLayout, type PrintMetrics, type PrintRun } from "@/lib/tape/fit";
 import {
   PRESETS,
   PRINT_SCALE,
@@ -41,7 +41,7 @@ export interface TapeSceneRefs {
    * new one on every render would lay out every render.
    */
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
-  /** The phrase rendered at MEASURE_SIZE in the print's font. */
+  /** The phrase rendered at MEASURE_SIZE in the print's font, one child element per word. */
   measure: RefObject<HTMLElement | null>;
   /** The strips to lay out, per layout. The gate's three by default. */
   presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
@@ -54,6 +54,18 @@ function relativeRect(el: HTMLElement, frame: DOMRect): Rect {
     right: r.right - frame.left,
     top: r.top - frame.top,
     bottom: r.bottom - frame.top,
+  };
+}
+
+/** The phrase and each of its words, measured in the real font and expressed in em. */
+function measurePrint(el: HTMLElement): PrintMetrics {
+  const phrase = el.getBoundingClientRect();
+  return {
+    phrase: phrase.width / MEASURE_SIZE,
+    words: Array.from(el.children, (word) => {
+      const r = word.getBoundingClientRect();
+      return { left: (r.left - phrase.left) / MEASURE_SIZE, width: r.width / MEASURE_SIZE };
+    }),
   };
 }
 
@@ -94,8 +106,7 @@ export function useTapeScene({
         setScene({ layout, strips: [], fitted: false });
         return;
       }
-      const perPx = measureEl.getBoundingClientRect().width / MEASURE_SIZE;
-      const phraseWidth = (size: number): number => size * perPx;
+      const metrics = measurePrint(measureEl);
       const fit = fitTapes(resolveTapes(s, presets[layout], PRINT_SCALE[layout]), s, {
         avoid: rects,
         ceiling: top,
@@ -104,10 +115,10 @@ export function useTapeScene({
       setScene({
         layout,
         fitted: fit.ok,
-        strips: fit.geoms.map((geometry) => ({
-          geometry,
-          print: printLayout(geometry, phraseWidth),
-        })),
+        strips: fit.geoms.map((fitted) => {
+          const geometry = fitPrint(fitted, s, metrics);
+          return { geometry, print: printLayout(geometry, metrics) };
+        }),
       });
     };
     const schedule = (): void => {
