@@ -1,9 +1,20 @@
-import { FIT_MARGIN, PRINT_GAP_EM, fitTapes, printLayout } from "@/lib/tape/fit";
 import {
+  FIT_MARGIN,
+  PRINT_GAP_EM,
+  WORD_MARGIN,
+  fitPrint,
+  fitTapes,
+  printLayout,
+  type PrintMetrics,
+  type TextSpan,
+} from "@/lib/tape/fit";
+import {
+  PERSPECTIVE,
   PRESETS,
   PRINT_SCALE,
   edgeExtremeIn,
   layoutFor,
+  projectStripPoint,
   resolveTapes,
   stripEdge,
   type Rect,
@@ -191,20 +202,122 @@ describe("fitTapes", () => {
   });
 });
 
+const metrics: PrintMetrics = {
+  phrase: 12.721,
+  words: [
+    { left: 0, width: 5.564 },
+    { left: 5.844, width: 1.078 },
+    { left: 7.202, width: 5.519 },
+  ],
+};
+
+function phone(width: number, height: number): Stage {
+  const boxTop = 64;
+  const dateTop = height - 40 - 128 - 12 - 13;
+  return { width, height, boxTop, boxHeight: dateTop - 16 - boxTop };
+}
+
+function wordEnds(g: TapeGeometry, stage: Stage, word: TextSpan): [number, number] {
+  const size = g.thick * g.printScale;
+  const mid = g.offset * (metrics.phrase + PRINT_GAP_EM) * size;
+  const half = (word.width * size) / 2;
+  return [
+    projectStripPoint(g, stage, mid - half, 0).x,
+    projectStripPoint(g, stage, mid + half, 0).x,
+  ];
+}
+
 describe("printLayout", () => {
   const { stage } = scene(1440, 900, { width: 660, height: 56 });
-  const measure = (size: number): number => size * 12.72;
+
+  function expected(g: TapeGeometry, focus: TextSpan): { centred: number; unit: number } {
+    const size = g.thick * g.printScale;
+    const unit = (metrics.phrase + PRINT_GAP_EM) * size;
+    return {
+      unit,
+      centred: g.len / 2 - (focus.left + focus.width / 2) * size + g.offset * unit,
+    };
+  }
+
+  function expectCovers(g: TapeGeometry, focus: TextSpan): void {
+    const run = printLayout(g, metrics);
+    const { centred, unit } = expected(g, focus);
+    expect(((centred - run.start) / unit) % 1).toBeCloseTo(0);
+    expect(run.start).toBeLessThanOrEqual(0);
+    expect(run.start + run.repeats * unit).toBeGreaterThanOrEqual(g.len);
+  }
 
   it.each(resolveTapes(stage, PRESETS.desktop, 0.62).map((g, i) => [i, g] as const))(
     "centres one whole phrase on strip %i and covers the whole strip",
-    (_i, g) => {
-      const run = printLayout(g, measure);
-      const size = g.thick * g.printScale;
-      const unit = measure(size) + PRINT_GAP_EM * size;
-      const centred = g.len / 2 - measure(size) / 2 + g.offset * unit;
-      expect(((centred - run.start) / unit) % 1).toBeCloseTo(0);
-      expect(run.start).toBeLessThanOrEqual(0);
-      expect(run.start + run.repeats * unit).toBeGreaterThanOrEqual(g.len);
+    (_i, g) => expectCovers(g, { left: 0, width: metrics.phrase }),
+  );
+
+  it.each(resolveTapes(phone(390, 844), PRESETS.mobile, 0.46).map((g, i) => [i, g] as const))(
+    "centres its own word on phone strip %i, so the strips read the phrase top to bottom",
+    (i, g) => {
+      expect(g.word).toBe(i);
+      expectCovers(g, metrics.words[i]);
     },
   );
+
+  it("centres the whole phrase when the strip's word was not measured", () => {
+    const g = resolveTapes(phone(390, 844), PRESETS.mobile, 0.46)[0];
+    expect(printLayout(g, { ...metrics, words: [] })).toEqual(
+      printLayout({ ...g, word: undefined }, metrics),
+    );
+  });
+});
+
+describe("the phone gate", () => {
+  it("draws the strips as thick, and the print as large, as approved at 390 x 844", () => {
+    const stage = phone(390, 844);
+    for (const g of resolveTapes(stage, PRESETS.mobile, 0.46)) {
+      const top = projectStripPoint(g, stage, 0, -g.thick / 2);
+      const bottom = projectStripPoint(g, stage, 0, g.thick / 2);
+      const cos = (deg: number): number => Math.cos((deg * Math.PI) / 180);
+      const k = PERSPECTIVE / (PERSPECTIVE - g.tz * cos(g.rx) * cos(g.ry));
+      expect(Math.hypot(top.x - bottom.x, top.y - bottom.y)).toBeGreaterThanOrEqual(105);
+      expect(g.thick * g.printScale * k).toBeGreaterThanOrEqual(60);
+    }
+  });
+});
+
+describe("fitPrint", () => {
+  it.each([
+    [375, 812],
+    [390, 844],
+    [430, 932],
+    [320, 568],
+  ])("keeps the approved print size on a %i x %i phone", (w, h) => {
+    const stage = phone(w, h);
+    for (const g of resolveTapes(stage, PRESETS.mobile, 0.46)) {
+      expect(fitPrint(g, stage, metrics)).toBe(g);
+    }
+  });
+
+  it("shrinks the print, not the strip, so the word stays whole on a tall, narrow phone", () => {
+    const stage = phone(344, 882);
+    const geoms = resolveTapes(stage, PRESETS.mobile, 0.46);
+    const fitted = geoms.map((g) => fitPrint(g, stage, metrics));
+    expect(fitted.some((g, i) => g.printScale < geoms[i].printScale)).toBe(true);
+    fitted.forEach((g, i) => {
+      expect(g.thick).toBe(geoms[i].thick);
+      const [left, right] = wordEnds(g, stage, metrics.words[i]);
+      expect(left).toBeGreaterThanOrEqual(WORD_MARGIN - 0.5);
+      expect(right).toBeLessThanOrEqual(stage.width - WORD_MARGIN + 0.5);
+      if (g.printScale < geoms[i].printScale) {
+        const [l, r] = wordEnds({ ...g, printScale: g.printScale * 1.01 }, stage, metrics.words[i]);
+        expect(l < WORD_MARGIN || r > stage.width - WORD_MARGIN).toBe(true);
+      }
+    });
+  });
+
+  it("leaves strips that centre the whole phrase, and unmeasured words, alone", () => {
+    const { stage } = scene(390, 844, { width: 358, height: 124 });
+    for (const g of resolveTapes(stage, PRESETS.desktop, 0.62)) {
+      expect(fitPrint(g, stage, metrics)).toBe(g);
+    }
+    const g = resolveTapes(phone(344, 882), PRESETS.mobile, 0.46)[0];
+    expect(fitPrint(g, phone(344, 882), { ...metrics, words: [] })).toBe(g);
+  });
 });

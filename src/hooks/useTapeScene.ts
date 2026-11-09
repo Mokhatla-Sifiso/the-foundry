@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, type RefObject } from "react";
-import { fitTapes, printLayout, type PrintRun } from "@/lib/tape/fit";
+import { fitPrint, fitTapes, printLayout, type PrintMetrics, type PrintRun } from "@/lib/tape/fit";
 import {
   PRESETS,
   PRINT_SCALE,
@@ -45,6 +45,17 @@ function relativeRect(el: HTMLElement, frame: DOMRect): Rect {
   };
 }
 
+function measurePrint(el: HTMLElement): PrintMetrics {
+  const phrase = el.getBoundingClientRect();
+  return {
+    phrase: phrase.width / MEASURE_SIZE,
+    words: Array.from(el.children, (word) => {
+      const r = word.getBoundingClientRect();
+      return { left: (r.left - phrase.left) / MEASURE_SIZE, width: r.width / MEASURE_SIZE };
+    }),
+  };
+}
+
 export function useTapeScene({
   stage,
   ceiling,
@@ -77,8 +88,7 @@ export function useTapeScene({
         setScene({ layout, strips: [], fitted: false });
         return;
       }
-      const perPx = measureEl.getBoundingClientRect().width / MEASURE_SIZE;
-      const phraseWidth = (size: number): number => size * perPx;
+      const metrics = measurePrint(measureEl);
       const fit = fitTapes(resolveTapes(s, presets[layout], PRINT_SCALE[layout]), s, {
         avoid: rects,
         ceiling: top,
@@ -87,10 +97,10 @@ export function useTapeScene({
       setScene({
         layout,
         fitted: fit.ok,
-        strips: fit.geoms.map((geometry) => ({
-          geometry,
-          print: printLayout(geometry, phraseWidth),
-        })),
+        strips: fit.geoms.map((fitted) => {
+          const geometry = fitPrint(fitted, s, metrics);
+          return { geometry, print: printLayout(geometry, metrics) };
+        }),
       });
     };
     const schedule = (): void => {
