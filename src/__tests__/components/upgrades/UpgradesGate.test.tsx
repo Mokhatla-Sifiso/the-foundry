@@ -51,9 +51,9 @@ describe("UpgradesGate", () => {
   });
 
   it("restores access and reloads in the tab that chose the site, after another tab cleared it", () => {
-    sessionStorage.setItem("site-access", "v1");
+    sessionStorage.setItem("site-access", "v2");
     render(<UpgradesGate />);
-    expect(document.cookie).toContain("site-access=v1");
+    expect(document.cookie).toContain("site-access=v2");
     expect(reloadPage).toHaveBeenCalledTimes(1);
     sessionStorage.clear();
     document.cookie = "site-access=;Path=/;Max-Age=0";

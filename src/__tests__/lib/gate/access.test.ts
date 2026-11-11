@@ -27,7 +27,8 @@ describe("isExempt (TC-01)", () => {
 
 describe("hasAccess (TC-01)", () => {
   it("accepts only the current cookie version", () => {
-    expect(hasAccess("v1")).toBe(true);
+    expect(hasAccess("v2")).toBe(true);
+    expect(hasAccess("v1")).toBe(false);
     expect(hasAccess(undefined)).toBe(false);
     expect(hasAccess("")).toBe(false);
     expect(hasAccess("v0")).toBe(false);

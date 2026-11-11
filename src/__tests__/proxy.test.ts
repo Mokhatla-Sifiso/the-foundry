@@ -36,7 +36,7 @@ describe("proxy CSP", () => {
 
 describe("proxy site gate (FR-UG-01)", () => {
   const rewrittenTo = (res: Response): string | null => res.headers.get("x-middleware-rewrite");
-  const withAccess = (path: string, value = "v1"): NextRequest => {
+  const withAccess = (path: string, value = "v2"): NextRequest => {
     const r = req(path);
     r.cookies.set("site-access", value);
     return r;
@@ -73,6 +73,7 @@ describe("proxy site gate (FR-UG-01)", () => {
 
   it("gates again when the cookie is from an older version", () => {
     expect(rewrittenTo(proxy(withAccess("/", "v0")))).not.toBeNull();
+    expect(rewrittenTo(proxy(withAccess("/", "v1")))).not.toBeNull();
   });
 
   it("never gates the legal pages or the pages sign-up emails open", () => {
