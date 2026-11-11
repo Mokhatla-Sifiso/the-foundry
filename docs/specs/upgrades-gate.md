@@ -66,7 +66,7 @@ All twelve recommendations below were accepted on 2026-11-05. D12 is deferred: d
 
 | ID | Question | Recommendation | Why |
 | --- | --- | --- | --- |
-| D1 | How long does "Go to previous portfolio version for now" stay remembered? | 30 days | A recruiter returning tomorrow should not hit the gate again. A session-only option is available if you prefer the gate on every visit. |
+| D1 | How long does "Go to previous portfolio version for now" stay remembered? | The tab it was chosen in (changed 2026-11-11, was 30 days) | Owner decision: closing the tab and opening a new one shows the gate again. |
 | D2 | Which of the two buttons is primary (filled)? | "Go to previous portfolio version for now" | Most visitors arrive to see work today; the sign-up is the secondary path. |
 | D3 | What does the top bar show on the gate? | Logo and theme toggle only | "Let's talk" and "Menu" link into sections the gate is hiding. |
 | D4 | Does the new toggle replace the current one everywhere? | Yes, one component sitewide | One source of truth; two toggle styles would read as inconsistent. |
@@ -226,7 +226,7 @@ The button works without JavaScript: it is a form POST to `/api/site-access`, wh
 
 - AC1. After clicking it on `/guest?token=x`, the guest page loads with its token.
 - AC2. The return path accepts same-origin relative paths only; anything else falls back to `/`, so the endpoint cannot be used as an open redirect.
-- AC3. Repeat visits within D1's window go straight to the site.
+- AC3. The tab the choice was made in goes straight to the site. A new tab or window shows the gate.
 
 ### FR-UG-03 Access cookie
 
@@ -234,8 +234,8 @@ The button works without JavaScript: it is a form POST to `/api/site-access`, wh
 | --- | --- |
 | Name | `site-access` |
 | Value | `v1` |
-| Flags | `HttpOnly`, `Secure` (production), `SameSite=Lax`, `Path=/` |
-| Lifetime | Per D1 |
+| Flags | `Secure` (production), `SameSite=Lax`, `Path=/`. Not `HttpOnly`: the page script clears it in tabs that did not make the choice. |
+| Lifetime | Session cookie, scoped to one tab by a `site-access` sessionStorage mark (D1) |
 
 - The value is versioned so that a future change can re-gate everyone.
 - Added to `COOKIE_INVENTORY` as strictly necessary, with `COOKIE_POLICY_VERSION` bumped.

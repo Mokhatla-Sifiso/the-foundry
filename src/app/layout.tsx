@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { Onest } from "next/font/google";
 import { Loader } from "@/components/Loader";
 import { ThemeScript } from "@/components/ThemeScript";
+import { TabAccessScript } from "@/components/TabAccessScript";
 import { Toaster } from "@/components/primitives/Toaster";
 import { ConsentProvider } from "@/components/privacy/ConsentProvider";
 import { ConsentBanner } from "@/components/privacy/ConsentBanner";
@@ -10,6 +11,7 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE } from "@/lib/constants";
 import { SITE_URL } from "@/lib/site-url";
+import { RETURN_HEADER } from "@/lib/gate/access";
 import "./globals.css";
 
 const onest = Onest({
@@ -85,7 +87,11 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico?v=2", sizes: "16x16 32x32 48x48" },
+      { url: "/icon.svg?v=2", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico?v=2",
     apple: SITE.portrait,
   },
 };
@@ -163,11 +169,14 @@ type RootLayoutProps = Readonly<{
 export default async function RootLayout({
   children,
 }: RootLayoutProps): Promise<React.ReactElement> {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const requestHeaders = await headers();
+  const nonce = requestHeaders.get("x-nonce") ?? undefined;
+  const gated = requestHeaders.has(RETURN_HEADER);
   return (
     <html lang="en" className={onest.variable} suppressHydrationWarning>
       <head>
         <ThemeScript nonce={nonce} />
+        <TabAccessScript nonce={nonce} gated={gated} />
         <StructuredData nonce={nonce} />
       </head>
       <body>

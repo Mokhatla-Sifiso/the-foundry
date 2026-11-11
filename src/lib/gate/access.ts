@@ -1,6 +1,6 @@
 export const ACCESS_COOKIE = "site-access";
 export const ACCESS_VALUE = "v1";
-export const ACCESS_MAX_AGE = 60 * 60 * 24 * 30;
+export const ACCESS_PATH = "/api/site-access";
 
 export const GATE_PATH = "/upgrades";
 export const RETURN_HEADER = "x-gate-return";
