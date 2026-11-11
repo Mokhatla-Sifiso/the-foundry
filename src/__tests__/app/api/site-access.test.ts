@@ -16,15 +16,15 @@ function post(fields: Record<string, string>, origin = "https://mzwakhe.dev"): R
 }
 
 describe("POST /api/site-access", () => {
-  it("remembers the choice for 30 days and returns to the page asked for, query intact", async () => {
+  it("sets a session cookie the page can scope to one tab, and returns to the page asked for", async () => {
     const res = await POST(post({ return: "/guest?token=x" }));
     expect(res.status).toBe(303);
     expect(res.headers.get("location")).toBe("https://mzwakhe.dev/guest?token=x");
     const cookie = res.headers.get("set-cookie") ?? "";
     expect(cookie).toMatch(/^site-access=v1;/);
-    expect(cookie).toContain("Max-Age=2592000");
+    expect(cookie).not.toMatch(/Max-Age|Expires/i);
+    expect(cookie).not.toMatch(/HttpOnly/i);
     expect(cookie).toContain("Path=/");
-    expect(cookie).toMatch(/HttpOnly/i);
     expect(cookie).toMatch(/SameSite=lax/i);
   });
 

@@ -1,7 +1,7 @@
 export type CookieCategory = "necessary" | "functional" | "analytics";
 export type CookieEntry = Readonly<{
   name: string;
-  storage: "cookie" | "localStorage";
+  storage: "cookie" | "localStorage" | "sessionStorage";
   category: CookieCategory;
   party: "first" | "third";
   purpose: string;
@@ -40,8 +40,17 @@ export const COOKIE_INVENTORY: readonly CookieEntry[] = [
     category: "necessary",
     party: "first",
     purpose:
-      'Remembers that you chose "Go to previous portfolio version for now", so the upgrades page does not stand in front of the site on every visit.',
-    duration: "30 days",
+      'Lets you through to the site after you choose "Go to previous portfolio version for now". A new tab shows the upgrades page again.',
+    duration: "Until you close the tab or browser",
+  },
+  {
+    name: "site-access",
+    storage: "sessionStorage",
+    category: "necessary",
+    party: "first",
+    purpose:
+      'Marks the tab where you chose "Go to previous portfolio version for now", so only that tab skips the upgrades page.',
+    duration: "Until you close the tab",
   },
   {
     name: "studio-theme",
