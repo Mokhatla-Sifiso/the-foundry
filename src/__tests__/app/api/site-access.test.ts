@@ -21,7 +21,7 @@ describe("POST /api/site-access", () => {
     expect(res.status).toBe(303);
     expect(res.headers.get("location")).toBe("https://mzwakhe.dev/guest?token=x");
     const cookie = res.headers.get("set-cookie") ?? "";
-    expect(cookie).toMatch(/^site-access=v1;/);
+    expect(cookie).toMatch(/^site-access=v2;/);
     expect(cookie).not.toMatch(/Max-Age|Expires/i);
     expect(cookie).not.toMatch(/HttpOnly/i);
     expect(cookie).toContain("Path=/");
