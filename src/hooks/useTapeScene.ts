@@ -99,6 +99,7 @@ export function useTapeScene({
       const fit = fitTapes(resolveTapes(s, presets[layout], PRINT_SCALE[layout]), s, {
         avoid: rects,
         ceiling: top,
+        dropBelowCeiling: layout === "mobile",
       });
       setScene({
         layout,
