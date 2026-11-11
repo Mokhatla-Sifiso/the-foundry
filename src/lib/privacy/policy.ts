@@ -1,5 +1,5 @@
 export const PRIVACY_POLICY_VERSION = "2026-11-06.v5";
-export const COOKIE_POLICY_VERSION = "2026-11-06.v4";
+export const COOKIE_POLICY_VERSION = "2026-11-11.v5";
 export const TERMS_VERSION = "2026-06-23.v1";
 export const DATA_CONTROLLER = {
   name: "Mzwakhe Mokhatla",

@@ -127,7 +127,7 @@ export function ConsentBanner(): React.ReactElement | null {
                             </summary>
                             <ul>
                               {items.map((c) => (
-                                <li key={c.name}>
+                                <li key={`${c.storage}:${c.name}`}>
                                   <code>{c.name}</code>
                                   <span>· {c.purpose}</span>
                                 </li>

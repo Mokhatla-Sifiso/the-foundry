@@ -6,8 +6,7 @@
 /** Versioned, so a later change can put everyone back behind the gate (FR-UG-03). */
 export const ACCESS_COOKIE = "site-access";
 export const ACCESS_VALUE = "v1";
-/** D1: remembered for 30 days. */
-export const ACCESS_MAX_AGE = 60 * 60 * 24 * 30;
+export const ACCESS_PATH = "/api/site-access";
 
 export const GATE_PATH = "/upgrades";
 /** Carries the page the visitor asked for from the proxy to the gate, so the button returns there. */

@@ -69,6 +69,14 @@ describe("proxy site gate (FR-UG-01)", () => {
     expect(res.headers.get("x-middleware-request-x-gate-return")).toBeNull();
   });
 
+  it("drops a gate return header sent by the visitor when the page is not gated", () => {
+    const r = withAccess("/recruiter");
+    r.headers.set("x-gate-return", "/spoofed");
+    const res = proxy(r);
+    expect(res.headers.get("x-middleware-request-x-gate-return")).toBeNull();
+    expect(res.headers.get("x-middleware-override-headers")).not.toContain("x-gate-return");
+  });
+
   it("gates again when the cookie is from an older version", () => {
     expect(rewrittenTo(proxy(withAccess("/", "v0")))).not.toBeNull();
   });
