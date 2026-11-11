@@ -39,7 +39,7 @@ The project is intentionally comment-free across every source file (a deliberate
 
 **Runtime / framework**
 
-- **Next.js `16.2.9`**: App Router, Turbopack dev server, React Server Components by default. NOTE: this is a breaking-change-heavy Next major; conventions differ from Next 13–15 (see `AGENTS.md`).
+- **Next.js `16.2.9`**: App Router, Turbopack dev server, React Server Components by default. NOTE: this is a breaking-change-heavy Next major; conventions differ from Next 13 to 15 (see the bundled docs in `node_modules/next/dist/docs/`).
 - **React `19.2.4`** / **react-dom `19.2.4`**.
 - **TypeScript `^5`**, `"strict": true`, `moduleResolution: "bundler"`, path alias `@/* → ./src/*`.
 - **Node 22** in CI; Node ≥20 locally.
@@ -119,7 +119,6 @@ the-foundry/
 ├─ .github/workflows/ci.yml        GitHub Actions: type-check · lint · test · build
 ├─ .env.example                    env template (values placeholder)
 ├─ .gitignore .prettierignore .prettierrc.json
-├─ AGENTS.md  CLAUDE.md            AI-agent guardrails (CLAUDE.md just imports AGENTS.md)
 ├─ README.md                       setup + launch checklist
 ├─ eslint.config.mjs  next.config.ts  postcss.config.mjs
 ├─ jest.config.ts  jest.setup.ts   test config + jsdom shims
@@ -625,7 +624,7 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 ## 26. Known constraints & gotchas
 
 - **Prisma 7 breaking changes**: no `url` in `schema.prisma`; a driver adapter (`@prisma/adapter-neon`) is mandatory; `prisma.config.ts` supplies the CLI datasource + seed; `postinstall`/`build` must `prisma generate`.
-- **Next 16 / React 19**: App Router conventions differ from earlier majors; `AGENTS.md` warns to consult the bundled Next docs before writing framework code.
+- **Next 16 / React 19**: App Router conventions differ from earlier majors; consult the bundled Next docs in `node_modules/next/dist/docs/` before writing framework code.
 - **Hydration**: `suppressHydrationWarning` on `<html>` is required by the theme script (Section 11): removing it reintroduces the `insertBefore` crash.
 - **Portrait filename** is `Potrait.png` (misspelled); referenced consistently as `SITE.portrait`. On case-insensitive macOS this hid a case mismatch that 404'd on Vercel: keep the exact casing.
 - **Reduced motion** disables Lenis entirely (no smooth scroll for those users, by design).
@@ -643,7 +642,7 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 6. Recreate `src/app/globals.css`, `src/app/recruiter/recruiter.css`, `src/components/legal/legal.css`, `src/components/privacy/consent.css` verbatim (Appendix).
 7. Supply binaries: `public/img/Potrait.png`, `public/cv/*.pdf`, `src/app/favicon.ico`.
 8. Add `__mocks__/*`, `jest.config.ts`, `jest.setup.ts`, `src/__tests__/**`; `npm test` → 102 pass.
-9. Add `.github/workflows/ci.yml`, `README.md`, `AGENTS.md`, `CLAUDE.md`.
+9. Add `.github/workflows/ci.yml` and `README.md`.
 10. Set env, `npm run dev`, verify; deploy to Vercel per Section 24.
 
 ---
@@ -1140,20 +1139,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 ````
-
-### `AGENTS.md`
-
-```markdown
-# This is NOT the Next.js you know
-
-This version has breaking changes: APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-```
-
-### `CLAUDE.md`
-
-```markdown
-@AGENTS.md
-```
 
 ---
 
@@ -11370,34 +11355,6 @@ describe("loadAccounts / saveAccounts", () => {
     expect(LS_SESSION).toBe("recruiter-session-v1");
   });
 });
-```
-
----
-
-## Appendix · Other tracked files
-
-### `.claude/launch.json`
-
-```json
-{
-  "version": "0.0.1",
-  "configurations": [
-    {
-      "name": "dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000,
-      "autoPort": true
-    },
-    {
-      "name": "preview",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start", "--", "--port", "0"],
-      "port": 4100,
-      "autoPort": true
-    }
-  ]
-}
 ```
 
 ---
