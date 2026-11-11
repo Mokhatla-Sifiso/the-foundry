@@ -34,6 +34,7 @@ export function proxy(request: NextRequest): NextResponse {
   const { pathname, search } = request.nextUrl;
   const gated = !isExempt(pathname) && !hasAccess(request.cookies.get(ACCESS_COOKIE)?.value);
   if (gated) requestHeaders.set(RETURN_HEADER, `${pathname}${search}`);
+  else requestHeaders.delete(RETURN_HEADER);
 
   const response = gated
     ? NextResponse.rewrite(new URL(GATE_PATH, request.url), {

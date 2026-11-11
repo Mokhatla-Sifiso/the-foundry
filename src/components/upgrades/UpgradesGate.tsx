@@ -1,7 +1,9 @@
 "use client";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Arrow, Bell } from "@/components/primitives/icons";
 import { useConsentInset } from "@/hooks/useConsentInset";
+import { ACCESS_PATH } from "@/lib/gate/access";
+import { reloadPage, restoreTabAccess } from "@/lib/gate/tab-access";
 import { LaunchDate } from "./LaunchDate";
 import { NotifyDialog } from "./NotifyDialog";
 import { Tape } from "./Tape";
@@ -22,6 +24,9 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
   const avoid = useMemo(() => [actions, date], [actions, date]);
   const [notifyOpen, setNotifyOpen] = useState(false);
   useConsentInset(stage);
+  useEffect(() => {
+    if (restoreTabAccess()) reloadPage();
+  }, []);
 
   return (
     <div className="ug-root">
@@ -34,7 +39,7 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
           <h1 className="sr-only">Upgrades in progress</h1>
           <div className="ug-footer">
             <div ref={actions} className="ug-actions">
-              <form method="post" action="/api/site-access">
+              <form method="post" action={ACCESS_PATH}>
                 <input type="hidden" name="return" value={returnPath} />
                 <button type="submit" className="ug-btn ug-btn--primary">
                   <span className="ug-btn__label">Go to previous portfolio version for now</span>

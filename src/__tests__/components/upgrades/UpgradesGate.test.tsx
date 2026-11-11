@@ -1,5 +1,11 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { UpgradesGate } from "@/components/upgrades/UpgradesGate";
+import { reloadPage } from "@/lib/gate/tab-access";
+
+jest.mock("@/lib/gate/tab-access", () => ({
+  ...jest.requireActual("@/lib/gate/tab-access"),
+  reloadPage: jest.fn(),
+}));
 
 jest.mock("@/hooks/useTapeScene", () => ({
   ...jest.requireActual("@/hooks/useTapeScene"),
@@ -42,6 +48,21 @@ describe("UpgradesGate", () => {
     expect(form?.querySelector<HTMLInputElement>('input[name="return"]')?.value).toBe(
       "/guest?token=x",
     );
+  });
+
+  it("restores access and reloads in the tab that chose the site, after another tab cleared it", () => {
+    sessionStorage.setItem("site-access", "v1");
+    render(<UpgradesGate />);
+    expect(document.cookie).toContain("site-access=v1");
+    expect(reloadPage).toHaveBeenCalledTimes(1);
+    sessionStorage.clear();
+    document.cookie = "site-access=;Path=/;Max-Age=0";
+  });
+
+  it("stays on the gate in a tab that has not chosen", () => {
+    jest.mocked(reloadPage).mockClear();
+    render(<UpgradesGate />);
+    expect(reloadPage).not.toHaveBeenCalled();
   });
 
   it("returns to the home page by default", () => {
