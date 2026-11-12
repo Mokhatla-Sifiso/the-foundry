@@ -109,6 +109,14 @@ describe("proxy canonical host", () => {
     expect(res.headers.get("content-security-policy")).toBeTruthy();
   });
 
+  it("serves the Search Console verification file on the vercel.app host instead of redirecting it", () => {
+    process.env.VERCEL_ENV = "production";
+    const res = proxy(at("https://the-foundry-seven.vercel.app/googlece08adeaa482e5a2.html"));
+    expect(res.status).not.toBe(308);
+    expect(proxy(at("https://the-foundry-seven.vercel.app/google.html")).status).toBe(308);
+    expect(proxy(at("https://the-foundry-seven.vercel.app/googlex1.html")).status).toBe(308);
+  });
+
   it("leaves preview deployments on their own vercel.app host", () => {
     process.env.VERCEL_ENV = "preview";
     const res = proxy(at("https://the-foundry-git-branch.vercel.app/"));

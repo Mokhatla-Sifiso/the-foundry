@@ -4,7 +4,12 @@ import { PRODUCTION_SITE_URL } from "@/lib/site-url";
 
 export function proxy(request: NextRequest): NextResponse {
   const host = (request.headers.get("host") ?? request.nextUrl.host).toLowerCase();
-  if (process.env.VERCEL_ENV === "production" && host.endsWith(".vercel.app")) {
+  const verificationFile = /^\/google[0-9a-f]+\.html$/.test(request.nextUrl.pathname);
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    host.endsWith(".vercel.app") &&
+    !verificationFile
+  ) {
     const { pathname, search } = request.nextUrl;
     return NextResponse.redirect(new URL(`${pathname}${search}`, PRODUCTION_SITE_URL), 308);
   }
