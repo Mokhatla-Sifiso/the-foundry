@@ -78,7 +78,6 @@ describe("UpgradesGate", () => {
   });
 
   it("opens the notify dialog from the second button", () => {
-    // jsdom has no modal dialog support; this stands in for showModal.
     HTMLDialogElement.prototype.showModal = jest.fn(function (this: HTMLDialogElement) {
       this.setAttribute("open", "");
     });

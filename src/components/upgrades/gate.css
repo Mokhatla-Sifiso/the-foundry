@@ -1,15 +1,9 @@
-/* Upgrades gate (spec UG 4.1): the stage, the top bar and where the two buttons sit. */
-/* Full height, so the strip of screen behind an open consent banner is the gate's own colour. */
 .ug-root {
   min-height: 100svh;
   background: var(--ug-bg-page);
   color: var(--ug-text-primary);
 }
 
-/*
- * One screen tall; a viewport too short for the content scrolls rather than clipping it (4.1).
- * While the consent banner is open the stage gives up its bottom, so nothing sits under it (G6).
- */
 .ug-stage {
   position: relative;
   height: calc(100svh - var(--ug-consent-inset, 0px));
@@ -34,7 +28,6 @@
   z-index: 1;
 }
 
-/* Brand and theme toggle only (D3). */
 .ug-bar {
   position: absolute;
   inset: 14px 0 auto;
@@ -47,7 +40,6 @@
   margin-inline: auto;
 }
 
-/* The bottom row: the two buttons centred, the date in the right-hand corner. */
 .ug-footer {
   position: absolute;
   right: 0;
@@ -69,7 +61,6 @@
   display: flex;
 }
 
-/* Printed finely: small, regular weight, in the secondary grey. */
 .ug-date {
   grid-column: 3;
   justify-self: end;
@@ -83,7 +74,6 @@
   position: relative;
   display: inline-block;
 }
-/* Two sliced copies of a stand-in glyph, shifted apart, flicker over the X while it glitches. */
 .ug-date__x::before,
 .ug-date__x::after {
   content: attr(data-glyph);
@@ -144,8 +134,6 @@
   }
 }
 
-/* Phones (the tape's mobile layout starts at the same width): stacked, full width, primary on
-   top, the long labels wrap in balanced lines (G7), and the date sits above the buttons. */
 @media (max-width: 719.98px) {
   .ug-footer {
     display: flex;

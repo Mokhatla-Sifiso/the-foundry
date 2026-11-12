@@ -6,15 +6,10 @@ import "./buttons.css";
 export interface NotifyDoneProps {
   titleId: string;
   descId: string;
-  /** The address as stored. */
   email: string;
   onDone: () => void;
 }
 
-/**
- * The notify dialog after a sign-up (spec UG G8). The words are the same whether the address is
- * new, pending or already confirmed, so nobody can test who is on the list.
- */
 export function NotifyDone({
   titleId,
   descId,
@@ -22,7 +17,6 @@ export function NotifyDone({
   onDone,
 }: NotifyDoneProps): React.ReactElement {
   const heading = useRef<HTMLHeadingElement>(null);
-  // Focus moves to the heading, so a screen reader announces the confirmation.
   useEffect(() => {
     heading.current?.focus();
   }, []);

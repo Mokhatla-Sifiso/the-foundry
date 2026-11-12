@@ -8,7 +8,6 @@ function req(path: string): NextRequest {
   return new NextRequest(new URL(`https://www.mzwakhemokhatla.co.za${path}`));
 }
 
-/** Rebuild the matcher's source as a real RegExp so we can assert what it covers. */
 const matcher = new RegExp(`^${config.matcher[0].source}$`);
 
 describe("proxy CSP", () => {
@@ -28,8 +27,6 @@ describe("proxy CSP", () => {
     const csp = res.headers.get("content-security-policy") ?? "";
     const nonce = /'nonce-([^']+)'/.exec(csp)?.[1];
     expect(nonce).toBeTruthy();
-    // The response echoes the request-header override back in the mock, so we
-    // assert the CSP carries a real base64 nonce rather than a placeholder.
     expect(nonce).toMatch(/^[A-Za-z0-9+/=]+$/);
   });
 
@@ -91,7 +88,6 @@ describe("proxy site gate (FR-UG-01)", () => {
 
 describe("proxy matcher", () => {
   it("covers a dotted path that 404s, so error pages still get a CSP", () => {
-    // The exact probe a header scanner uses; this is the regression under test.
     expect(matcher.test("/404javascript.js")).toBe(true);
     expect(matcher.test("/does-not-exist")).toBe(true);
     expect(matcher.test("/")).toBe(true);

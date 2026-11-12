@@ -17,7 +17,6 @@ function Stage(): React.ReactElement {
   return <div ref={stage} data-testid="stage" />;
 }
 
-/** The banner as ConsentBanner renders it, at a given height. */
 function mountBanner(height: number): HTMLElement {
   const banner = document.createElement("aside");
   banner.id = CONSENT_BANNER_ID;

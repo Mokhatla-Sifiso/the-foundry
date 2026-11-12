@@ -26,7 +26,6 @@ describe("layoutFor", () => {
 });
 
 describe("resolveTapes", () => {
-  // Desktop reference frame: bar bottom at 64px, buttons 56px tall, 40px from the bottom.
   const stage: Stage = { width: 1440, height: 900, boxTop: 64, boxHeight: 724 };
   const geoms = resolveTapes(stage, PRESETS.desktop, PRINT_SCALE.desktop);
 
@@ -64,7 +63,6 @@ describe("resolveTapes", () => {
 });
 
 describe("presets", () => {
-  // The phone strips grew in G17; desktop, tablet and the pages' strip stay as approved.
   it("keeps the desktop and tablet strips and the print sizes as approved", () => {
     expect(PRESETS.desktop).toEqual([
       { cy: 0.27, rz: 5, ry: -16, tz: 40, thick: 0.2, far: "right", offset: -0.04, delay: 0 },

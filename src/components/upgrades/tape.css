@@ -1,8 +1,3 @@
-/*
- * Caution tape (spec UG 4.2, G3, G12). Three strips in one 3D context, close to the viewer.
- * Per-strip geometry arrives as custom properties computed by lib/tape/geometry; the
- * perspective values here must match the constants there.
- */
 .ug-tapes {
   position: absolute;
   inset: 0;
@@ -20,13 +15,11 @@
   width: var(--len);
   height: var(--thick);
   margin: calc(var(--thick) / -2) 0 0 calc(var(--len) / -2);
-  /* rotateX tilts each strip against the light, the way strung tape never lies flat. */
   transform: translateY(var(--cy)) rotateZ(var(--rz)) rotateY(var(--ry)) rotateX(var(--rx))
     translateZ(var(--tz));
   transform-style: preserve-3d;
 }
 
-/* The whole strip drifts slowly along its own length, out of phase with the others (G3, D7). */
 .ug-tape__slide {
   position: absolute;
   inset: 0;
@@ -42,7 +35,6 @@
   }
 }
 
-/* Cast shadow: a wide soft one plus a tight contact shadow, falling on whatever is behind. */
 .ug-tape__shadow {
   position: absolute;
   inset: 4% 0;
@@ -59,14 +51,12 @@
   transform: translateY(calc(var(--thick) * -0.18));
 }
 
-/* The film. */
 .ug-tape__face {
   position: absolute;
   inset: 0;
   overflow: hidden;
   background: var(--ug-tape-film);
 }
-/* Grain of the plastic, below the threshold of reading as texture. */
 .ug-tape__face::before {
   content: "";
   position: absolute;
@@ -75,7 +65,6 @@
   mix-blend-mode: overlay;
   opacity: var(--ug-tape-grain);
 }
-/* Gloss sits above the ink, as the coating does: edge lines, a sharp specular line, a broad sheen. */
 .ug-tape__face::after {
   content: "";
   position: absolute;
@@ -103,7 +92,6 @@
   top: 50%;
   left: var(--phase);
   display: flex;
-  /* Must match PRINT_GAP_EM in lib/tape/fit. */
   gap: 0.75em;
   transform: translateY(-47%);
   color: var(--ug-tape-print);
@@ -112,10 +100,6 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
-/*
- * Measures the phrase in the real font at 100px; the geometry scales that to each strip. Same
- * type settings as the print, but its own font declaration: --thick is not defined here.
- */
 .ug-tape__measure {
   position: absolute;
   visibility: hidden;
@@ -125,7 +109,6 @@
   white-space: nowrap;
 }
 
-/* Depth of field: a sharp copy and a blurred copy, crossfaded toward the far end. */
 .ug-tape__face--sharp {
   mask-image: linear-gradient(90deg, #000 0 57%, transparent 80%);
 }
@@ -140,7 +123,6 @@
   mask-image: linear-gradient(90deg, #000 0 20%, transparent 43%);
 }
 
-/* Light along the length. It does not drift, so the strip slides under a fixed light like film. */
 .ug-tape__light {
   position: absolute;
   inset: 0;

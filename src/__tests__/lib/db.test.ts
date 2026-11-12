@@ -42,7 +42,6 @@ describe("db (prisma neon proxy)", () => {
     mockPrisma();
     const { db } = await import("@/lib/db");
     expect(() => {
-      // Accessing any property triggers lazy client creation.
       void (db as unknown as { $connect: unknown }).$connect;
     }).toThrow(/DATABASE_URL is not set/);
   });
@@ -53,7 +52,6 @@ describe("db (prisma neon proxy)", () => {
     const { db } = await import("@/lib/db");
     const connect = (db as unknown as { $connect: () => string }).$connect;
     expect(typeof connect).toBe("function");
-    // A bound function keeps working when detached from the receiver.
     expect(connect()).toBe("connected");
   });
 
@@ -70,7 +68,6 @@ describe("db (prisma neon proxy)", () => {
     const { db } = await import("@/lib/db");
     void (db as unknown as { tag: string }).tag;
     expect((globalThis as GlobalWithPrisma).prisma).toBeDefined();
-    // A second access reuses the cached client rather than creating a new one.
     const first = (globalThis as GlobalWithPrisma).prisma;
     void (db as unknown as { $connect: unknown }).$connect;
     expect((globalThis as GlobalWithPrisma).prisma).toBe(first);

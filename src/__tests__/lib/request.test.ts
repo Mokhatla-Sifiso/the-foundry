@@ -44,7 +44,6 @@ describe("isSameOrigin", () => {
 });
 
 describe("readFields", () => {
-  // A FormData body sets its own multipart type; leaving body out sends no type at all.
   const post = (body?: BodyInit, type?: string): Request =>
     new Request("https://mzwakhe.dev/api/x", {
       method: "POST",

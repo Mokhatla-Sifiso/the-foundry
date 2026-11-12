@@ -228,7 +228,6 @@ describe("reviewExecutiveRequest", () => {
     expect(arg.data.status).toBe("approved");
     expect(arg.data.reviewToken).toBeNull();
     expect(arg.data.decidedAt).toBeInstanceOf(Date);
-    // Acknowledged, not granted: nothing is emailed and no window opens.
     expect(arg.data.expiresAt).toBeUndefined();
   });
 
