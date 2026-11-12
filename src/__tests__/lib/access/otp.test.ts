@@ -38,8 +38,6 @@ const mockLogConsent = logConsent as jest.Mock;
 
 const CONSENT = { acceptedTerms: true, acceptedPrivacy: true } as const;
 
-// Consent rides along by default so each test exercises the thing it names; the
-// agreement gate itself is asserted explicitly in its own describe block.
 function post(body: Record<string, unknown>): Request {
   return new Request("http://localhost/api", {
     method: "POST",

@@ -1,4 +1,3 @@
-// A module, so these names stay local to this file.
 export {};
 
 const mockSend = jest.fn();
@@ -59,7 +58,7 @@ describe("renderConfirmation", () => {
       expect(part).toContain("expires in 48 hours");
     }
     expect(html).toContain("prefers-color-scheme: dark");
-    expect(html).not.toMatch(/\u2014/); // no em dashes in copy
+    expect(html).not.toMatch(/\u2014/);
   });
 });
 

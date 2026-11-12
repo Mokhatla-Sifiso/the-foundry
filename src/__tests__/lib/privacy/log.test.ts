@@ -20,7 +20,6 @@ function expectedClientId(ip: string | null, ua: string | null): string {
     .digest("hex");
 }
 
-/** Configure the mocked headers().get() for one call. */
 function withHeaders(map: Record<string, string | null>): void {
   headersGet.mockImplementation((name: string) =>
     Object.prototype.hasOwnProperty.call(map, name) ? map[name] : null,
@@ -101,7 +100,6 @@ describe("logConsent", () => {
 
     const { data } = createMock.mock.calls[0][0];
     expect(data.userId).toBeNull();
-    // ip and ua are both null -> hashes the "unknown|unknown" fallback
     expect(data.clientId).toBe(expectedClientId(null, null));
     expect(data.userAgent).toBeNull();
   });

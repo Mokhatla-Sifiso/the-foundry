@@ -22,7 +22,6 @@ import {
   type TapeGeometry,
 } from "@/lib/tape/geometry";
 
-/** A scene as the gate lays it out: bar 64px tall, buttons 40px above the bottom of the stage. */
 function scene(
   width: number,
   height: number,
@@ -41,7 +40,6 @@ function scene(
   };
 }
 
-/** Lowest point any strip reaches over the buttons, and highest point anywhere, at both drift ends. */
 function extent(
   geoms: TapeGeometry[],
   stage: Stage,
@@ -66,8 +64,6 @@ function extent(
 }
 
 describe("fitTapes", () => {
-  // The spec's reference frames (4.1), the smallest supported phone, and the same sizes with the
-  // consent banner open (G6), which takes about 250px from the stage on desktop and 420px on phones.
   const cases: Array<[string, number, number, { width: number; height: number }]> = [
     ["desktop", 1440, 900, { width: 660, height: 56 }],
     ["desktop, banner open", 1440, 650, { width: 660, height: 56 }],
@@ -90,7 +86,6 @@ describe("fitTapes", () => {
       });
       expect(fit.ok).toBe(true);
       const { lowest, highest } = extent(fit.geoms, stage, avoid);
-      // A finer polyline than the fit uses, so this also proves 48 steps were enough.
       expect(lowest).toBeLessThanOrEqual(avoid.top - FIT_MARGIN + 0.5);
       expect(highest).toBeGreaterThanOrEqual(stage.boxTop - 0.5);
     },
@@ -107,7 +102,6 @@ describe("fitTapes", () => {
     expect(fit.geoms[0]).not.toBe(geoms[0]);
   });
 
-  // Buttons taller than the scene box allowed for, so the low strip now runs behind them.
   const raised = { left: 390, right: 1050, top: 700, bottom: 900 };
 
   it("lifts all strips together when there is room above them", () => {
@@ -146,8 +140,6 @@ describe("fitTapes", () => {
     });
   });
 
-  // Portrait phones from the smallest supported to the largest reference, every screen height
-  // from 568px up: the phone strips are a large share of the scene.
   it("keeps every phone strip under the bar and clear of the buttons on portrait phones", () => {
     for (let w = 320; w <= 430; w += 10) {
       for (let h = 568; h <= 1000; h += 16) {
@@ -166,7 +158,6 @@ describe("fitTapes", () => {
   });
 
   describe("dropping below the ceiling", () => {
-    // The phone strips with the banner open, raised so the top one starts above the bar.
     const { stage, avoid } = scene(390, 424, { width: 358, height: 124 });
     const high = resolveTapes(stage, PRESETS.mobile, PRINT_SCALE.mobile).map((g) => ({
       ...g,
@@ -211,7 +202,6 @@ describe("fitTapes", () => {
   });
 });
 
-// Upper-case Onest 900 as measured in the browser, in em: the phrase and each of its words.
 const metrics: PrintMetrics = {
   phrase: 12.721,
   words: [
@@ -221,17 +211,12 @@ const metrics: PrintMetrics = {
   ],
 };
 
-/**
- * The gate as a phone lays it out: the date (13px) sits 12px above the stacked buttons (128px
- * at 390 wide) and ends the scene box, as measured in the browser.
- */
 function phone(width: number, height: number): Stage {
   const boxTop = 64;
   const dateTop = height - 40 - 128 - 12 - 13;
   return { width, height, boxTop, boxHeight: dateTop - 16 - boxTop };
 }
 
-/** Screen x of a word's two ends along a strip's centre line, with the strip at rest. */
 function wordEnds(g: TapeGeometry, stage: Stage, word: TextSpan): [number, number] {
   const size = g.thick * g.printScale;
   const mid = g.offset * (metrics.phrase + PRINT_GAP_EM) * size;
@@ -245,7 +230,6 @@ function wordEnds(g: TapeGeometry, stage: Stage, word: TextSpan): [number, numbe
 describe("printLayout", () => {
   const { stage } = scene(1440, 900, { width: 660, height: 56 });
 
-  /** Where the centred focus starts, and the repeat length, for a strip. */
   function expected(g: TapeGeometry, focus: TextSpan): { centred: number; unit: number } {
     const size = g.thick * g.printScale;
     const unit = (metrics.phrase + PRINT_GAP_EM) * size;
@@ -258,7 +242,6 @@ describe("printLayout", () => {
   function expectCovers(g: TapeGeometry, focus: TextSpan): void {
     const run = printLayout(g, metrics);
     const { centred, unit } = expected(g, focus);
-    // Some repeat starts exactly where the one carrying the centred focus does.
     expect(((centred - run.start) / unit) % 1).toBeCloseTo(0);
     expect(run.start).toBeLessThanOrEqual(0);
     expect(run.start + run.repeats * unit).toBeGreaterThanOrEqual(g.len);
@@ -286,13 +269,11 @@ describe("printLayout", () => {
 });
 
 describe("the phone gate", () => {
-  // The target approved with the mockups (G17), measured on screen at the centre of each strip.
   it("draws the strips as thick, and the print as large, as approved at 390 x 844", () => {
     const stage = phone(390, 844);
     for (const g of resolveTapes(stage, PRESETS.mobile, 0.46)) {
       const top = projectStripPoint(g, stage, 0, -g.thick / 2);
       const bottom = projectStripPoint(g, stage, 0, g.thick / 2);
-      // Magnification at the strip's centre, which the rotations carry to depth tz cos(rx) cos(ry).
       const cos = (deg: number): number => Math.cos((deg * Math.PI) / 180);
       const k = PERSPECTIVE / (PERSPECTIVE - g.tz * cos(g.rx) * cos(g.ry));
       expect(Math.hypot(top.x - bottom.x, top.y - bottom.y)).toBeGreaterThanOrEqual(105);
@@ -315,7 +296,6 @@ describe("fitPrint", () => {
   });
 
   it("shrinks the print, not the strip, so the word stays whole on a tall, narrow phone", () => {
-    // A tall cover screen, narrower than any reference frame.
     const stage = phone(344, 882);
     const geoms = resolveTapes(stage, PRESETS.mobile, 0.46);
     const fitted = geoms.map((g) => fitPrint(g, stage, metrics));
@@ -325,7 +305,6 @@ describe("fitPrint", () => {
       const [left, right] = wordEnds(g, stage, metrics.words[i]);
       expect(left).toBeGreaterThanOrEqual(WORD_MARGIN - 0.5);
       expect(right).toBeLessThanOrEqual(stage.width - WORD_MARGIN + 0.5);
-      // As large as fits: a little larger and a word would reach past the margin.
       if (g.printScale < geoms[i].printScale) {
         const [l, r] = wordEnds({ ...g, printScale: g.printScale * 1.01 }, stage, metrics.words[i]);
         expect(l < WORD_MARGIN || r > stage.width - WORD_MARGIN).toBe(true);

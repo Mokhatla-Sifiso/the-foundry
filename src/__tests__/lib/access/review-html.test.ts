@@ -109,7 +109,6 @@ describe("reviewPage", () => {
     expect(res.headers.get("Content-Type")).toContain("text/html");
     expect(res.headers.get("Cache-Control")).toBe("no-store");
     expect(res.headers.get("X-Robots-Tag")).toContain("noindex");
-    // The token sits in the URL, so it must not leak onward via the referrer.
     expect(res.headers.get("Referrer-Policy")).toBe("no-referrer");
     await expect(res.text()).resolves.toContain("Approved.");
   });

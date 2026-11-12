@@ -6,14 +6,12 @@ import { PAGE_PRESETS } from "@/lib/tape/geometry";
 
 type Box = { left: number; top: number; width: number; height: number };
 
-/** Each word's place in the phrase, in em, as measured in upper-case Onest 900. */
 const WORD_EMS = [
   { left: 0, width: 5.564 },
   { left: 5.844, width: 1.078 },
   { left: 7.202, width: 5.519 },
 ];
 
-/** jsdom does no layout, so each element reports the box the gate would give it. */
 function place(el: HTMLElement, box: Box, client?: { width: number; height: number }): void {
   el.getBoundingClientRect = () =>
     ({
@@ -37,14 +35,12 @@ function Harness({
 }: {
   onScene: (scene: TapeScene | null) => void;
   stageSize?: { width: number; height: number };
-  /** Lay out the pages' single strip with nothing to avoid. */
   pages?: boolean;
 }): React.ReactElement {
   const stage = useRef<HTMLDivElement>(null);
   const ceiling = useRef<HTMLDivElement>(null);
   const avoid = useRef<HTMLDivElement>(null);
   const measure = useRef<HTMLSpanElement>(null);
-  // Layout effects run before the hook's effect, so the boxes are in place when it measures.
   useLayoutEffect(() => {
     const [s, c, a, m] = [stage.current, ceiling.current, avoid.current, measure.current];
     if (!s || !c || !a || !m) return;
@@ -138,7 +134,6 @@ describe("useTapeScene", () => {
       const size = g.thick * g.printScale;
       const unit = (12.72 + PRINT_GAP_EM) * size;
       const centre = (WORD_EMS[i].left + WORD_EMS[i].width / 2) * size;
-      // Some repeat puts the strip's word exactly at the middle of the strip.
       const repeats = (g.len / 2 - centre - print.start) / unit;
       expect(repeats - Math.round(repeats)).toBeCloseTo(0);
     });
@@ -166,7 +161,6 @@ describe("useTapeScene", () => {
     render(<Harness onScene={(s) => scenes.push(s)} pages />);
     const strips = scenes.at(-1)?.strips ?? [];
     expect(strips).toHaveLength(1);
-    // The scene box runs from the bar (64px) to the bottom of the 900px stage.
     expect(strips[0].geometry.cy).toBeCloseTo(64 + (900 - 64) * 0.88);
   });
 

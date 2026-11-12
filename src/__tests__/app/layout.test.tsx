@@ -1,5 +1,3 @@
-// The layout pulls in @vercel/speed-insights/next, which ships ESM that Jest does
-// not transpile from node_modules. This test only reads metadata, so stub it out.
 jest.mock("@vercel/speed-insights/next", () => ({ SpeedInsights: () => null }));
 
 import { metadata } from "@/app/layout";

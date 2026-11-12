@@ -21,7 +21,6 @@ const ICONS = {
   arrow: Arrow,
   bell: Bell,
 } as const;
-/** Nothing to keep the single strip away from: it runs low, under the card. */
 const NONE = [] as const;
 
 function Action({ action }: { action: StatusAction }): React.ReactElement {
@@ -35,7 +34,6 @@ function Action({ action }: { action: StatusAction }): React.ReactElement {
     </>
   );
   if (action.kind === "form") {
-    // A plain form POST answered with a 303, so it works without JavaScript.
     return (
       <form method="post" action={action.endpoint}>
         <input type="hidden" name="token" value={action.token} />
@@ -56,7 +54,6 @@ function Action({ action }: { action: StatusAction }): React.ReactElement {
   );
 }
 
-/** The confirm and unsubscribe pages (spec UG FR-UG-06, FR-UG-07), as on the approved boards. */
 export function StatusPage({ view }: { view: StatusView }): React.ReactElement {
   const stage = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);

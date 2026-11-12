@@ -1,7 +1,3 @@
-/*
- * Notify dialog shell (spec UG 4.7), from the approved boards: a card on a blurred scrim, and a
- * bottom sheet on phones (G7). The form inside it is styled by form.css.
- */
 html[data-theme="light"] {
   --ug-bg-raised: #ffffff;
   --ug-border-subtle: rgb(0 0 0 / 0.08);
@@ -16,7 +12,6 @@ html[data-theme="dark"] {
 .ug-dialog {
   width: min(480px, 100% - 32px);
   max-width: none;
-  /* The site's reset zeroes every margin; auto is what centres a modal dialog. */
   margin: auto;
   padding: 32px;
   border: 1px solid var(--ug-border-subtle);
@@ -26,12 +21,10 @@ html[data-theme="dark"] {
   box-shadow: var(--ug-shadow-dialog);
   font-family: var(--font);
 }
-/* Only while open: a closed dialog must keep the browser's display: none. */
 .ug-dialog[open] {
   display: grid;
   gap: 20px;
 }
-/* Colours written out: older browsers do not let ::backdrop inherit custom properties. */
 html[data-theme="light"] .ug-dialog::backdrop {
   background: rgb(244 244 245 / 0.62);
   backdrop-filter: blur(8px);
@@ -46,7 +39,6 @@ html[data-theme="dark"] .ug-dialog::backdrop {
   font: 700 24px/30px var(--font);
   letter-spacing: -0.01em;
 }
-/* The heading takes focus only to be announced; it is not a control. */
 .ug-dialog h2:focus {
   outline: none;
 }
@@ -96,7 +88,6 @@ html[data-theme="dark"] .ug-dialog::backdrop {
   height: 24px;
 }
 
-/* Phones: a bottom sheet, within thumb reach (G7). */
 @media (max-width: 719.98px) {
   .ug-dialog {
     width: 100%;

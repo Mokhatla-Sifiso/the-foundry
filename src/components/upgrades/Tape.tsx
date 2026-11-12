@@ -6,20 +6,12 @@ import "./tokens.css";
 import "./tape.css";
 
 export interface TapeProps {
-  /** The element the tape fills. */
   stage: RefObject<HTMLElement | null>;
-  /** No strip rises above this element's bottom edge. */
   ceiling: RefObject<HTMLElement | null>;
-  /** No strip passes behind these elements. Pass a stable array. */
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
-  /** The strips to draw, per layout. The gate's three by default. */
   presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
 }
 
-/**
- * The glossy caution-tape strips (spec UG 4.2, G12 to G14): the gate's three, or the pages' one.
- * Decorative and hidden from assistive technology: the page's own heading carries the message.
- */
 export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.ReactElement {
   const measure = useRef<HTMLSpanElement>(null);
   const scene = useTapeScene({ stage, ceiling, avoid, measure, presets });
@@ -30,7 +22,6 @@ export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.React
       data-layout={scene?.layout}
       data-fit={scene ? (scene.fitted ? "ok" : "failed") : undefined}
     >
-      {/* One element per word, so a phone strip can centre its word (G17). */}
       <span ref={measure} className="ug-tape__measure">
         {WORDS.map((word, i) => (
           <Fragment key={word}>
@@ -46,10 +37,6 @@ export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.React
   );
 }
 
-/**
- * The computed geometry, handed to tape.css as custom properties. This is the only style the
- * component sets; every visual rule lives in the stylesheet.
- */
 function stripVars({ geometry: g, print }: PlacedStrip): CSSProperties {
   const vars: Record<`--${string}`, string> = {
     "--len": `${g.len}px`,
@@ -82,7 +69,6 @@ function Strip(strip: PlacedStrip): React.ReactElement {
           <div className="ug-tape__print">{run}</div>
         </div>
       </div>
-      {/* Fixed light along the strip; the print slides beneath it. */}
       <div className="ug-tape__light" />
     </div>
   );

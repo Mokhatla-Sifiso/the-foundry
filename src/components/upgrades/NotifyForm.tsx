@@ -11,16 +11,10 @@ export interface NotifyFormProps {
   descId: string;
   state: Exclude<NotifyState, { status: "submitted" }>;
   onSubmit: (input: NotifyInput) => void;
-  /** Called when the visitor edits a field that is showing an error, to clear it. */
   onEdit: () => void;
-  /** The email field, so the dialog can focus it when it opens. */
   emailRef: RefObject<HTMLInputElement | null>;
 }
 
-/**
- * The notify sign-up form (spec UG 4.7): email, consent, a hidden honeypot and the submit
- * button. Errors sit under the control they belong to (G9), and focus moves to that control.
- */
 export function NotifyForm({
   titleId,
   descId,
@@ -122,7 +116,6 @@ export function NotifyForm({
             </p>
           ) : null}
         </div>
-        {/* People never see or reach this; bots fill it in, and the server then stores nothing. */}
         <div className="ug-honeypot" aria-hidden="true">
           <label>
             Website
@@ -136,7 +129,6 @@ export function NotifyForm({
             />
           </label>
         </div>
-        {/* Busy keeps focus, so it is marked disabled rather than made disabled. */}
         <button
           type="submit"
           className="ug-btn ug-btn--primary ug-btn--block"

@@ -8,15 +8,9 @@ import "./dialog.css";
 
 export interface NotifyDialogProps {
   open: boolean;
-  /** Called once the dialog has closed, by Escape, the close button or Done. */
   onClose: () => void;
 }
 
-/**
- * The notify sign-up dialog (spec UG 4.7). A native modal dialog: the page behind it is inert,
- * so focus stays inside, and Escape closes it. Focus returns to whatever opened it, and the
- * page does not scroll behind it. Each opening starts with an empty form.
- */
 export function NotifyDialog({ open, onClose }: NotifyDialogProps): React.ReactElement {
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
@@ -38,7 +32,6 @@ export function NotifyDialog({ open, onClose }: NotifyDialogProps): React.ReactE
     }
   }, [open]);
 
-  // The page stays still behind the dialog, as it does behind the site menu.
   useEffect(() => {
     if (!open) return;
     const previous = document.body.style.overflow;
@@ -49,7 +42,6 @@ export function NotifyDialog({ open, onClose }: NotifyDialogProps): React.ReactE
   }, [open]);
 
   const close = (): void => dialog.current?.close();
-  // Every way of closing ends in the dialog's close event, so this runs for all of them.
   const handleClose = (): void => {
     signup.reset();
     setSession((n) => n + 1);
