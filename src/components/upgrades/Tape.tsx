@@ -1,7 +1,7 @@
 "use client";
-import { useRef, type CSSProperties, type RefObject } from "react";
+import { Fragment, useRef, type CSSProperties, type RefObject } from "react";
 import { useTapeScene, type PlacedStrip } from "@/hooks/useTapeScene";
-import { PHRASE, type TapeLayout, type TapePreset } from "@/lib/tape/geometry";
+import { PHRASE, WORDS, type TapeLayout, type TapePreset } from "@/lib/tape/geometry";
 import "./tokens.css";
 import "./tape.css";
 
@@ -23,7 +23,12 @@ export function Tape({ stage, ceiling, avoid, presets }: TapeProps): React.React
       data-fit={scene ? (scene.fitted ? "ok" : "failed") : undefined}
     >
       <span ref={measure} className="ug-tape__measure">
-        {PHRASE}
+        {WORDS.map((word, i) => (
+          <Fragment key={word}>
+            {i > 0 && " "}
+            <span>{word}</span>
+          </Fragment>
+        ))}
       </span>
       {scene?.strips.map((strip, i) => (
         <Strip key={i} {...strip} />

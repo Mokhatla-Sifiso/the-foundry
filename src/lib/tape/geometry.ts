@@ -1,4 +1,5 @@
 export const PHRASE = "Upgrades in progress";
+export const WORDS: readonly string[] = PHRASE.split(" ");
 export const PERSPECTIVE = 1200;
 export const PERSPECTIVE_ORIGIN = { x: 0.5, y: 0.46 } as const;
 
@@ -15,7 +16,11 @@ export interface TapePreset {
   far: FarEnd;
   offset: number;
   delay: number;
+  word?: number;
+  print?: number;
 }
+
+const PHONE = { offset: 0, print: 0.56 } as const;
 
 export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   desktop: [
@@ -29,9 +34,9 @@ export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
     { cy: 0.78, rz: 2, ry: -12, tz: 60, thick: 0.18, far: "right", offset: 0, delay: -13 },
   ],
   mobile: [
-    { cy: 0.2, rz: 6, ry: -14, tz: 30, thick: 0.092, far: "right", offset: -0.06, delay: 0 },
-    { cy: 0.5, rz: -14, ry: 13, tz: 70, thick: 0.098, far: "left", offset: 0.04, delay: -7 },
-    { cy: 0.8, rz: 3, ry: -11, tz: 50, thick: 0.088, far: "right", offset: 0, delay: -13 },
+    { ...PHONE, cy: 0.2, rz: 6, ry: -14, tz: 30, thick: 0.17, far: "right", delay: 0, word: 0 },
+    { ...PHONE, cy: 0.5, rz: -14, ry: 13, tz: 70, thick: 0.18, far: "left", delay: -7, word: 1 },
+    { ...PHONE, cy: 0.8, rz: 3, ry: -11, tz: 50, thick: 0.165, far: "right", delay: -13, word: 2 },
   ],
 };
 
@@ -84,6 +89,7 @@ export interface TapeGeometry {
   far: FarEnd;
   offset: number;
   delay: number;
+  word?: number;
   thick: number;
   len: number;
   cy: number;
@@ -111,12 +117,13 @@ export function resolveTapes(
       far: preset.far,
       offset: preset.offset,
       delay: preset.delay,
+      word: preset.word,
       thick,
       len: stage.width * 2.2,
       cy: stage.boxTop + stage.boxHeight * preset.cy,
       drift: driftFor(thick),
       bloom: BLOOM[i % BLOOM.length],
-      printScale,
+      printScale: preset.print ?? printScale,
     };
   });
 }
