@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ACCESS_COOKIE, GATE_PATH, RETURN_HEADER, hasAccess, isExempt } from "@/lib/gate/access";
+import { PRODUCTION_SITE_URL } from "@/lib/site-url";
 
 export function proxy(request: NextRequest): NextResponse {
+  const host = (request.headers.get("host") ?? request.nextUrl.host).toLowerCase();
+  if (process.env.VERCEL_ENV === "production" && host.endsWith(".vercel.app")) {
+    const { pathname, search } = request.nextUrl;
+    return NextResponse.redirect(new URL(`${pathname}${search}`, PRODUCTION_SITE_URL), 308);
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
 
