@@ -135,6 +135,10 @@
 }
 
 @media (max-width: 719.98px) {
+  .ug-stage {
+    height: 100svh;
+    margin-bottom: var(--ug-consent-inset, 0px);
+  }
   .ug-footer {
     display: flex;
     flex-direction: column;
