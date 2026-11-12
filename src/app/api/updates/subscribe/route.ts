@@ -5,10 +5,6 @@ import { RATE_LIMITED, SERVER_ERROR } from "@/lib/updates/messages";
 import { subscribe } from "@/lib/updates/subscribers";
 import { parseSubscribe } from "@/lib/updates/validation";
 
-/**
- * Launch-update sign-up (spec UG 7.1). New, pending and confirmed addresses all get the same
- * 202, and so does a bot that filled the honeypot, so nobody can test who is on the list.
- */
 export async function POST(request: Request): Promise<Response> {
   try {
     if (!isSameOrigin(request.headers)) {

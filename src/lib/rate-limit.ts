@@ -16,8 +16,6 @@ const POLICY: Record<Kind, { limit: number; window: Duration }> = {
   "cv-download": { limit: 30, window: "10 m" },
   "access-request": { limit: 8, window: "10 m" },
   contact: { limit: 4, window: "10 m" },
-  // Launch-update sign-ups (spec UG). Subscribe sends an email, like otp-send, and is checked per
-  // IP and per address; confirm checks a token, like otp-verify, and is checked per IP.
   "updates-subscribe": { limit: 5, window: "10 m" },
   "updates-confirm": { limit: 10, window: "10 m" },
 };

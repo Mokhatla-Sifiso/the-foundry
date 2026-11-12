@@ -1,53 +1,27 @@
-/**
- * Caution-tape geometry for the upgrades gate (spec UG 4.2, G5, G12 to G14).
- *
- * Each strip is a flat rectangle placed in one 3D context by the transform chain in tape.css:
- * translateY, rotateZ, rotateY, rotateX, translateZ, under a 1200px perspective. These functions
- * turn the presets into pixels and project each strip's real edges through that same chain, so
- * the layout can guarantee that no strip passes behind the buttons at any size (see fit.ts).
- */
-
 export const PHRASE = "Upgrades in progress";
-/** The phrase's words, in order. A preset's `word` indexes this. */
 export const WORDS: readonly string[] = PHRASE.split(" ");
-/** Must match `perspective` and `perspective-origin` in tape.css. */
 export const PERSPECTIVE = 1200;
 export const PERSPECTIVE_ORIGIN = { x: 0.5, y: 0.46 } as const;
 
 export type TapeLayout = "desktop" | "tablet" | "mobile";
-/** The end of a strip that recedes from the viewer and goes out of focus. */
 export type FarEnd = "left" | "right";
 type Side = -1 | 1;
 
 export interface TapePreset {
-  /** Centre line, as a fraction of the scene box height. */
   cy: number;
-  /** Rotations, degrees. */
   rz: number;
   ry: number;
-  /** Distance toward the viewer, px. */
   tz: number;
-  /** Thickness, as a fraction of the scene box height. */
   thick: number;
   far: FarEnd;
-  /** Shift of the centred phrase along the strip, in whole repeats. */
   offset: number;
-  /** Animation delay, seconds. Negative values start a strip mid-drift, so strips move out of phase. */
   delay: number;
-  /** Index into WORDS of the one word this strip centres on screen. Omitted: the whole phrase. */
   word?: number;
-  /** Print size as a share of thickness, in place of the layout's PRINT_SCALE. */
   print?: number;
 }
 
-/** Phone strips: each centres one word, at a size that reads at arm's length (G17). */
 const PHONE = { offset: 0, print: 0.56 } as const;
 
-/**
- * Three strips crossing the middle of the screen, as in the reference: one high, one on the
- * diagonal, one low (G12). Positions are fractions of the scene box, the band between the top
- * bar and the buttons (G5). On phones the three read the phrase a word each, top to bottom (G17).
- */
 export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   desktop: [
     { cy: 0.27, rz: 5, ry: -16, tz: 40, thick: 0.2, far: "right", offset: -0.04, delay: 0 },
@@ -66,7 +40,6 @@ export const PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   ],
 };
 
-/** The confirm and unsubscribe pages: one quieter strip low across the screen, from the boards. */
 const PAGE_STRIP = { rz: -3, ry: 12, tz: 40, far: "left", offset: 0, delay: 0 } as const;
 export const PAGE_PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> = {
   desktop: [{ ...PAGE_STRIP, cy: 0.88, thick: 0.085 }],
@@ -74,22 +47,15 @@ export const PAGE_PRESETS: Readonly<Record<TapeLayout, readonly TapePreset[]>> =
   mobile: [{ ...PAGE_STRIP, cy: 0.9, thick: 0.06 }],
 };
 
-/**
- * Print size as a share of strip thickness, unless a preset sets its own. Smaller on phones so
- * one whole phrase fits across the screen (G14), as on the pages' strip; on wider screens it
- * fills the strip like the reference.
- */
 export const PRINT_SCALE: Readonly<Record<TapeLayout, number>> = {
   desktop: 0.62,
   tablet: 0.62,
   mobile: 0.46,
 };
 
-/** Each strip tilts against the light by a different amount, and catches it at a different point. */
 const TILT = [8, -7, 5] as const;
 const BLOOM = [34, 60, 46] as const;
 
-/** Breakpoints for the presets. The gate's CSS stacks the buttons below the same 720px. */
 export function layoutFor(width: number): TapeLayout {
   if (width < 720) return "mobile";
   if (width < 1200) return "tablet";
@@ -99,9 +65,7 @@ export function layoutFor(width: number): TapeLayout {
 export interface Stage {
   width: number;
   height: number;
-  /** Top of the scene box: the bottom of the top bar. */
   boxTop: number;
-  /** Height of the scene box, down to just above the buttons. */
   boxHeight: number;
 }
 
@@ -120,32 +84,23 @@ export interface Point {
 export interface TapeGeometry {
   rz: number;
   ry: number;
-  /** Tilt against the light, degrees. */
   rx: number;
   tz: number;
   far: FarEnd;
   offset: number;
   delay: number;
-  /** Index into WORDS of the word centred on screen. Omitted: the whole phrase. */
   word?: number;
-  /** Thickness, px, scaled back up for the tilt's foreshortening. */
   thick: number;
-  /** Length, px: long enough that both ends stay off screen at every angle. */
   len: number;
-  /** Centre line, stage px. */
   cy: number;
-  /** How far the strip drifts each way along its length, px. */
   drift: number;
-  /** Where the light blooms along the strip, percent. */
   bloom: number;
   printScale: number;
 }
 
 const rad = (deg: number): number => (deg * Math.PI) / 180;
-/** How far a strip of a given thickness drifts each way, px (D7: noticed on a second look). */
 export const driftFor = (thick: number): number => Math.round(thick * 0.35);
 
-/** Resolves presets into the geometry each strip renders with, in stage pixels. */
 export function resolveTapes(
   stage: Stage,
   presets: readonly TapePreset[],
@@ -173,10 +128,6 @@ export function resolveTapes(
   });
 }
 
-/**
- * Screen position of a point on a strip, through the transform chain tape.css applies.
- * `u` runs along the strip from its centre; `v` runs across it, positive toward the bottom edge.
- */
 export function projectStripPoint(g: TapeGeometry, stage: Stage, u: number, v: number): Point {
   let x = u;
   let y = v;
@@ -198,7 +149,6 @@ export function projectStripPoint(g: TapeGeometry, stage: Stage, u: number, v: n
   };
 }
 
-/** One edge of a strip as a screen polyline, with the strip drifted by `drift` px. */
 export function stripEdge(
   g: TapeGeometry,
   stage: Stage,
@@ -214,10 +164,6 @@ export function stripEdge(
   return points;
 }
 
-/**
- * The lowest (`max`) or highest (`min`) y a polyline reaches between two x positions, by linear
- * interpolation along its segments. Null when the polyline never enters the span.
- */
 export function edgeExtremeIn(
   edge: readonly Point[],
   left: number,

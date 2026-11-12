@@ -46,7 +46,6 @@ export function isFreeDomain(email: string): boolean {
 export function validateSignup(
   raw: unknown,
   options: {
-    /** Skip the work-email check. Set by the admin allowlist or a time-boxed bypass. */
     allowPersonalEmail: boolean;
   },
 ):
