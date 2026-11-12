@@ -1,9 +1,17 @@
 import { act, render, renderHook } from "@testing-library/react";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { MEASURE_SIZE, useTapeScene, type TapeScene } from "@/hooks/useTapeScene";
+import { PRINT_GAP_EM } from "@/lib/tape/fit";
 import { PAGE_PRESETS } from "@/lib/tape/geometry";
 
 type Box = { left: number; top: number; width: number; height: number };
+
+/** Each word's place in the phrase, in em, as measured in upper-case Onest 900. */
+const WORD_EMS = [
+  { left: 0, width: 5.564 },
+  { left: 5.844, width: 1.078 },
+  { left: 7.202, width: 5.519 },
+];
 
 /** jsdom does no layout, so each element reports the box the gate would give it. */
 function place(el: HTMLElement, box: Box, client?: { width: number; height: number }): void {
@@ -44,6 +52,15 @@ function Harness({
     place(c, { left: 22, top: 14, width: 1396, height: 50 });
     place(a, { left: 390, top: stageSize.height - 96, width: 660, height: 56 });
     place(m, { left: 0, top: 0, width: 12.72 * MEASURE_SIZE, height: 100 });
+    Array.from(m.children).forEach((word, i) => {
+      const { left, width } = WORD_EMS[i];
+      place(word as HTMLElement, {
+        left: left * MEASURE_SIZE,
+        top: 0,
+        width: width * MEASURE_SIZE,
+        height: 100,
+      });
+    });
   }, [stageSize]);
   const boxes = useMemo(() => (pages ? [] : [avoid]), [avoid, pages]);
   onScene(
@@ -59,7 +76,9 @@ function Harness({
     <div ref={stage}>
       <div ref={ceiling} />
       <div ref={avoid} />
-      <span ref={measure} />
+      <span ref={measure}>
+        <span>Upgrades</span> <span>in</span> <span>progress</span>
+      </span>
     </div>
   );
 }
@@ -107,6 +126,22 @@ describe("useTapeScene", () => {
       expect(print.start).toBeLessThanOrEqual(0);
       expect(print.repeats).toBeGreaterThan(1);
     }
+  });
+
+  it("centres a different word on each strip on a phone, measured in the real font", () => {
+    const scenes: Array<TapeScene | null> = [];
+    render(<Harness onScene={(s) => scenes.push(s)} stageSize={{ width: 390, height: 844 }} />);
+    const scene = scenes.at(-1);
+    expect(scene?.layout).toBe("mobile");
+    scene?.strips.forEach(({ geometry: g, print }, i) => {
+      expect(g.word).toBe(i);
+      const size = g.thick * g.printScale;
+      const unit = (12.72 + PRINT_GAP_EM) * size;
+      const centre = (WORD_EMS[i].left + WORD_EMS[i].width / 2) * size;
+      // Some repeat puts the strip's word exactly at the middle of the strip.
+      const repeats = (g.len / 2 - centre - print.start) / unit;
+      expect(repeats - Math.round(repeats)).toBeCloseTo(0);
+    });
   });
 
   it("watches the stage and the buttons, and lays out again when either resizes", () => {

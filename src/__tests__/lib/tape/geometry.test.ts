@@ -1,7 +1,9 @@
 import {
+  PAGE_PRESETS,
   PERSPECTIVE_ORIGIN,
   PRESETS,
   PRINT_SCALE,
+  WORDS,
   edgeExtremeIn,
   layoutFor,
   projectStripPoint,
@@ -46,6 +48,48 @@ describe("resolveTapes", () => {
   it("tilts and lights every strip differently", () => {
     expect(new Set(geoms.map((g) => g.rx)).size).toBe(3);
     expect(new Set(geoms.map((g) => g.bloom)).size).toBe(3);
+  });
+
+  it("centres the whole phrase at the layout's print size unless a preset says otherwise", () => {
+    geoms.forEach((g) => {
+      expect(g.word).toBeUndefined();
+      expect(g.printScale).toBe(PRINT_SCALE.desktop);
+    });
+    const phone: Stage = { width: 390, height: 844, boxTop: 64, boxHeight: 571 };
+    resolveTapes(phone, PRESETS.mobile, PRINT_SCALE.mobile).forEach((g, i) => {
+      expect(WORDS[g.word ?? -1]).toBe(WORDS[i]);
+      expect(g.printScale).toBe(0.56);
+    });
+  });
+});
+
+describe("presets", () => {
+  // The phone strips grew in G17; desktop, tablet and the pages' strip stay as approved.
+  it("keeps the desktop and tablet strips and the print sizes as approved", () => {
+    expect(PRESETS.desktop).toEqual([
+      { cy: 0.27, rz: 5, ry: -16, tz: 40, thick: 0.2, far: "right", offset: -0.04, delay: 0 },
+      { cy: 0.52, rz: -11, ry: 15, tz: 110, thick: 0.21, far: "left", offset: 0.05, delay: -7 },
+      { cy: 0.78, rz: 2, ry: -12, tz: 70, thick: 0.19, far: "right", offset: 0, delay: -13 },
+    ]);
+    expect(PRESETS.tablet).toEqual([
+      { cy: 0.27, rz: 5, ry: -16, tz: 40, thick: 0.19, far: "right", offset: -0.04, delay: 0 },
+      { cy: 0.52, rz: -12, ry: 15, tz: 100, thick: 0.2, far: "left", offset: 0.05, delay: -7 },
+      { cy: 0.78, rz: 2, ry: -12, tz: 60, thick: 0.18, far: "right", offset: 0, delay: -13 },
+    ]);
+    expect(PRINT_SCALE).toEqual({ desktop: 0.62, tablet: 0.62, mobile: 0.46 });
+  });
+
+  it("keeps the pages' quieter strip centring the whole phrase on every layout", () => {
+    for (const layout of ["desktop", "tablet", "mobile"] as const) {
+      expect(PAGE_PRESETS[layout]).toHaveLength(1);
+      expect(PAGE_PRESETS[layout][0].word).toBeUndefined();
+      expect(PAGE_PRESETS[layout][0].print).toBeUndefined();
+    }
+  });
+
+  it("gives each phone strip one word of the phrase, in reading order from the top", () => {
+    const strips = [...PRESETS.mobile].sort((a, b) => a.cy - b.cy);
+    expect(strips.map((p) => WORDS[p.word ?? -1])).toEqual(["Upgrades", "in", "progress"]);
   });
 });
 
