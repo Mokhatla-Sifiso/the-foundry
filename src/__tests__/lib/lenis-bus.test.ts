@@ -1,6 +1,5 @@
 describe("lenisBus", () => {
   beforeEach(() => {
-    // Fresh module so the internal subscriber array is isolated per test.
     jest.resetModules();
   });
 
@@ -52,7 +51,6 @@ describe("lenisBus", () => {
     const listener = jest.fn();
     const off = lenisBus.on(listener);
     off();
-    // Second call hits the indexOf === -1 branch and must not throw.
     expect(() => off()).not.toThrow();
     lenisBus.emit(5);
     expect(listener).not.toHaveBeenCalled();

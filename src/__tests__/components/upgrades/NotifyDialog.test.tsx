@@ -2,7 +2,6 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { NotifyDialog } from "@/components/upgrades/NotifyDialog";
 
-// jsdom has <dialog> and its `open` attribute but not the modal methods; these stand in for them.
 const showModal = jest.fn(function (this: HTMLDialogElement) {
   this.setAttribute("open", "");
 });
@@ -13,7 +12,6 @@ const close = jest.fn(function (this: HTMLDialogElement) {
 const originalFetch = global.fetch;
 const fetchMock = jest.fn();
 
-/** jsdom has no Response; the hook reads only the status and the JSON body. */
 function jsonResponse(body: unknown, status: number): Response {
   return {
     ok: status >= 200 && status < 300,
@@ -37,7 +35,6 @@ beforeEach(() => {
   document.body.style.overflow = "";
 });
 
-/** The gate's wiring: a button that opens the dialog. */
 function Harness(): React.ReactElement {
   const [open, setOpen] = useState(false);
   return (
@@ -87,7 +84,6 @@ describe("NotifyDialog", () => {
   it("closes on Escape, returning focus to the button that opened it and the scroll to the page", () => {
     render(<Harness />);
     const dialog = openDialog();
-    // Escape on a modal dialog ends in its close event, as the close button does.
     act(() => dialog.close());
     expect(dialog).not.toHaveAttribute("open");
     expect(
@@ -110,7 +106,6 @@ describe("NotifyDialog", () => {
     const heading = screen.getByRole("heading", { name: "Check your inbox" });
     expect(heading).toHaveFocus();
     expect(dialog).toHaveAccessibleName("Check your inbox");
-    // jsdom's name computation adds a space after the inline <strong>; browsers do not.
     expect(dialog).toHaveAccessibleDescription(
       /^If this address still needs confirming, a link is on its way to name@company\.com ?\. It expires in 48 hours\.$/,
     );

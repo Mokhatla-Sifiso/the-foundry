@@ -40,7 +40,6 @@ describe("rate-limit", () => {
       const { ratelimitCtor } = mockUpstash(async () => ({ success: false }));
       const { rateLimit } = await import("@/lib/rate-limit");
       await expect(rateLimit("otp-send", "1.2.3.4")).resolves.toBe(true);
-      // Limiter should never be constructed when there is no redis client.
       expect(ratelimitCtor).not.toHaveBeenCalled();
     });
 
@@ -50,7 +49,6 @@ describe("rate-limit", () => {
       mockUpstash(async () => ({ success: true }));
       const { rateLimit } = await import("@/lib/rate-limit");
       await rateLimit("otp-send", "ip");
-      // Second call must not warn again (module-scoped `warned` guard).
       await rateLimit("otp-verify", "ip");
       expect(warn).toHaveBeenCalledTimes(1);
       expect(warn.mock.calls[0]?.[0]).toContain("[rate-limit]");

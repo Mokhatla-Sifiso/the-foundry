@@ -147,7 +147,6 @@ describe("validateSignup — rejection branches", () => {
       },
       { allowPersonalEmail: false },
     );
-    // email is valid, so it falls through to the first empty text field: name.
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.field).toBe("name");
   });

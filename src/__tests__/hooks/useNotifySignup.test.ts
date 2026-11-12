@@ -5,7 +5,6 @@ const VALID = { email: " Name@Company.com ", consent: true, website: "" };
 const originalFetch = global.fetch;
 const fetchMock = jest.fn();
 
-/** jsdom has no Response; the hook reads only the status and the JSON body. */
 function jsonResponse(body: unknown, status: number): Response {
   return {
     ok: status >= 200 && status < 300,

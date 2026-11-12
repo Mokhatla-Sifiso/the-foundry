@@ -22,7 +22,6 @@ jest.mock("@/lib/db", () => ({
   },
 }));
 
-// The real module pulls in the Resend SDK; only the link shape matters here.
 jest.mock("@/lib/updates/email", () => ({
   linksFor: (confirmToken: string, unsubscribeToken: string) => ({
     confirmUrl: `https://mzwakhe.test/updates/confirm?token=${confirmToken}`,
@@ -39,7 +38,6 @@ const table = db.updateSubscriber as unknown as Record<
 const send = sendConfirmation as jest.Mock;
 const NOW = new Date("2026-11-05T12:00:00Z");
 
-/** The raw tokens from the links in the last confirmation email. */
 function sentTokens(): { confirm: string; unsubscribe: string } {
   const links = send.mock.calls.at(-1)[1];
   return {

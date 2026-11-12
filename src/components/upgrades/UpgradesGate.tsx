@@ -13,15 +13,9 @@ import "./buttons.css";
 import "./gate.css";
 
 export interface UpgradesGateProps {
-  /** Where "Go to previous portfolio version for now" returns the visitor (FR-UG-02). */
   returnPath?: string;
 }
 
-/**
- * The upgrades gate (spec UG FR-UG-04): the brand and theme toggle, three tape strips, the
- * page's only two actions and the launch date. The heading is visually hidden; the tape is
- * decoration.
- */
 export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.ReactElement {
   const stage = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
@@ -45,7 +39,6 @@ export function UpgradesGate({ returnPath = "/" }: UpgradesGateProps): React.Rea
           <h1 className="sr-only">Upgrades in progress</h1>
           <div className="ug-footer">
             <div ref={actions} className="ug-actions">
-              {/* A plain form POST, so the way through works without JavaScript (FR-UG-02). */}
               <form method="post" action={ACCESS_PATH}>
                 <input type="hidden" name="return" value={returnPath} />
                 <button type="submit" className="ug-btn ug-btn--primary">

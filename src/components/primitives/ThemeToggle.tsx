@@ -1,13 +1,6 @@
 "use client";
 import { useTheme } from "@/hooks/useTheme";
 
-/**
- * The site's theme switch (spec UG 4.6, FR-UG-09): a glossy pill with a sphere knob.
- *
- * Announced as a switch named "Dark mode"; as a native button it toggles with Space and Enter.
- * Both glyphs are always rendered and CSS shows the one matching html[data-theme], so the first
- * paint is right even before React knows the stored theme.
- */
 export function ThemeToggle(): React.ReactElement {
   const { theme, toggle } = useTheme();
   return (

@@ -1,7 +1,3 @@
-/*
- * Upgrades buttons (spec UG 4.5), shared by the gate, the notify dialog and the confirm and
- * unsubscribe pages. A pill with a round icon well; primary is filled, secondary is glossy.
- */
 html[data-theme="light"] {
   --ug-button-primary-bg: #08080a;
   --ug-button-primary-bg-hover: #26272a;
@@ -53,7 +49,6 @@ html[data-theme="dark"] {
     background 0.2s,
     box-shadow 0.2s;
 }
-/* text-wrap-style, not the text-wrap shorthand: the shorthand would turn wrapping back on. */
 .ug-btn__label {
   text-wrap-style: balance;
 }
@@ -119,12 +114,10 @@ html[data-theme="dark"] {
   outline-offset: 3px;
 }
 
-/* Full width, label left and icon right, as in the dialog. */
 .ug-btn--block {
   justify-content: space-between;
   width: 100%;
 }
-/* Busy (Notify only): it keeps focus, so it is marked disabled rather than made disabled. */
 .ug-btn[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;

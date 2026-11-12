@@ -28,7 +28,6 @@ describe("LaunchDate", () => {
   });
 
   it("glitches the X at a random moment, then settles back to X", () => {
-    // 0.5 picks a pause of 3.2 s, then the middle glyph.
     jest.spyOn(Math, "random").mockReturnValue(0.5);
     render(<LaunchDate />);
     expect(x()).not.toHaveClass("is-glitching");

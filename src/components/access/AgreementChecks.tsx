@@ -5,18 +5,11 @@ type AgreementChecksProps = Readonly<{
   acceptedPrivacy: boolean;
   onTermsChange: (next: boolean) => void;
   onPrivacyChange: (next: boolean) => void;
-  /** The name the terms carry in this journey, e.g. "Recruiter Terms". */
   termsLabel?: string;
   error?: string;
-  /** Keeps the error id unique when a page renders more than one set. */
   idPrefix?: string;
 }>;
 
-/**
- * The consent gate shared by every journey that issues a session: recruiter,
- * guest and executive. One implementation so the wording, the links and the
- * accessibility wiring cannot drift apart between flows.
- */
 export function AgreementChecks({
   acceptedTerms,
   acceptedPrivacy,

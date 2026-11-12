@@ -30,7 +30,6 @@ describe("AgreementChecks", () => {
     const privacy = screen.getByRole("link", { name: /Privacy Policy/i });
     expect(terms).toHaveAttribute("href", "/legal/terms");
     expect(privacy).toHaveAttribute("href", "/legal/privacy");
-    // A journey mid-verification must survive reading the terms.
     expect(terms).toHaveAttribute("target", "_blank");
     expect(privacy).toHaveAttribute("target", "_blank");
     expect(terms).toHaveAttribute("rel", "noreferrer");

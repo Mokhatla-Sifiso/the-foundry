@@ -39,9 +39,7 @@ export function useConsent(): ConsentContextValue {
   const ctx = useContext(ConsentContext);
   return ctx ?? NOOP_CONSENT;
 }
-/** Lets layouts that must keep clear of the banner (the upgrades gate) find it. */
 export const CONSENT_BANNER_ID = "consent-banner";
-/** The banner shows until a choice is on record, and again whenever it is reopened. */
 export function bannerVisible({
   resolved,
   open,

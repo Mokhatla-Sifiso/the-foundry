@@ -321,7 +321,6 @@ describe("notification resilience", () => {
     (sendGuestRequestToOwner as jest.Mock).mockRejectedValueOnce(new Error("domain not verified"));
 
     await expect(createGuestRequest(base)).rejects.toBeInstanceOf(NotifyError);
-    // The row is still written: the request is real even when the email is not.
     expect(accessRequest.create).toHaveBeenCalledTimes(1);
   });
 });

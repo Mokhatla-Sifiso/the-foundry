@@ -10,7 +10,6 @@ const service = unsubscribe as jest.Mock;
 const TOKEN = "B".repeat(43);
 const ENDPOINT = "https://mzwakhe.dev/api/updates/unsubscribe";
 
-/** The unsubscribe page's own form. */
 function formPost(token: string, origin = "https://mzwakhe.dev"): Request {
   return new Request(ENDPOINT, {
     method: "POST",
@@ -23,7 +22,6 @@ function formPost(token: string, origin = "https://mzwakhe.dev"): Request {
   });
 }
 
-/** What a mail provider sends for RFC 8058 one-click: no Origin, no cookies, token in the URL. */
 function oneClick(token: string, body: BodyInit = "List-Unsubscribe=One-Click"): Request {
   const headers: Record<string, string> = { host: "mzwakhe.dev" };
   if (typeof body === "string") headers["content-type"] = "application/x-www-form-urlencoded";
