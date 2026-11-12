@@ -86,6 +86,36 @@ describe("proxy site gate (FR-UG-01)", () => {
   });
 });
 
+describe("proxy canonical host", () => {
+  const ORIGINAL = process.env.VERCEL_ENV;
+  const at = (url: string): NextRequest => new NextRequest(new URL(url));
+
+  afterEach(() => {
+    if (ORIGINAL === undefined) delete process.env.VERCEL_ENV;
+    else process.env.VERCEL_ENV = ORIGINAL;
+  });
+
+  it("sends production pages on a vercel.app host to the custom domain, path and query intact", () => {
+    process.env.VERCEL_ENV = "production";
+    const res = proxy(at("https://the-foundry-seven.vercel.app/legal/privacy?x=1"));
+    expect(res.status).toBe(308);
+    expect(res.headers.get("location")).toBe("https://www.mzwakhemokhatla.co.za/legal/privacy?x=1");
+  });
+
+  it("serves the custom domain itself without a redirect", () => {
+    process.env.VERCEL_ENV = "production";
+    const res = proxy(at("https://www.mzwakhemokhatla.co.za/"));
+    expect(res.status).not.toBe(308);
+    expect(res.headers.get("content-security-policy")).toBeTruthy();
+  });
+
+  it("leaves preview deployments on their own vercel.app host", () => {
+    process.env.VERCEL_ENV = "preview";
+    const res = proxy(at("https://the-foundry-git-branch.vercel.app/"));
+    expect(res.status).not.toBe(308);
+  });
+});
+
 describe("proxy matcher", () => {
   it("covers a dotted path that 404s, so error pages still get a CSP", () => {
     expect(matcher.test("/404javascript.js")).toBe(true);
