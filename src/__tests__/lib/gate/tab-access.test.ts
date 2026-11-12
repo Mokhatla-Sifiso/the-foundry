@@ -1,7 +1,7 @@
 import { restoreTabAccess, tabAccess, tabAccessScript } from "@/lib/gate/tab-access";
 
 const NAME = "site-access";
-const VALUE = "v1";
+const VALUE = "v2";
 const ACTION = "/api/site-access";
 
 function clearCookie(): void {
