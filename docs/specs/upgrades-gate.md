@@ -108,7 +108,7 @@ The page is one screen tall (`100svh`). If the viewport is too short for its con
 
 - No tape strip crosses either face.
 - No tape strip passes behind either button.
-- No content is hidden behind the consent banner at the reference sizes: when the banner is open, the buttons stay visible above it.
+- No content is hidden behind the consent banner at the reference sizes: when the banner is open, the buttons stay visible above it. Phones are the exception (G18).
 
 ### 4.2 Caution tape
 
@@ -499,7 +499,7 @@ The design boards settle the points below. Items marked **change** differ from t
 | G3 | **Change to 4.2 and D7.** The movement is the whole strip drifting slowly along its own length (16 s each way, strips out of phase), not the print scrolling inside it. It reads the same, costs nothing per frame, and keeps the depth of field fixed in place. |
 | G4 | **Change to 4.1.** The figure fades out at the chest instead of running off the bottom edge. The supplied photo ends at the chest, so a hard crop would show. |
 | G5 | Layout rule: vertical positions are fractions of the scene box, the band between the top bar and the buttons. This is what guarantees no tape behind the buttons at any size. |
-| G6 | With the consent banner open, the scene lays out in the space above it; nothing sits under the banner. |
+| G6 | With the consent banner open, the scene lays out in the space above it; nothing sits under the banner. On phones, see G18. |
 | G7 | Phones: both buttons are full width and long labels wrap in balanced lines; the notify dialog is a bottom sheet. |
 | G8 | **Change to 4.7.** The submitted state reads "If this address still needs confirming, a link is on its way to [address]. It expires in 48 hours." It stays identical for new, pending and confirmed addresses, and makes no claim that an email was sent when none was. |
 | G9 | Errors use the one non-monochrome colour on the page: `#B3261E` (light) and `#F2B8B5` (dark), always with an icon and text. |
@@ -523,3 +523,4 @@ Design notes added with this change:
 | G15 | Build note (2026-11-06), matching the approved boards: on desktop and tablet the print fills the strip, so where a strip turns away from the viewer the end of the centred phrase can run into the out-of-focus far end. On phones the whole phrase fits. The build keeps the approved print sizes rather than shrinking the print to fit every width. |
 | G16 | Build note (2026-11-06), matching the approved boards: the buttons are 56 px tall, not the 52 px in 4.5. |
 | G17 | **Change to G14 for phones** (approved 2026-11-08 from rendered mockups). The phone strips match the desktop's weight: about 17 percent of the scene height each, with the print at 56 percent of the strip, and each strip centres one word, so the three read UPGRADES, IN, PROGRESS from top to bottom. At 390 x 844 the strips are 109 to 122 px thick with 62 to 69 px print, up from 59 to 67 px with 27 to 31 px. The print shrinks only where a tall, narrow phone would otherwise push the centred word past a 16 px gutter. On phones a strip group that starts above the top bar drops under it when the buttons leave room. Desktop, tablet and the confirm and unsubscribe pages are unchanged. |
+| G18 | **Change to G6 for phones** (approved 2026-11-12). Under 720 px wide the gate keeps its full height while the consent banner is open, so the tape stays at the G17 size instead of shrinking into the space above the banner. The banner covers the lower part of the screen, and the page gains scroll room equal to the banner's height so the buttons can be scrolled above it. Desktop and tablet are unchanged. |
