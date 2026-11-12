@@ -233,7 +233,7 @@ The button works without JavaScript: it is a form POST to `/api/site-access`, wh
 | Attribute | Value |
 | --- | --- |
 | Name | `site-access` |
-| Value | `v1` |
+| Value | `v2` (was `v1` until 2026-11-12; the bump re-gates everyone who held the old 30-day cookie) |
 | Flags | `Secure` (production), `SameSite=Lax`, `Path=/`. Not `HttpOnly`: the page script clears it in tabs that did not make the choice. |
 | Lifetime | Session cookie, scoped to one tab by a `site-access` sessionStorage mark (D1) |
 

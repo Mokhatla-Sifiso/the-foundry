@@ -1,5 +1,5 @@
 export const ACCESS_COOKIE = "site-access";
-export const ACCESS_VALUE = "v1";
+export const ACCESS_VALUE = "v2";
 export const ACCESS_PATH = "/api/site-access";
 
 export const GATE_PATH = "/upgrades";
