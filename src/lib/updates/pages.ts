@@ -1,14 +1,11 @@
 import { RATE_LIMITED, SERVER_ERROR } from "./messages";
 import { parseToken } from "./validation";
 
-/** What the confirm and unsubscribe pages show (spec UG FR-UG-06, FR-UG-07), from the boards. */
 export interface StatusView {
   title: string;
   body: string;
   icon: "mail" | "check" | "alert";
-  /** An outlined status mark rather than a filled one, for the states that are not a success. */
   muted: boolean;
-  /** One of the dialog's approved failure lines, shown above the action. */
   alert?: string;
   action: StatusAction;
 }
@@ -41,7 +38,6 @@ const BACK: StatusAction = {
   icon: "arrow",
   primary: false,
 };
-/** The gate itself, since the home page shows the old site once a visitor has clicked through. */
 const SIGN_UP_AGAIN: StatusAction = {
   kind: "link",
   href: "/upgrades",
@@ -56,7 +52,6 @@ function retryAlert(status: string | undefined): string | undefined {
   return undefined;
 }
 
-/** The confirm page for the query string the email link or the confirm route left. */
 export function confirmView(params: Params): StatusView {
   const status = first(params.status);
   const token = parseToken(first(params.token));
@@ -103,7 +98,6 @@ export function confirmView(params: Params): StatusView {
   };
 }
 
-/** The unsubscribe page for the query string the email link or the unsubscribe route left. */
 export function unsubscribeView(params: Params): StatusView {
   const status = first(params.status);
   const token = parseToken(first(params.token));

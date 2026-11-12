@@ -5,7 +5,6 @@ import { parseSubscribe } from "@/lib/updates/validation";
 
 export { RATE_LIMITED, SERVER_ERROR };
 
-/** The notify dialog's states (spec UG 4.7). */
 export type NotifyState =
   | Readonly<{ status: "idle" }>
   | Readonly<{ status: "submitting" }>
@@ -18,14 +17,12 @@ export type NotifyState =
 export interface NotifyInput {
   email: string;
   consent: boolean;
-  /** The honeypot. People never see it, so it stays empty. */
   website: string;
 }
 
 export interface NotifySignup {
   state: NotifyState;
   submit: (input: NotifyInput) => Promise<void>;
-  /** Back to idle; a response still in flight is then ignored. */
   reset: () => void;
 }
 
@@ -36,10 +33,6 @@ function fieldError(body: unknown): { field: "email" | "consent"; message: strin
   return { field, message };
 }
 
-/**
- * The notify sign-up (FR-UG-05). Checks the input with the server's own rules first, so most
- * mistakes are caught without a request, then maps each response of spec 7.1 to a state.
- */
 export function useNotifySignup(): NotifySignup {
   const [state, setState] = useState<NotifyState>({ status: "idle" });
   const attempt = useRef(0);

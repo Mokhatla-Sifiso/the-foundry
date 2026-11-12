@@ -18,13 +18,8 @@ export async function POST(request: Request): Promise<Response> {
         { status: 429 },
       );
     }
-    // Checked before the body: a pending request already carries its resources,
-    // so a nudge from the pending card sends no payload and must not be validated
-    // as if it were a fresh request.
     const existing = await guestStateForEmail(ctx.email);
     if (existing.status === "pending") {
-      // Resubmitting is the only lever a guest has when the first notification
-      // never landed, so make it actually re-notify instead of silently no-oping.
       await renotifyPendingRequest(ctx.email);
       return NextResponse.json({ ok: true, status: "pending" });
     }

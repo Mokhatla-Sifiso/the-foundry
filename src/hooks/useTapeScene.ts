@@ -13,9 +13,7 @@ import {
   type TapePreset,
 } from "@/lib/tape/geometry";
 
-/** Space between the bottom of the scene box and the top of the buttons, px (G5). */
 const BOX_GAP = 16;
-/** Font size the measuring element renders the phrase at. Must match tape.css. */
 export const MEASURE_SIZE = 100;
 
 export interface PlacedStrip {
@@ -26,24 +24,14 @@ export interface PlacedStrip {
 export interface TapeScene {
   layout: TapeLayout;
   strips: readonly PlacedStrip[];
-  /** False if the strips could not be fitted clear of the buttons. */
   fitted: boolean;
 }
 
 export interface TapeSceneRefs {
-  /** The element the tape fills. */
   stage: RefObject<HTMLElement | null>;
-  /** No strip rises above this element's bottom edge (the top bar). */
   ceiling: RefObject<HTMLElement | null>;
-  /**
-   * No strip passes behind these elements (the buttons, the date). The scene box ends above the
-   * highest of them, or at the bottom of the stage when there are none. Pass a stable array: a
-   * new one on every render would lay out every render.
-   */
   avoid: ReadonlyArray<RefObject<HTMLElement | null>>;
-  /** The phrase rendered at MEASURE_SIZE in the print's font, one child element per word. */
   measure: RefObject<HTMLElement | null>;
-  /** The strips to lay out, per layout. The gate's three by default. */
   presets?: Readonly<Record<TapeLayout, readonly TapePreset[]>>;
 }
 
@@ -57,7 +45,6 @@ function relativeRect(el: HTMLElement, frame: DOMRect): Rect {
   };
 }
 
-/** The phrase and each of its words, measured in the real font and expressed in em. */
 function measurePrint(el: HTMLElement): PrintMetrics {
   const phrase = el.getBoundingClientRect();
   return {
@@ -69,11 +56,6 @@ function measurePrint(el: HTMLElement): PrintMetrics {
   };
 }
 
-/**
- * Lays the tape out for the stage as it is now, and again whenever the stage or the buttons
- * change size (a resize, the consent banner opening, labels wrapping) and once the web font has
- * loaded, since the print is measured in it. Null until the first layout.
- */
 export function useTapeScene({
   stage,
   ceiling,

@@ -70,8 +70,6 @@ export default function ExecutivePage(): React.ReactElement {
 
   const start = useCallback(async (): Promise<void> => {
     setOtpError(undefined);
-    // Stop here rather than at the API, so the refusal reads as a form error
-    // instead of a failed request.
     if (!acceptedTerms || !acceptedPrivacy) {
       setConsentError("Please accept the Terms of Use and Privacy Policy to continue.");
       return;

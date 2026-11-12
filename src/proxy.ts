@@ -31,8 +31,6 @@ export function proxy(request: NextRequest): NextResponse {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
 
-  // The site gate (spec UG FR-UG-01): without access, every page shows the gate in its place.
-  // The address bar keeps the URL the visitor asked for, and the gate learns it from a header.
   const { pathname, search } = request.nextUrl;
   const gated = !isExempt(pathname) && !hasAccess(request.cookies.get(ACCESS_COOKIE)?.value);
   if (gated) requestHeaders.set(RETURN_HEADER, `${pathname}${search}`);
@@ -50,12 +48,6 @@ export function proxy(request: NextRequest): NextResponse {
 export const config = {
   matcher: [
     {
-      // Everything except the API and Next's own static/image pipelines. We
-      // deliberately do NOT skip dotted paths: a request like `/whatever.js`
-      // that falls through to the app's 404 must still carry the CSP, or an
-      // error page ships with no script policy. `_next/static` already covers
-      // the real bundled assets, so the only extra work is a header on the odd
-      // /public file, where a CSP is simply ignored.
       source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },

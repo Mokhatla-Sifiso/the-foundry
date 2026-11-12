@@ -78,7 +78,6 @@ html[data-theme="light"] {
   --card-line: rgba(178, 213, 229, 0.2);
   --glow: rgba(178, 213, 229, 0.7);
 
-  /* Theme switch (spec UG 4.6). Rim and glyph hold 3:1 or more, per WCAG 1.4.11. */
   --ug-toggle-track: linear-gradient(180deg, #e3e4e6 0%, #ffffff 100%);
   --ug-toggle-track-inset: inset 0 2px 4px rgb(0 0 0 / 0.12), inset 0 0 0 1px rgb(0 0 0 / 0.06);
   --ug-toggle-track-rim: 0 1px 0 rgb(255 255 255 / 0.95);
@@ -314,10 +313,6 @@ html[data-theme="dark"] {
 html[data-theme="dark"] .pill-dark .ic {
   background: rgba(6, 24, 31, 0.22);
 }
-/*
- * Theme switch: a pill track with a glossy sphere knob. The knob's position and glyph follow
- * html[data-theme] (set before paint by ThemeScript), so the switch never flashes the wrong state.
- */
 .theme-switch {
   display: grid;
   flex: none;
@@ -407,7 +402,6 @@ html:not([data-theme="dark"]) .theme-switch-moon {
 .theme-switch:hover .theme-switch-knob {
   filter: brightness(1.04);
 }
-/* Pressed widens the knob by 6px; the shift shrinks to match so its outer edge holds. */
 .theme-switch:active .theme-switch-knob {
   width: 34px;
   transform: translateX(calc(var(--ug-toggle-knob-shift) * 0.8));

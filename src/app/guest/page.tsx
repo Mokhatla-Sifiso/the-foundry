@@ -67,8 +67,6 @@ export default function GuestPage(): React.ReactElement {
 
   const start = useCallback(async (): Promise<void> => {
     setOtpError(undefined);
-    // Stop here rather than at the API, so the refusal reads as a form error
-    // instead of a failed request.
     if (!acceptedTerms || !acceptedPrivacy) {
       setConsentError("Please accept the Terms of Use and Privacy Policy to continue.");
       return;
@@ -120,7 +118,6 @@ export default function GuestPage(): React.ReactElement {
 
   const nudge = useCallback(async (): Promise<void> => {
     setNudging(true);
-    // No payload: the pending request already holds the resources it was made with.
     const res = await apiFetch<{ ok: true; status: string }>("/api/guest/request", {
       method: "POST",
       body: JSON.stringify({}),
@@ -132,8 +129,6 @@ export default function GuestPage(): React.ReactElement {
   const toggle = (key: string): void =>
     setPicked((p) => (p.includes(key) ? p.filter((k) => k !== key) : [...p, key]));
 
-  // Time, not just the date: a 24-hour window closes mid-day, so "18 Jul" alone
-  // would read as end-of-day and overpromise.
   const grantUntil = grant?.expiresAt
     ? new Date(grant.expiresAt).toLocaleString(undefined, {
         day: "numeric",

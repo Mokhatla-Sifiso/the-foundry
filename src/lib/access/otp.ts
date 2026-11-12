@@ -9,7 +9,6 @@ import { rateLimit, clientIp } from "@/lib/rate-limit";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OTP_RE = /^\d{6}$/;
 
-/** Both agreements must be ticked explicitly; anything but `true` is a refusal. */
 export function hasAcceptedAgreements(payload: unknown): boolean {
   const input = (payload ?? {}) as Record<string, unknown>;
   return input.acceptedTerms === true && input.acceptedPrivacy === true;
@@ -31,8 +30,6 @@ export async function startOtp(request: Request, tag: string): Promise<Response>
     if (name.length < 2) {
       return NextResponse.json({ message: "Please enter your name." }, { status: 400 });
     }
-    // Gate before any code is sent: consent is the price of entry, not an
-    // afterthought once they already hold a one-time code.
     if (!hasAcceptedAgreements(payload)) {
       return NextResponse.json(CONSENT_REQUIRED, { status: 400 });
     }
@@ -66,8 +63,6 @@ export async function verifyOtp(request: Request, tag: string): Promise<Response
     if (!OTP_RE.test(otp)) {
       return NextResponse.json({ message: "Enter the 6-digit code." }, { status: 400 });
     }
-    // Re-asserted here so every issued session has a matching consent record,
-    // even if someone replays a code straight against this endpoint.
     if (!hasAcceptedAgreements(payload)) {
       return NextResponse.json(CONSENT_REQUIRED, { status: 400 });
     }
@@ -100,7 +95,6 @@ export async function verifyOtp(request: Request, tag: string): Promise<Response
         .update({ where: { id: session.user.id }, data: { name, emailVerified: true } })
         .catch(() => undefined);
     }
-    // Proof of consent, tied to the user so it also surfaces in their DSAR export.
     await Promise.all([
       logConsent({
         userId: session.user.id,
