@@ -132,11 +132,6 @@ export async function pendingExecutiveByToken(token: string): Promise<PendingExe
   };
 }
 
-/**
- * Executive requests are acknowledged, not granted: accepting marks the row so it
- * leaves the queue and the link stops working. Nothing is emailed to the requester
- * and no access is unlocked, because the follow-up here is a real conversation.
- */
 export async function reviewExecutiveRequest(
   token: string,
   action: "approve" | "reject",

@@ -121,9 +121,6 @@ function StructuredData({ nonce }: { nonce?: string }): React.ReactElement {
       addressLocality: "Pretoria",
       addressCountry: "South Africa",
     },
-    // MTN Group and Accenture both ended Apr 2026. schema.org `worksFor` asserts
-    // CURRENT employment, so claiming either here would be false; past roles are
-    // covered by the Experience section rather than structured data.
     alumniOf: [
       { "@type": "Organization", name: "MTN Group" },
       { "@type": "Organization", name: "Accenture" },
@@ -196,8 +193,6 @@ export default async function RootLayout({
           <ConsentBanner />
           <GoogleAnalytics nonce={nonce} />
         </ConsentProvider>
-        {/* Cookieless, anonymous performance monitoring — runs under legitimate
-            interest, so it sits outside the consent gate. */}
         <SpeedInsights />
         <Toaster />
       </body>

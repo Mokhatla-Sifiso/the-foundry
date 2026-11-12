@@ -185,9 +185,6 @@ enum AccessRequestStatus {
   @@map("access_request_status")
 }
 
-// Launch-update sign-ups (spec UG, FR-UG-05 to FR-UG-08). Only the email address, the consent
-// time and the policy version are kept; tokens are stored as SHA-256 hashes. Rows are deleted on
-// unsubscribe and after the launch email is sent.
 model UpdateSubscriber {
   id                   String                 @id @default(cuid())
   email                String                 @unique

@@ -16,7 +16,6 @@ export type RenderedEmail = Readonly<{ subject: string; html: string; text: stri
 export type LinkSet = Readonly<{
   confirmUrl: string;
   unsubscribeUrl: string;
-  /** RFC 8058 one-click endpoint, for the List-Unsubscribe header. */
   oneClickUrl: string;
 }>;
 
@@ -28,10 +27,6 @@ export function linksFor(confirmToken: string, unsubscribeToken: string): LinkSe
   };
 }
 
-/**
- * The approved confirmation email (design board F): a 560px card in table layout with inline
- * styles, a bulletproof button, and a dark variant for clients that honour prefers-color-scheme.
- */
 export function renderConfirmation(links: LinkSet): RenderedEmail {
   const subject = "Confirm your email";
   const body =
@@ -72,7 +67,6 @@ export function renderConfirmation(links: LinkSet): RenderedEmail {
   return { subject, html, text };
 }
 
-/** Sends the confirmation email with RFC 8058 one-click unsubscribe headers. */
 export async function sendConfirmation(to: string, links: LinkSet): Promise<void> {
   const { subject, html, text } = renderConfirmation(links);
   const c = client();

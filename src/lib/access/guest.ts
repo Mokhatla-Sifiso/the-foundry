@@ -59,11 +59,6 @@ export async function createGuestRequest(args: {
   await notify({ ...args, token });
 }
 
-/**
- * Re-send the owner notification for an existing pending request, reusing its
- * review token. Without this a resubmission reports "pending" and quietly does
- * nothing, stranding the request forever if the first notification failed.
- */
 export async function renotifyPendingRequest(email: string): Promise<void> {
   const req = await db.accessRequest.findFirst({
     where: { email, tier: "guest", status: "pending" },
@@ -105,8 +100,6 @@ export async function reviewGuestRequest(
   action: "approve" | "reject",
 ): Promise<{ ok: boolean; message: string }> {
   const req = await db.accessRequest.findUnique({ where: { reviewToken: token } });
-  // Tier-checked: every tier mints tokens into the same unique column, so without
-  // this an executive token posted here would be granted 24h of guest access.
   if (!req || req.tier !== "guest") {
     return { ok: false, message: "This link is invalid or has already been used." };
   }

@@ -1,9 +1,3 @@
-/**
- * The review journey is rendered as standalone HTML rather than an app route:
- * it is opened straight from an email, often on a phone, and must not depend on
- * the site's bundle, theme cookie, or a signed-in session.
- */
-
 export function esc(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -66,7 +60,6 @@ export function stamp(at: Date): string {
 
 export type ReviewField = Readonly<{ label: string; value: string; accent?: boolean }>;
 
-/** One request, its details, and the two things you can do about it. */
 export function reviewCard(args: {
   eyebrow: string;
   heading: string;
