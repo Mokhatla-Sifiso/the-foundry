@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { hasAcceptedAgreements, startOtp, verifyOtp } from "@/lib/access/otp";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";

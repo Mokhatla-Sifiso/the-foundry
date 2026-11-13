@@ -51,7 +51,7 @@ const goodInput = {
   acceptedPrivacy: true,
 };
 
-describe("validateSignup — success", () => {
+describe("validateSignup: success", () => {
   it("accepts a fully valid work-email payload and normalizes the email", () => {
     const result = validateSignup(
       { ...goodInput, email: "  Jordan@Acme.CO  " },
@@ -104,7 +104,7 @@ describe("validateSignup — success", () => {
   });
 });
 
-describe("validateSignup — rejection branches", () => {
+describe("validateSignup: rejection branches", () => {
   it("rejects a null body", () => {
     const result = validateSignup(null, { allowPersonalEmail: false });
     expect(result).toEqual({

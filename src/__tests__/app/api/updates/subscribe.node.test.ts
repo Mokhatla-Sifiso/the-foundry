@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { POST } from "@/app/api/updates/subscribe/route";
 import { rateLimit } from "@/lib/rate-limit";
 import { subscribe } from "@/lib/updates/subscribers";

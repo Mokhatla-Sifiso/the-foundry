@@ -1,22 +1,15 @@
--- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "public";
 
--- CreateEnum
 CREATE TYPE "screen_decision" AS ENUM ('pending', 'approve', 'reject');
 
--- CreateEnum
 CREATE TYPE "consent_action" AS ENUM ('grant', 'withdraw', 'update', 'accept_terms', 'accept_privacy');
 
--- CreateEnum
 CREATE TYPE "access_tier" AS ENUM ('guest', 'recruiter', 'executive');
 
--- CreateEnum
 CREATE TYPE "access_request_kind" AS ENUM ('resource', 'demo', 'repo');
 
--- CreateEnum
 CREATE TYPE "access_request_status" AS ENUM ('pending', 'approved', 'rejected', 'expired');
 
--- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -33,7 +26,6 @@ CREATE TABLE "user" (
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "session" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -47,7 +39,6 @@ CREATE TABLE "session" (
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "account" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -66,7 +57,6 @@ CREATE TABLE "account" (
     CONSTRAINT "account_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "verification" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
@@ -78,7 +68,6 @@ CREATE TABLE "verification" (
     CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "admin_whitelist" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -89,7 +78,6 @@ CREATE TABLE "admin_whitelist" (
     CONSTRAINT "admin_whitelist_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "recruiter_profile" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -105,7 +93,6 @@ CREATE TABLE "recruiter_profile" (
     CONSTRAINT "recruiter_profile_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "consent_log" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
@@ -120,7 +107,6 @@ CREATE TABLE "consent_log" (
     CONSTRAINT "consent_log_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "access_request" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -141,41 +127,28 @@ CREATE TABLE "access_request" (
     CONSTRAINT "access_request_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
--- CreateIndex
 CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
--- CreateIndex
 CREATE UNIQUE INDEX "admin_whitelist_email_key" ON "admin_whitelist"("email");
 
--- CreateIndex
 CREATE UNIQUE INDEX "recruiter_profile_userId_key" ON "recruiter_profile"("userId");
 
--- CreateIndex
 CREATE INDEX "consent_log_userId_idx" ON "consent_log"("userId");
 
--- CreateIndex
 CREATE INDEX "consent_log_clientId_idx" ON "consent_log"("clientId");
 
--- CreateIndex
 CREATE UNIQUE INDEX "access_request_reviewToken_key" ON "access_request"("reviewToken");
 
--- CreateIndex
 CREATE INDEX "access_request_email_idx" ON "access_request"("email");
 
--- CreateIndex
 CREATE INDEX "access_request_status_idx" ON "access_request"("status");
 
--- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "recruiter_profile" ADD CONSTRAINT "recruiter_profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "consent_log" ADD CONSTRAINT "consent_log_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

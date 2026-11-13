@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { isSameOrigin, readFields, seeOther } from "@/lib/request";
 
 describe("isSameOrigin", () => {

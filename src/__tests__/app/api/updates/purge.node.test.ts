@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { GET } from "@/app/api/updates/purge/route";
 import { purgeStalePending } from "@/lib/updates/subscribers";
 

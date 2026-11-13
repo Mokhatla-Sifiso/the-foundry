@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { POST } from "@/app/api/site-access/route";
 
 function post(fields: Record<string, string>, origin = "https://mzwakhe.dev"): Request {

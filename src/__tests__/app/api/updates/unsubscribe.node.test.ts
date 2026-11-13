@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { GET, POST } from "@/app/api/updates/unsubscribe/route";
 import { unsubscribe } from "@/lib/updates/subscribers";
 

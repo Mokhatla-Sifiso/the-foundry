@@ -35,7 +35,7 @@ describe("rate-limit", () => {
     process.env = ORIGINAL_ENV;
   });
 
-  describe("rateLimit — no credentials (fail-open)", () => {
+  describe("rateLimit: no credentials (fail-open)", () => {
     it("returns true when no Upstash/KV credentials are configured", async () => {
       const { ratelimitCtor } = mockUpstash(async () => ({ success: false }));
       const { rateLimit } = await import("@/lib/rate-limit");
@@ -55,7 +55,7 @@ describe("rate-limit", () => {
     });
   });
 
-  describe("rateLimit — with credentials", () => {
+  describe("rateLimit: with credentials", () => {
     it("returns success=true from the limiter", async () => {
       process.env.UPSTASH_REDIS_REST_URL = "https://example.upstash.io";
       process.env.UPSTASH_REDIS_REST_TOKEN = "token-abc";
