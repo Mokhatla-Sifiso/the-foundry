@@ -154,7 +154,7 @@ export function Recruiters(): React.ReactElement {
                 ))}
               </ul>
               <div className="pass-foot">
-                <span className="pass-issued">Issued to · —</span>
+                <span className="pass-issued">Issued to · you</span>
                 <span className="pass-go">
                   Get access <span aria-hidden="true">&rarr;</span>
                 </span>

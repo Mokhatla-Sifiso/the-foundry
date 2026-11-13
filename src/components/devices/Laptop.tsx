@@ -8,7 +8,7 @@ export function Laptop(): React.ReactElement {
             <span className="vsc-tl r" />
             <span className="vsc-tl y" />
             <span className="vsc-tl g" />
-            <span className="vsc-fn">guest.ts — the-foundry</span>
+            <span className="vsc-fn">guest.ts · the-foundry</span>
           </div>
           <div className="vsc-body">
             <div className="vsc-act" aria-hidden="true">

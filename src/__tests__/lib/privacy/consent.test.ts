@@ -32,7 +32,7 @@ describe("consent constants", () => {
   });
 });
 
-describe("parseConsent — invalid input", () => {
+describe("parseConsent: invalid input", () => {
   it("returns null for undefined", () => {
     expect(parseConsent(undefined)).toBeNull();
   });
@@ -79,7 +79,7 @@ describe("parseConsent — invalid input", () => {
   });
 });
 
-describe("parseConsent — valid input", () => {
+describe("parseConsent: valid input", () => {
   it("parses a well-formed record and forces necessary to true", () => {
     const ts = 1_700_000_000_000;
     const raw = encodeURIComponent(

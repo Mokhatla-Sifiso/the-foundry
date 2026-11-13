@@ -21,7 +21,7 @@ export function PhoneDevice(): React.ReactElement {
             Pull OTP send/verify out of the guest &amp; executive routes into one shared helper.
           </div>
           <div className="cl-bub a">
-            Done — extracted <b>startOtp</b> / <b>verifyOtp</b> into <code>lib/access/otp.ts</code>;
+            Done. Extracted <b>startOtp</b> / <b>verifyOtp</b> into <code>lib/access/otp.ts</code>;
             both routes call it now.
             <span className="cl-snip">
               + src/lib/access/otp.ts
