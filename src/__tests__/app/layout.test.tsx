@@ -16,4 +16,11 @@ describe("RootLayout metadata", () => {
   it("opts into indexing", () => {
     expect(metadata.robots).toEqual(expect.objectContaining({ index: true, follow: true }));
   });
+  it("offers the Ink mark in every icon slot and never the portrait", () => {
+    const icons = JSON.stringify(metadata.icons);
+    expect(icons).toContain("/favicon.ico?v=3");
+    expect(icons).toContain("/icon.svg?v=3");
+    expect(icons).toContain("/apple-touch-icon.png?v=3");
+    expect(icons).not.toContain("Potrait");
+  });
 });
