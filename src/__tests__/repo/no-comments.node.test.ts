@@ -62,6 +62,31 @@ function lineComments(text: string, marker: RegExp): number {
   return text.split("\n").filter((line) => marker.test(line)).length;
 }
 
+const SCRIPT_FENCES: Record<string, string> = {
+  ts: "sample.ts",
+  typescript: "sample.ts",
+  tsx: "sample.tsx",
+  js: "sample.js",
+  javascript: "sample.js",
+  jsx: "sample.tsx",
+  mjs: "sample.mjs",
+};
+const HASH_FENCES = new Set(["bash", "sh", "shell", "zsh", "yaml", "yml", "toml", "env", "dotenv"]);
+
+function markdownComments(text: string): number {
+  let count = (text.match(/<!--/g) ?? []).length;
+  const fences = /^([ \t]*)(`{3,}|~{3,})[ \t]*([\w-]*)[ \t]*\n([\s\S]*?)^\1\2[ \t]*$/gm;
+  for (const [, , , rawLang, body] of text.matchAll(fences)) {
+    const lang = rawLang.toLowerCase();
+    if (lang in SCRIPT_FENCES) count += scriptComments(SCRIPT_FENCES[lang], body);
+    else if (lang === "css") count += cssComments(body);
+    else if (lang === "sql") count += lineComments(body, /^\s*--/);
+    else if (lang === "prisma") count += lineComments(body, /^\s*\/\//);
+    else if (HASH_FENCES.has(lang)) count += lineComments(body, /^\s*#(?!!)/);
+  }
+  return count;
+}
+
 function commentsIn(file: string): number {
   const text = readFileSync(file, "utf8");
   if (/\.(ts|tsx|js|jsx|mjs|cjs)$/.test(file)) return scriptComments(file, text);
@@ -69,7 +94,7 @@ function commentsIn(file: string): number {
   if (file.endsWith(".sql")) return lineComments(text, /^\s*--/);
   if (file.endsWith(".prisma")) return lineComments(text, /^\s*\/\//);
   if (file.endsWith(".json")) return lineComments(text, /^\s*(\/\/|\/\*)/);
-  if (file.endsWith(".md")) return (text.match(/<!--/g) ?? []).length;
+  if (file.endsWith(".md")) return markdownComments(text);
   if (/(\.ya?ml|\.toml|\.env\.example|\.gitignore|\.prettierignore)$/.test(file)) {
     return lineComments(text, /^\s*#/);
   }
