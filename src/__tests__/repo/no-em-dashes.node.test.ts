@@ -1,7 +1,9 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
-const EM_DASH = new RegExp(["—", "&" + "mdash;", "&" + "#8212;", "\\\\u2014"].join("|"));
+const EM_DASH = new RegExp(
+  [String.fromCharCode(0x2014), "&" + "mdash;", "&" + "#8212;", "\\\\" + "u2014"].join("|"),
+);
 
 const files = execFileSync("git", ["ls-files"], { encoding: "utf8" })
   .split("\n")
@@ -13,7 +15,6 @@ describe("repository hygiene", () => {
     const offenders = files.filter((file) => {
       const text = readFileSync(file, "utf8");
       if (text.includes("\u0000")) return false;
-      if (file === "src/__tests__/repo/no-em-dashes.node.test.ts") return false;
       return EM_DASH.test(text);
     });
     expect(offenders).toEqual([]);
