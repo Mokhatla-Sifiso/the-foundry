@@ -1,9 +1,9 @@
 # THE FOUNDRY: Complete Project Blueprint
 
-> **Purpose of this document.** This is a single-file, exhaustive reconstruction spec for the project codenamed **the-foundry**: the personal portfolio + recruiter-access web application of **Mzwakhe Mokhatla**. It is written so that, given only this file, an engineer (or an AI) could regenerate the project **1:1**: functionality, logic, UI, calculations, data model, styling, tooling, and deployment. It has two halves:
+> **Purpose of this document.** This is a single-file, exhaustive reconstruction spec for the project codenamed **the-foundry**, the personal portfolio + recruiter-access web application of **Mzwakhe Mokhatla**. It is written so that, given only this file, an engineer (or an AI) could regenerate the project **1:1**: functionality, logic, UI, calculations, data model, styling, tooling, and deployment. It has two halves:
 >
-> 1. **The Narrative (Sections 0–28)**: the _why_ and _how_: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
-> 2. **The Source Appendix (Section 29)**: the _ground truth_: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
+> 1. **The Narrative (Sections 0–28)** covers the _why_ and _how_: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
+> 2. **The Source Appendix (Section 29)** is the _ground truth_: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
 >
 > Binary assets (the portrait PNG, the CV PDF, the favicon) cannot be represented as text and are documented by path, purpose, and dimensions in Section 5; supply your own.
 
@@ -352,7 +352,7 @@ See Section 15 for the full math. `#transcontinental`. A hand-drawn SVG map of f
 
 ### Contact (`sections/Contact.tsx`)
 
-`#contact`. A `.contact-card` (with a `.blob`), eyebrow "Contact · Available 2026", big "Don't be **shy.**", two CTAs: "Start a conversation" (`mailto:`) and "Download CV" (→ `/recruiter`): and a `.c-meta` block (email/phone/located).
+`#contact`. A `.contact-card` (with a `.blob`), eyebrow "Contact · Available 2026", big "Don't be **shy.**", two CTAs ("Start a conversation" via `mailto:` and "Download CV" to `/recruiter`) and a `.c-meta` block (email/phone/located).
 
 ### Footer (`sections/Footer.tsx`)
 
@@ -378,7 +378,7 @@ This is the site's signature interaction and the source of a long jitter saga; t
 }
 ```
 
-Position is handled **entirely by native CSS `position: sticky`**: the browser pins each card on the compositor thread at a per-index offset (`--i` set inline). Because the compositor owns pinning, a card **can never lag the scroll**: that lag was the historical jitter.
+Position is handled **entirely by native CSS `position: sticky`**: the browser pins each card on the compositor thread at a per-index offset (`--i` set inline). Because the compositor owns pinning, a card **can never lag the scroll**. That lag was the historical jitter.
 
 **JS side (`primitives/StackScaleEffect.tsx`)**: writes **only `scale()`**, never position. Constants:
 
@@ -390,7 +390,7 @@ Algorithm:
 
 1. `cards = [...document.querySelectorAll(".svc-card")]`; bail if `< 2`.
 2. `absTop(el)` = document-absolute layout top: sum `offsetTop` up the `offsetParent` chain. (Uses layout position, **unaffected by sticky pinning**, so dock points stay valid even while pinned.)
-3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)`: the exact `window.scrollY` at which card _i_ reaches its sticky top.
+3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)`, the exact `window.scrollY` at which card _i_ reaches its sticky top.
 4. `apply()`: let `y = window.scrollY`. For each card _i_, accumulate a `reduction` over **later** cards _j > i_:
    - `remaining = dock[j] − y`.
    - if `remaining ≤ 0` (card _j_ has fully docked): `reduction += 0.05`.
@@ -430,7 +430,7 @@ project(lat, lng):
 
 **Journey arc:** `ordered = [...points].sort(order)`. The path is built as: `M x0 y0`, then for each subsequent point a quadratic `Q cx cy x y` where `cx = (prev.x + p.x)/2` and `cy = min(prev.y, p.y) − 50` (control point lifted 50 px above the higher endpoint → each hop arcs upward). Stroke is candy.
 
-**Draw-on reveal:** `pathRef.getTotalLength()` (guarded: JSDOM lacks it) sets `pathLen`; the path renders with `strokeDasharray = pathLen`, `strokeDashoffset = pathLen`, and an inline style animating `strokeDashoffset` to `0` over `1.8s ease 0.3s`: the line draws itself once on mount.
+**Draw-on reveal:** `pathRef.getTotalLength()` (guarded, since JSDOM lacks it) sets `pathLen`; the path renders with `strokeDasharray = pathLen`, `strokeDashoffset = pathLen`, and an inline style animating `strokeDashoffset` to `0` over `1.8s ease 0.3s`, so the line draws itself once on mount.
 
 **Pins & interaction:** each location is a `<g transform="translate(x,y)">` with `.trans-pin` (halo circle r22 using `#trans-glow`, ring r10, dot r5, and a `<text>` label anchored per `labelAnchor`). `role="button"`, `tabIndex=0`, `aria-pressed`, click and Enter/Space set `activeId`. Below the map, a `.trans-chips` list mirrors the pins as buttons. An `aside.trans-panel` (`aria-live="polite"`) shows the active location's city/country/org/role/dates.
 
@@ -461,7 +461,7 @@ The most substantial subsystem: a passwordless, email-OTP recruiter access flow 
 - `appName: "Mzwakhe Mokhatla, Recruiter Access"`, `baseURL: BETTER_AUTH_URL ?? http://localhost:3000`, `secret` (env or insecure dev default).
 - `database: prismaAdapter(db, { provider: "postgresql" })`.
 - `emailAndPassword: { enabled: false }` (OTP only).
-- `user.additionalFields.name`: `{ type:"string", required:false, input:false }`: **required:false + input:false is deliberate**: making `name` required broke OTP sign-in (the schema default is `""`, filled later from the signup form/whitelist).
+- `user.additionalFields.name` is `{ type:"string", required:false, input:false }`. **required:false + input:false is deliberate**: making `name` required broke OTP sign-in (the schema default is `""`, filled later from the signup form/whitelist).
 - `session`: `expiresIn: 14 days`, `updateAge: 1 day`, `cookieCache: { enabled:true, maxAge: 5 min }`.
 - `plugins`: `emailOTP({ otpLength:6, expiresIn: 5 min, allowedAttempts:5, overrideDefaultEmailVerification:true, sendVerificationOTP → sendOtpEmail(email, otp) })`, then `nextCookies()`.
 - The Next handler: `app/api/auth/[...all]/route.ts` = `toNextJsHandler(auth.handler)` (exports GET/POST).
@@ -505,8 +505,8 @@ Flow:
 - **`screen` (POST)**: requires session (`getSessionContext`); if a `recruiterProfile` exists, set `decision:"approve"`, `reason` = admin → "Admin allowlist." else "Verified via work email and domain.", `verifiedAt:now`; return `{ account }`.
 - **`session` (GET)**: `getSessionContext()`; `{ account: null }` if none, else `{ account: fetchAccount(userId) }`.
 - **`signout` (POST)**: `auth.api.signOut({ headers })` → `{ok:true}`.
-- **`account` (DELETE)**: DSAR erasure: requires session; **admins are refused** (must be removed from the whitelist first, 403); otherwise `signOut` then `db.user.delete` (cascades sessions/accounts/profile/consent logs) → `{ok:true}`.
-- **`data` (GET)**: DSAR export: requires session; builds a JSON `snapshot` (`exportedAt`, `policyVersions`, `identity`, `consent` incl. the full `consentLogs`, `profile`, `sessions`) and returns it as a **downloadable attachment** (`Content-Disposition: attachment; filename="my-data-<id>.json"`, `Cache-Control:no-store`).
+- **`account` (DELETE)**: DSAR erasure. Requires session; **admins are refused** (must be removed from the whitelist first, 403); otherwise `signOut` then `db.user.delete` (cascades sessions/accounts/profile/consent logs) → `{ok:true}`.
+- **`data` (GET)**: DSAR export. Requires session; builds a JSON `snapshot` (`exportedAt`, `policyVersions`, `identity`, `consent` incl. the full `consentLogs`, `profile`, `sessions`) and returns it as a **downloadable attachment** (`Content-Disposition: attachment; filename="my-data-<id>.json"`, `Cache-Control:no-store`).
 
 ### 17.5 Admin whitelist (`app/api/admin/whitelist/route.ts`, `lib/auth/admin.ts`)
 
@@ -566,9 +566,9 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 
 ## 20. Error handling & resilience
 
-- **`app/error.tsx`**: a client error boundary: toasts "Something went wrong…", logs the error, and offers a "Try again" (`reset()`).
+- **`app/error.tsx`**: a client error boundary that toasts "Something went wrong…", logs the error, and offers a "Try again" (`reset()`).
 - **`lib/api.ts` `apiFetch<T>(url, init)`**: the single client fetch wrapper. Returns a discriminated `ApiResult<T>` (`{ok:true,data}` | `{ok:false,error}`), never throws. It JSON-parses safely, and on non-2xx picks a human message (`body.message`/`body.error`, else status-specific copy for 401/403/404/429/5xx) and **`toast.error`s it unless `silent`**. Network failures become a toast too. This is why "no failure crashes the site": UI code just checks `res.ok`.
-- **`Toaster`**: react-hot-toast, top-center, dark toasts (`#0a0a0a`/`#fafafa`, hardcoded: using `var(--card)/var(--fg)` previously made text invisible), success/error icon themes, 4.5 s (6 s for errors).
+- **`Toaster`**: react-hot-toast, top-center, dark toasts (`#0a0a0a`/`#fafafa`, hardcoded because `var(--card)/var(--fg)` previously made text invisible), success/error icon themes, 4.5 s (6 s for errors).
 - **Lazy Prisma proxy** (Section 17.8): importing `db` never crashes without env; it only constructs on first use.
 - **Graceful degradations**: reduced-motion disables Lenis; `useInView` has a failsafe reveal; `getTotalLength` is JSDOM-guarded; the recruiter page shows a busy placeholder until session-resume resolves.
 
@@ -579,7 +579,7 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 - **`jest.config.ts`** via `next/jest`: `testEnvironment: jsdom`, `coverageProvider: v8`, `setupFilesAfterEach: jest.setup.ts`, `moduleNameMapper @/ → src/`. Coverage is **collected from `src/lib/**`and`src/hooks/**`** with **gates: lib & hooks ≥ 80% lines/statements/functions, ≥ 70% branches** (global thresholds 0: the point is to gate the pure logic, not the presentational components).
 - **`jest.setup.ts`**: imports `@testing-library/jest-dom` and shims `matchMedia`, `IntersectionObserver`, `ResizeObserver` for jsdom.
 - **`__mocks__/framer-motion.tsx`**: replaces `motion.*` with plain elements (strips animation props) so components render deterministically; `__mocks__/lenis.ts`: no-op.
-- **22 suites / 102 tests** mirror `src/` under `src/__tests__/…`: covering `lib` (colors, constants, recruiter validation), `hooks` (useInView, useTheme), components (Loader, ThemeScript, Nav/Menu, the recruiter components incl. Otp/SignUp/Screening/Approved/Gate/Field/Dots, and the section peak behavior in `AISection.peak.test.tsx`), and app (layout, page, recruiter-page). All 102 pass on the current tree.
+- **22 suites / 102 tests** mirror `src/` under `src/__tests__/…`, covering `lib` (colors, constants, recruiter validation), `hooks` (useInView, useTheme), components (Loader, ThemeScript, Nav/Menu, the recruiter components incl. Otp/SignUp/Screening/Approved/Gate/Field/Dots, and the section peak behavior in `AISection.peak.test.tsx`), and app (layout, page, recruiter-page). All 102 pass on the current tree.
 
 ---
 
@@ -588,7 +588,7 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 - **TypeScript strict**, no `any` (narrow `unknown`), **named exports** (no default exports except Next's required page/layout/route defaults), explicit return types on public functions, `Readonly<>`/`as const` for data.
 - **Prettier** (printWidth 100, double quotes, trailing commas, semicolons) is the canonical formatter (`npm run format`).
 - **No comments, anywhere**: every tracked file is comment-free, tool directives included (JSX, JSDoc, line and block comments, CSS, YAML, SQL, Prisma and Markdown HTML comments). `src/__tests__/repo/no-comments.node.test.ts` fails CI if one appears. The knowledge lives in commit messages, PR descriptions and this blueprint instead.
-- **Content/data** is centralised in `lib/constants.ts` (site copy) and the various `lib/**` modules: components stay presentational.
+- **Content/data** is centralised in `lib/constants.ts` (site copy) and the various `lib/**` modules; components stay presentational.
 
 ---
 
@@ -600,10 +600,10 @@ On push/PR to `main`: a single `ci` job (Ubuntu, Node 22, npm cache, 10-min time
 
 ## 24. Deployment (Vercel)
 
-- **Build**: `prisma generate && next build`; **postinstall**: `prisma generate` (both required so `@prisma/client` exists on Vercel: a Prisma 7 gotcha).
+- **Build**: `prisma generate && next build`; **postinstall**: `prisma generate` (both required so `@prisma/client` exists on Vercel; a Prisma 7 gotcha).
 - **Env vars** on Vercel: `DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (= the deployed origin), `RESEND_API_KEY`, `RESEND_FROM`, and optionally `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_AUTH_URL`.
 - **DB provisioning**: `npx prisma db push` (first time) or `migrate deploy`, then `npx prisma db seed` (seeds the founding admin).
-- **Custom domain (v1 launch)**: from `README.md`: buy + add the domain in Vercel → Domains; add the DNS records; set `NEXT_PUBLIC_SITE_URL` (+ matching `BETTER_AUTH_URL`) in Vercel env; update `RESEND_FROM` to a verified-domain sender; redeploy; verify `/sitemap.xml` and `/robots.txt` reference the new domain.
+- **Custom domain (v1 launch)**, from `README.md`: buy + add the domain in Vercel → Domains; add the DNS records; set `NEXT_PUBLIC_SITE_URL` (+ matching `BETTER_AUTH_URL`) in Vercel env; update `RESEND_FROM` to a verified-domain sender; redeploy; verify `/sitemap.xml` and `/robots.txt` reference the new domain.
 
 ---
 
@@ -625,10 +625,10 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 
 - **Prisma 7 breaking changes**: no `url` in `schema.prisma`; a driver adapter (`@prisma/adapter-neon`) is mandatory; `prisma.config.ts` supplies the CLI datasource + seed; `postinstall`/`build` must `prisma generate`.
 - **Next 16 / React 19**: App Router conventions differ from earlier majors; consult the bundled Next docs in `node_modules/next/dist/docs/` before writing framework code.
-- **Hydration**: `suppressHydrationWarning` on `<html>` is required by the theme script (Section 11): removing it reintroduces the `insertBefore` crash.
+- **Hydration**: `suppressHydrationWarning` on `<html>` is required by the theme script (Section 11); removing it reintroduces the `insertBefore` crash.
 - **Portrait filename** is `Potrait.png` (misspelled); referenced consistently as `SITE.portrait`. On case-insensitive macOS this hid a case mismatch that 404'd on Vercel: keep the exact casing.
 - **Reduced motion** disables Lenis entirely (no smooth scroll for those users, by design).
-- One commit message references "the real Anthropic call per §13": that is legitimate product content about an Anthropic API integration path, not build noise.
+- One commit message references "the real Anthropic call per §13". That is legitimate product content about an Anthropic API integration path, not build noise.
 
 ---
 
@@ -915,7 +915,6 @@ if (typeof window !== "undefined") {
 
 ```typescript
 import "./.next/dev/types/routes.d.ts";
-
 ```
 
 ### `prisma.config.ts`
@@ -8779,8 +8778,7 @@ export default function CookiePage(): React.ReactElement {
       <p>
         Click <strong>&ldquo;Cookie preferences&rdquo;</strong> in the footer at any time to reopen
         the consent banner. Withdrawing consent does not retroactively erase data we already had
-        your permission to process; see the <a href="/legal/privacy">Privacy Policy</a> for
-        that.
+        your permission to process. See the <a href="/legal/privacy">Privacy Policy</a> for that.
       </p>
     </LegalLayout>
   );
@@ -11363,7 +11361,7 @@ describe("loadAccounts / saveAccounts", () => {
 
 These cannot be reproduced from text; supply your own equivalents (see Section 5 for purpose/dimensions).
 
-- `public/img/Potrait.png`: hero portrait (~3.06 MB). Rendered `object-fit: cover` in a rounded frame; also used as the OpenGraph/Twitter image (target ≥1200×630 usable) and apple-touch icon. Filename spelling (`Potrait`) is intentional: referenced as `SITE.portrait`.
+- `public/img/Potrait.png`: hero portrait (~3.06 MB). Rendered `object-fit: cover` in a rounded frame; also used as the OpenGraph/Twitter image (target ≥1200×630 usable) and apple-touch icon. Filename spelling (`Potrait`) is intentional; it is referenced as `SITE.portrait`.
 - `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf`: the downloadable CV (~117 KB) offered at the end of the recruiter flow / "Download CV" links.
 - `src/app/favicon.ico`: site favicon (~25.9 KB).
 - `public/cv/.gitkeep`, `public/img/.gitkeep`: empty placeholders that keep the otherwise-empty asset directories under version control.
