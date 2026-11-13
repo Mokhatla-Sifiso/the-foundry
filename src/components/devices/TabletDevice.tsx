@@ -27,7 +27,7 @@ export function TabletDevice(): React.ReactElement {
           </div>
           <div className="gh-ck">
             <span className="gh-ok" aria-hidden="true" />
-            Vercel: production
+            Vercel · production
             <span className="gh-mut">ready</span>
           </div>
         </div>

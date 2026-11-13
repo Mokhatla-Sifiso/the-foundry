@@ -2,13 +2,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Custom domain (v1 launch)
 
-The canonical URL used by `sitemap.xml`, `robots.txt`, OG metadata, and the
-JSON-LD Person schema reads from a single source: `src/lib/site-url.ts`.
-Priority order:
+The canonical URL used by `sitemap.xml`, `robots.txt`, OG metadata, the
+JSON-LD schema and email links comes from one place: `src/lib/site-url.ts`.
 
-1. `NEXT_PUBLIC_SITE_URL` (set this in Vercel once a custom domain is
-   attached, e.g. `https://mzwakhe.dev`).
-2. `VERCEL_PROJECT_PRODUCTION_URL` (Vercel injects on production builds).
+1. Production (`VERCEL_ENV=production`): always `https://www.mzwakhemokhatla.co.za`.
+   Page requests that reach a `*.vercel.app` production host are redirected there (308).
+2. `NEXT_PUBLIC_SITE_URL` (local builds).
 3. `VERCEL_URL` (preview deployments).
 4. `http://localhost:3000` for local dev.
 
@@ -21,14 +20,15 @@ Priority order:
    - `NEXT_PUBLIC_SITE_URL` = `https://your-domain` (all environments).
    - `BETTER_AUTH_URL` = the same value (production only).
 4. Update `RESEND_FROM` to a sender on your verified domain.
-5. Redeploy. Visit `/sitemap.xml` and `/robots.txt`: they should now
+5. Redeploy. Visit `/sitemap.xml` and `/robots.txt`. They should now
    reference the custom domain.
 
 ## Visitor analytics (optional, consent-gated)
 
 Daily visitors and page views run on Google Analytics 4, gated behind the
 cookie banner. It is off until you supply a Measurement ID: no script, no
-cookies, and the CSP stays fully locked down.
+cookies, and the CSP stays fully locked down. Leave `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+blank to keep it off.
 
 1. In **Google Analytics → Admin → Data streams**, create a Web stream for the
    domain and copy the **Measurement ID** (`G-XXXXXXXXXX`).
@@ -38,7 +38,7 @@ cookies, and the CSP stays fully locked down.
    category. Withdrawing consent disables it and clears its cookies. Read the
    numbers in the GA dashboard (Reports → Realtime / Engagement → Pages).
 
-To verify: set the ID, open the site, click **Accept all**: a `_ga` cookie
+To verify: set the ID, open the site and click **Accept all**. A `_ga` cookie
 appears and the visit shows up in GA Realtime within a few seconds.
 
 ## Launch updates (the upgrades gate)
@@ -59,9 +59,13 @@ it works in production:
 The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.
 
 1. Copy `.env.example` to `.env.local` and fill in:
-   - **DATABASE_URL** / **DIRECT_URL**: Neon pooled + direct connection strings.
+   - **DATABASE_URL** / **DIRECT_URL**: Neon pooled and direct connection strings.
    - **BETTER_AUTH_SECRET**: `openssl rand -base64 32`.
    - **RESEND_API_KEY** + **RESEND_FROM**: verified sender from your Resend domain.
+   - **RECRUITER_BYPASS_EMAILS** + **RECRUITER_BYPASS_UNTIL**: a time-boxed escape from the
+     work-email check, for walking the journey with a personal address. It expires on
+     `RECRUITER_BYPASS_UNTIL` regardless. Leave both blank to keep it off. Never grant admin for
+     this: admin skips the CV entitlement and makes every gate untestable.
 2. Apply the schema and seed the admin whitelist:
    ```bash
    npx prisma migrate deploy
@@ -79,9 +83,6 @@ First, run the development server:
 
 ```bash
 npm run dev
-yarn dev
-pnpm dev
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

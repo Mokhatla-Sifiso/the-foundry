@@ -587,7 +587,7 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 
 - **TypeScript strict**, no `any` (narrow `unknown`), **named exports** (no default exports except Next's required page/layout/route defaults), explicit return types on public functions, `Readonly<>`/`as const` for data.
 - **Prettier** (printWidth 100, double quotes, trailing commas, semicolons) is the canonical formatter (`npm run format`).
-- **No comments, anywhere**: every source file is intentionally comment-free (JSX comments, JSDoc, `//`, `/* */`, CSS, YAML `#`, Prisma `///`, Markdown `` all removed). This is a deliberate cleanliness choice for this repo; the knowledge lives in commit messages and this blueprint instead.
+- **No comments, anywhere**: every tracked file is comment-free, tool directives included (JSX, JSDoc, line and block comments, CSS, YAML, SQL, Prisma and Markdown HTML comments). `src/__tests__/repo/no-comments.node.test.ts` fails CI if one appears. The knowledge lives in commit messages, PR descriptions and this blueprint instead.
 - **Content/data** is centralised in `lib/constants.ts` (site copy) and the various `lib/**` modules: components stay presentational.
 
 ---
