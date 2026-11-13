@@ -58,7 +58,7 @@ describe("renderConfirmation", () => {
       expect(part).toContain("expires in 48 hours");
     }
     expect(html).toContain("prefers-color-scheme: dark");
-    expect(html).not.toMatch(/\u2014/);
+    expect(html).not.toContain(String.fromCharCode(0x2014));
   });
 });
 

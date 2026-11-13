@@ -44,8 +44,8 @@ The production database was created with `prisma db push`, so it already has eve
 ## Every release after that
 
 ```bash
-npx prisma migrate status   # what is pending
-npx prisma migrate deploy   # apply it
+npx prisma migrate status
+npx prisma migrate deploy
 ```
 
 ## Reversing a migration

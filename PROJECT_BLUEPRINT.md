@@ -1,9 +1,9 @@
-# THE FOUNDRY — Complete Project Blueprint
+# THE FOUNDRY: Complete Project Blueprint
 
-> **Purpose of this document.** This is a single-file, exhaustive reconstruction spec for the project codenamed **the-foundry** — the personal portfolio + recruiter-access web application of **Mzwakhe Mokhatla**. It is written so that, given only this file, an engineer (or an AI) could regenerate the project **1:1** — functionality, logic, UI, calculations, data model, styling, tooling, and deployment. It has two halves:
+> **Purpose of this document.** This is a single-file, exhaustive reconstruction spec for the project codenamed **the-foundry**, the personal portfolio + recruiter-access web application of **Mzwakhe Mokhatla**. It is written so that, given only this file, an engineer (or an AI) could regenerate the project **1:1**: functionality, logic, UI, calculations, data model, styling, tooling, and deployment. It has two halves:
 >
-> 1. **The Narrative (Sections 0–28)** — the _why_ and _how_: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
-> 2. **The Source Appendix (Section 29)** — the _ground truth_: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
+> 1. **The Narrative (Sections 0–28)** covers the _why_ and _how_: architecture, every subsystem, every algorithm and formula, the design system, all content data, flows, and operational setup. Authored from the code.
+> 2. **The Source Appendix (Section 29)** is the _ground truth_: the complete verbatim source of every text file in the repository, so nothing is lost to paraphrase. If the Narrative and the Appendix ever disagree, the Appendix wins.
 >
 > Binary assets (the portrait PNG, the CV PDF, the favicon) cannot be represented as text and are documented by path, purpose, and dimensions in Section 5; supply your own.
 
@@ -26,12 +26,12 @@
 
 A one-person portfolio site with an unusually engineered feel, plus a **real, database-backed recruiter access system**. It serves **two audiences**:
 
-- **General visitors** land on `/` — a single, long, animated marketing page (smooth-scrolled, section-revealed) presenting who Mzwakhe is, what he does, where he has worked, and how he uses AI. No login, fully public, SEO-optimised.
-- **Recruiters** go to `/recruiter` — a passwordless email-OTP journey (sign up / sign in) backed by BetterAuth + Prisma + Neon Postgres + Resend, that "verifies" the recruiter and then unlocks a CV download. A separate **admin whitelist** grants the owner (and any future admins) elevated rights and bypasses the work-email gate.
+- **General visitors** land on `/`: a single, long, animated marketing page (smooth-scrolled, section-revealed) presenting who Mzwakhe is, what he does, where he has worked, and how he uses AI. No login, fully public, SEO-optimised.
+- **Recruiters** go to `/recruiter`: a passwordless email-OTP journey (sign up / sign in) backed by BetterAuth + Prisma + Neon Postgres + Resend, that "verifies" the recruiter and then unlocks a CV download. A separate **admin whitelist** grants the owner (and any future admins) elevated rights and bypasses the work-email gate.
 
-Design language: cool, glassy, near-monochrome with a single signature accent — **"candy" blue `#b2d5e5`** on an **onyx `#020202`** / soft-ice `#e9f1f5` base. Light and dark themes. Everything animates on scroll. The aesthetic tagline is "Turning ideas into digital realities."
+Design language: cool, glassy, near-monochrome with a single signature accent: **"candy" blue `#b2d5e5`** on an **onyx `#020202`** / soft-ice `#e9f1f5` base. Light and dark themes. Everything animates on scroll. The aesthetic tagline is "Turning ideas into digital realities."
 
-The project is intentionally comment-free across every source file (a deliberate house style — see Section 23).
+The project is intentionally comment-free across every source file (a deliberate house style; see Section 23).
 
 ---
 
@@ -46,25 +46,25 @@ The project is intentionally comment-free across every source file (a deliberate
 
 **Styling**
 
-- **Tailwind CSS v4** (`tailwindcss@^4`, `@tailwindcss/postcss@^4`) — used via `@import "tailwindcss"` and the new `@theme inline` / `@variant` CSS-first configuration (no `tailwind.config.js`). The vast majority of styling is hand-written CSS in `globals.css` and a few component CSS files; Tailwind is present mostly for its reset + token bridge.
+- **Tailwind CSS v4** (`tailwindcss@^4`, `@tailwindcss/postcss@^4`): used via `@import "tailwindcss"` and the new `@theme inline` / `@variant` CSS-first configuration (no `tailwind.config.js`). The vast majority of styling is hand-written CSS in `globals.css` and a few component CSS files; Tailwind is present mostly for its reset + token bridge.
 - Font: **Onest** via `next/font/google` (weights 400–900), exposed as CSS var `--font-onest`.
 
 **Animation / scroll**
 
-- **framer-motion `^12.40.0`** — entrance/scroll animations, `AnimatePresence`, `useScroll`/`useTransform`/`useSpring`.
-- **lenis `^1.3.23`** — smooth wheel scrolling (touch left native).
+- **framer-motion `^12.40.0`**: entrance/scroll animations, `AnimatePresence`, `useScroll`/`useTransform`/`useSpring`.
+- **lenis `^1.3.23`**: smooth wheel scrolling (touch left native).
 
 **Auth / data / email**
 
-- **better-auth `^1.6.20`** — email-OTP plugin, Prisma adapter, `nextCookies` plugin, Next.js catch-all handler.
-- **prisma `^7.8.0`** + **@prisma/client `^7.8.0`** + **@prisma/adapter-neon `^7.8.0`** + **@neondatabase/serverless `^1.1.0`** — Prisma 7 (breaking: no `url` in `schema.prisma`; driver-adapter required; `prisma.config.ts` replaces config in schema).
-- **Neon Postgres** — serverless Postgres (EU-West-2 in production).
-- **resend `^6.14.0`** — transactional email (the OTP code).
+- **better-auth `^1.6.20`**: email-OTP plugin, Prisma adapter, `nextCookies` plugin, Next.js catch-all handler.
+- **prisma `^7.8.0`** + **@prisma/client `^7.8.0`** + **@prisma/adapter-neon `^7.8.0`** + **@neondatabase/serverless `^1.1.0`**: Prisma 7 (breaking: no `url` in `schema.prisma`; driver-adapter required; `prisma.config.ts` replaces config in schema).
+- **Neon Postgres**: serverless Postgres (EU-West-2 in production).
+- **resend `^6.14.0`**: transactional email (the OTP code).
 
 **UI helpers**
 
-- **react-hot-toast `^2.6.0`** — all user-facing error/success feedback.
-- **simple-icons `^16.24.0`** — MIT monochrome brand SVG paths (Accenture, GE) rendered with `currentColor`.
+- **react-hot-toast `^2.6.0`**: all user-facing error/success feedback.
+- **simple-icons `^16.24.0`**: MIT monochrome brand SVG paths (Accenture, GE) rendered with `currentColor`.
 
 **Tooling / test**
 
@@ -87,7 +87,7 @@ The Appendix `package.json` is the authoritative version list. `package-lock.jso
 | **GitHub**                       | Source + Actions CI                                            | Repo `Mokhatla-Sifiso/the-foundry`; Actions runs type-check/lint/test/build                             |
 | **Custom domain** (optional, v1) | Canonical URLs                                                 | Buy + attach in Vercel; set `NEXT_PUBLIC_SITE_URL`                                                      |
 
-If `RESEND_API_KEY` is missing in **non-production**, the OTP is logged to the server console instead of emailed (a dev convenience — see `src/lib/auth/email.ts`).
+If `RESEND_API_KEY` is missing in **non-production**, the OTP is logged to the server console instead of emailed (a dev convenience; see `src/lib/auth/email.ts`).
 
 ---
 
@@ -116,35 +116,35 @@ Root:
 
 ```
 the-foundry/
-├─ .github/workflows/ci.yml        # GitHub Actions: type-check · lint · test · build
-├─ .env.example                    # env template (values placeholder)
+├─ .github/workflows/ci.yml        GitHub Actions: type-check · lint · test · build
+├─ .env.example                    env template (values placeholder)
 ├─ .gitignore .prettierignore .prettierrc.json
-├─ README.md                       # setup + launch checklist
+├─ README.md                       setup + launch checklist
 ├─ eslint.config.mjs  next.config.ts  postcss.config.mjs
-├─ jest.config.ts  jest.setup.ts   # test config + jsdom shims
+├─ jest.config.ts  jest.setup.ts   test config + jsdom shims
 ├─ next-env.d.ts  tsconfig.json  package.json
-├─ prisma.config.ts                # Prisma 7 config (schema path, datasource, seed)
+├─ prisma.config.ts                Prisma 7 config (schema path, datasource, seed)
 ├─ prisma/
-│  ├─ schema.prisma                # data model (7 models/enums)
-│  └─ seed.ts                      # seeds the founding admin into admin_whitelist
+│  ├─ schema.prisma                data model (7 models/enums)
+│  └─ seed.ts                      seeds the founding admin into admin_whitelist
 ├─ public/
-│  ├─ cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf   # [BINARY] the downloadable CV (~117 KB)
-│  └─ img/Potrait.png              # [BINARY] hero portrait (~3 MB) — note the filename spelling "Potrait"
-├─ __mocks__/                      # jest manual mocks
-│  ├─ framer-motion.tsx            # strips motion props so components render in jsdom
-│  └─ lenis.ts                     # no-op Lenis
+│  ├─ cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf   [BINARY] the downloadable CV (~117 KB)
+│  └─ img/Potrait.png              [BINARY] hero portrait (~3 MB); note the filename spelling "Potrait"
+├─ __mocks__/                      jest manual mocks
+│  ├─ framer-motion.tsx            strips motion props so components render in jsdom
+│  └─ lenis.ts                     no-op Lenis
 └─ src/
-   ├─ app/                         # App Router
-   │  ├─ layout.tsx                # root document, metadata, JSON-LD, providers, loader
-   │  ├─ page.tsx                  # the home page (section composition)
-   │  ├─ error.tsx                 # global error boundary (client)
-   │  ├─ globals.css               # design system + all page styling (2072 lines)
-   │  ├─ favicon.ico               # [BINARY]
-   │  ├─ robots.ts  sitemap.ts     # SEO route handlers
-   │  ├─ legal/{privacy,cookies,terms}/page.tsx   # legal pages
-   │  ├─ recruiter/page.tsx        # recruiter state machine (client)
-   │  ├─ recruiter/recruiter.css   # recruiter UI styling
-   │  └─ api/                      # route handlers (see Section 18/19)
+   ├─ app/                         App Router
+   │  ├─ layout.tsx                root document, metadata, JSON-LD, providers, loader
+   │  ├─ page.tsx                  the home page (section composition)
+   │  ├─ error.tsx                 global error boundary (client)
+   │  ├─ globals.css               design system + all page styling (2072 lines)
+   │  ├─ favicon.ico               [BINARY]
+   │  ├─ robots.ts  sitemap.ts     SEO route handlers
+   │  ├─ legal/{privacy,cookies,terms}/page.tsx   legal pages
+   │  ├─ recruiter/page.tsx        recruiter state machine (client)
+   │  ├─ recruiter/recruiter.css   recruiter UI styling
+   │  └─ api/                      route handlers (see Section 18/19)
    │     ├─ auth/[...all]/route.ts
    │     ├─ admin/whitelist/route.ts
    │     ├─ privacy/consent/route.ts
@@ -166,14 +166,14 @@ the-foundry/
    │  ├─ site-url.ts constants.ts colors.ts db.ts api.ts recruiter.ts lenis-bus.ts
    │  ├─ auth/{server,client,admin,email,profile,validation}.ts
    │  └─ privacy/{policy,cookies,consent,log}.ts
-   └─ __tests__/…                  # 22 suites / 102 tests mirroring src structure
+   └─ __tests__/…                  22 suites / 102 tests mirroring src structure
 ```
 
 **Binary assets to supply:**
 
-- `public/img/Potrait.png` — portrait, rendered `object-fit: cover` in a rounded frame; used as OG/Twitter image and apple-touch icon (so ideally ≥1200×630 usable). Filename is literally `Potrait.png` (historical typo, referenced as `SITE.portrait`).
-- `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf` — the CV the recruiter flow ultimately offers.
-- `src/app/favicon.ico` — site favicon.
+- `public/img/Potrait.png`: portrait, rendered `object-fit: cover` in a rounded frame; used as OG/Twitter image and apple-touch icon (so ideally ≥1200×630 usable). Filename is literally `Potrait.png` (historical typo, referenced as `SITE.portrait`).
+- `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf`: the CV the recruiter flow ultimately offers.
+- `src/app/favicon.ico`: site favicon.
 
 ---
 
@@ -189,9 +189,9 @@ There is **no** `tailwind.config.js` (Tailwind v4 is CSS-configured). `next.conf
 
 ---
 
-## 7. Data model (Prisma) — the exact schema
+## 7. Data model (Prisma): the exact schema
 
-`generator client` outputs to `../node_modules/.prisma/client`, `provider = "prisma-client-js"`. `datasource db { provider = "postgresql" }` — **no `url`** (Prisma 7; the URL is injected at runtime via the Neon driver adapter in `src/lib/db.ts`, and for CLI via `prisma.config.ts`).
+`generator client` outputs to `../node_modules/.prisma/client`, `provider = "prisma-client-js"`. `datasource db { provider = "postgresql" }`: **no `url`** (Prisma 7; the URL is injected at runtime via the Neon driver adapter in `src/lib/db.ts`, and for CLI via `prisma.config.ts`).
 
 Models (all `@@map`-ed to snake_case tables):
 
@@ -199,13 +199,13 @@ Models (all `@@map`-ed to snake_case tables):
 - **Session** → `session`. `id`, `userId`, `token @unique`, `expiresAt`, `ipAddress?`, `userAgent?`, timestamps, `user` relation `onDelete: Cascade`.
 - **Account** → `account`. BetterAuth credential/OAuth account rows: `accountId`, `providerId`, token fields, `password?`, timestamps, cascade.
 - **Verification** → `verification`. `identifier`, `value`, `expiresAt`, timestamps. (Holds the hashed OTP.)
-- **AdminWhitelist** → `admin_whitelist`. `id @default(cuid())`, `email @unique`, `name`, `addedBy String?`, `createdAt`. **This is the allowlist — separate from `User`.** Membership = admin.
+- **AdminWhitelist** → `admin_whitelist`. `id @default(cuid())`, `email @unique`, `name`, `addedBy String?`, `createdAt`. **This is the allowlist: separate from `User`.** Membership = admin.
 - **RecruiterProfile** → `recruiter_profile`. `id cuid`, `userId @unique`, `company`, `role`, `url`, `decision ScreenDecision @default(pending)`, `reason String?`, `verifiedAt DateTime?`, timestamps, cascade.
 - **ConsentLog** → `consent_log`. `id cuid`, `userId String?`, `clientId String?`, `action ConsentAction`, `payload Json`, `policyVer`, `ipAddress?`, `userAgent?`, `createdAt`. Indexes on `userId` and `clientId`. `user` relation optional cascade.
 
 Enums: `ScreenDecision { pending, approve, reject }` → `screen_decision`; `ConsentAction { grant, withdraw, update, accept_terms, accept_privacy }` → `consent_action`.
 
-Seed (`prisma/seed.ts`, run via `tsx`): upserts one founding admin into `admin_whitelist` — `{ email: "mokhatla.mzwakhe@gmail.com", name: "Mzwakhe Mokhatla" }`.
+Seed (`prisma/seed.ts`, run via `tsx`): upserts one founding admin into `admin_whitelist`: `{ email: "mokhatla.mzwakhe@gmail.com", name: "Mzwakhe Mokhatla" }`.
 
 ---
 
@@ -262,7 +262,7 @@ App Router, RSC-by-default. Client components are explicitly `"use client"` (all
 
 Three moving parts:
 
-1. **`components/ThemeScript.tsx`** — renders an inline `<script>` that runs **before** hydration:
+1. **`components/ThemeScript.tsx`**: renders an inline `<script>` that runs **before** hydration:
    ```js
    (() => {
      try {
@@ -274,8 +274,8 @@ Three moving parts:
    })();
    ```
    This paints the correct theme immediately (no flash of wrong theme).
-2. **`hooks/useTheme.ts`** — React state mirror. Initial state `"light"`; on mount reads `localStorage('studio-theme')` and adopts it if not light; an effect writes `data-theme` to `<html>` and persists to localStorage on every change. Exposes `{ theme, toggle, setTheme }`. `toggle` flips light↔dark.
-3. **`suppressHydrationWarning`** on `<html>` in `layout.tsx` — because the attribute set by step 1 is intentionally not in the server HTML.
+2. **`hooks/useTheme.ts`**: React state mirror. Initial state `"light"`; on mount reads `localStorage('studio-theme')` and adopts it if not light; an effect writes `data-theme` to `<html>` and persists to localStorage on every change. Exposes `{ theme, toggle, setTheme }`. `toggle` flips light↔dark.
+3. **`suppressHydrationWarning`** on `<html>` in `layout.tsx`, because the attribute set by step 1 is intentionally not in the server HTML.
 
 The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a **functional** cookie/storage item per the cookie inventory).
 
@@ -284,14 +284,14 @@ The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a
 ## 12. Smooth scroll & scroll primitives
 
 - **`SmoothScroll`** (`primitives/SmoothScroll.tsx`) wraps the whole home page. Instantiates `new Lenis({ lerp: 0.1, smoothWheel: true })` (touch scrolling left native by not enabling `smoothTouch`). A `requestAnimationFrame` loop calls `lenis.raf(time)` and emits the current scroll value on **`lenisBus`** each frame. **Disabled entirely under `prefers-reduced-motion: reduce`.** Cleans up rAF + `lenis.destroy()` on unmount.
-- **`lib/lenis-bus.ts`** — a tiny pub/sub (`emit(scroll)`, `on(fn) → unsubscribe`) decoupling Lenis from consumers. (Historically fed the stacking effect; the current `StackScaleEffect` reads `window.scrollY` directly and no longer subscribes — see Section 14.)
-- **`Progress`** (`primitives/Progress.tsx`) — a top scroll-progress bar. `useScroll().scrollYProgress` → `useSpring(…, { stiffness:130, damping:28, mass:0.3 })` → `scaleX` on `.progress`.
-- **`Reveal`** (`primitives/Reveal.tsx`) — the universal scroll-in wrapper. Exports **`EASE = [0.22, 1, 0.36, 1]`** (the site-wide easing). Renders a `motion[as]` element (`as` defaults `div`), `initial={opacity:0, y}` (default `y=38`), animates to `{opacity:1,y:0}` when seen, `transition {duration:0.8, delay, ease:EASE}`. Visibility via **`useInView`**.
-- **`hooks/useInView.ts`** — no IntersectionObserver; a scroll/resize listener computes `getBoundingClientRect()` and marks `seen` once `rect.top < viewportHeight * (1 - margin) && rect.bottom > 0` (default `margin=0.16`). It is **one-shot** (unbinds after first reveal) and has a **1500 ms failsafe** that force-reveals (so content never gets stuck hidden). Returns `[ref, seen]`.
+- **`lib/lenis-bus.ts`**: a tiny pub/sub (`emit(scroll)`, `on(fn) → unsubscribe`) decoupling Lenis from consumers. (Historically fed the stacking effect; the current `StackScaleEffect` reads `window.scrollY` directly and no longer subscribes; see Section 14.)
+- **`Progress`** (`primitives/Progress.tsx`): a top scroll-progress bar. `useScroll().scrollYProgress` → `useSpring(…, { stiffness:130, damping:28, mass:0.3 })` → `scaleX` on `.progress`.
+- **`Reveal`** (`primitives/Reveal.tsx`): the universal scroll-in wrapper. Exports **`EASE = [0.22, 1, 0.36, 1]`** (the site-wide easing). Renders a `motion[as]` element (`as` defaults `div`), `initial={opacity:0, y}` (default `y=38`), animates to `{opacity:1,y:0}` when seen, `transition {duration:0.8, delay, ease:EASE}`. Visibility via **`useInView`**.
+- **`hooks/useInView.ts`**: no IntersectionObserver; a scroll/resize listener computes `getBoundingClientRect()` and marks `seen` once `rect.top < viewportHeight * (1 - margin) && rect.bottom > 0` (default `margin=0.16`). It is **one-shot** (unbinds after first reveal) and has a **1500 ms failsafe** that force-reveals (so content never gets stuck hidden). Returns `[ref, seen]`.
 
 ---
 
-## 13. The home page — section by section
+## 13. The home page: section by section
 
 `app/page.tsx` composition, in order, all inside `<SmoothScroll>`:
 
@@ -306,21 +306,21 @@ The theme toggle lives in `Nav` and `Menu`. Persistence key is `studio-theme` (a
 
 **Content data lives in `src/lib/constants.ts`** (all verbatim in Appendix), notably:
 
-- `SITE` — name, email `mokhatla.mzwakhe@gmail.com`, phone `067 980 1166` / `tel:+27679801166`, location "Pretoria, South Africa", tagline, `cvHref:"/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf"`, `portrait:"/img/Potrait.png"`.
-- `NAVLINKS` — 01 Work `#work`, 02 Services `#services`, 03 AI Workflow `#ai`, 04 Experience `#experience`, 05 Contact `#contact`.
-- `SERVICES` (4) — Frontend Engineering / Full-Stack & Cloud / Technical Leadership / Platform & DevOps, each with `pills[]` and a description `d`.
-- `WORK` (4) — StudioSync (MTN, slot `work-studiosync`), Bayobab Client Portal (Accenture·MTN, `work-bayobab`), e-Teller (Nybble·NMB Bank Tanzania, `work-eteller`), GE Smallworld GIS (IST, `work-gis`).
-- `XP` (4 rows) — MTN Tech Lead (now), Accenture Product/Platform (now), Nybble Frontend, IST Junior.
-- `AIITEMS` (4) — AI pair-programming, Rapid prototyping, Tests & documentation, Review & research (each with `tools[]`).
+- `SITE`: name, email `mokhatla.mzwakhe@gmail.com`, phone `067 980 1166` / `tel:+27679801166`, location "Pretoria, South Africa", tagline, `cvHref:"/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf"`, `portrait:"/img/Potrait.png"`.
+- `NAVLINKS`: 01 Work `#work`, 02 Services `#services`, 03 AI Workflow `#ai`, 04 Experience `#experience`, 05 Contact `#contact`.
+- `SERVICES` (4): Frontend Engineering / Full-Stack & Cloud / Technical Leadership / Platform & DevOps, each with `pills[]` and a description `d`.
+- `WORK` (4): StudioSync (MTN, slot `work-studiosync`), Bayobab Client Portal (Accenture·MTN, `work-bayobab`), e-Teller (Nybble·NMB Bank Tanzania, `work-eteller`), GE Smallworld GIS (IST, `work-gis`).
+- `XP` (4 rows): MTN Tech Lead (now), Accenture Product/Platform (now), Nybble Frontend, IST Junior.
+- `AIITEMS` (4): AI pair-programming, Rapid prototyping, Tests & documentation, Review & research (each with `tools[]`).
 - `ASSISTANT_NAME = "Clerk"`, `PEAK_COLOR = "#020202"`.
 
-### Hero (`sections/Hero.tsx`) — parallax
+### Hero (`sections/Hero.tsx`): parallax
 
 Client component. `useScroll({ target: heroRef, offset: ["start start","end start"] })` drives three `useTransform`s over scroll progress 0→1:
 
-- `yRender = [0, -40]` — the portrait drifts up.
-- `yMark = [0, 80]` — the giant "mzwakhe" wordmark drifts down (parallax split).
-- `cueFade = [0,0.7] → [1,0]` — the "Scroll" cue fades out over the first 70% of the hero.
+- `yRender = [0, -40]`: the portrait drifts up.
+- `yMark = [0, 80]`: the giant "mzwakhe" wordmark drifts down (parallax split).
+- `cueFade = [0,0.7] → [1,0]`: the "Scroll" cue fades out over the first 70% of the hero.
 
 Entrance: wordmark `opacity 0→1, scale 1.04→1` (1.1 s); portrait `opacity 0→1, y 60→0` (1 s, delay 0.25 s) inside `.hero-render-wrap` with a `next/image` `fill priority` (sizes `(min-width:1280px) 620px, (min-width:768px) 40vw, 64vw`, `object-fit:cover`, radius 26) and a `.glowpad`; H1 "Turning ideas into **digital realities.**" fades up (delay 0.5 s); the scroll cue has a pulsing dot (`scale [1,0.5,1]`, infinite 1.6 s).
 
@@ -336,23 +336,23 @@ Entrance: wordmark `opacity 0→1, scale 1.04→1` (1.1 s); portrait `opacity 0�
 
 `#work`. Heading "A track record of turning ideas into **digital realities.**" + lede. Then **`LogoBar`** and a `.work-grid` of 4 cards from `WORK`. Each card: `motion.div` with `whileHover={{ y: -6 }}`, an `.image-slot[data-slot]` containing **`<WorkVisual slot={w.slot} />`** (Section 16), and an overlay with tag/name/org.
 
-**LogoBar** (`sections/LogoBar.tsx`): "Trusted across" + a `.logo-bar` list of 7 brands. Two render kinds: `icon` (an inline `<svg>` using a `simple-icons` path with `fill="currentColor"` — Accenture `siAccenture.path`, GE `siGeneralelectric.path`) and `text` (a typographic wordmark — MTN Group, NMB Bank, Bayobab, Nybble, IST). Dimmed via `opacity:0.5`, brightening on hover; theme-aware through `currentColor`.
+**LogoBar** (`sections/LogoBar.tsx`): "Trusted across" + a `.logo-bar` list of 7 brands. Two render kinds: `icon` (an inline `<svg>` using a `simple-icons` path with `fill="currentColor"`: Accenture `siAccenture.path`, GE `siGeneralelectric.path`) and `text` (a typographic wordmark: MTN Group, NMB Bank, Bayobab, Nybble, IST). Dimmed via `opacity:0.5`, brightening on hover; theme-aware through `currentColor`.
 
 ### Experience (`sections/Experience.tsx`)
 
 `#experience`. "Five years building **at scale.**" + an `.xp-list` from `XP`; rows with `now` show a candy `●` marker.
 
-### TransContinental (`sections/TransContinental.tsx`) — the interactive map
+### TransContinental (`sections/TransContinental.tsx`): the interactive map
 
 See Section 15 for the full math. `#transcontinental`. A hand-drawn SVG map of five work locations across South Africa + Tanzania, with a chronological "journey" arc, tappable pins + chips, and a side panel that updates to the active location.
 
-### AISection (`sections/AISection.tsx`) — peak + device mocks
+### AISection (`sections/AISection.tsx`): peak + device mocks
 
 `#ai`. Props `{ showPhone=true, showDesktop=true, threshold=0.25 }`. An **IntersectionObserver** (thresholds `[0, t/2, t, t*1.5, 1]` filtered ≤1) sets `peakActive = ratio ≥ threshold`, toggling the `ai--peak` class that transitions the section toward `PEAK_COLOR` (`#020202`) as it dominates the viewport. Content: eyebrow, "AI is part of **how I build.**", lede, an `.ai-showcase` with device mockups (`Laptop`, `PhoneDevice`, `WatchDevice`, `TabletDevice` from `components/devices`, each wrapped in `Reveal`) and floating `.dev-label`s, then an `.ai-grid` of the 4 `AIITEMS` (numbered, title, desc, tool chips). `showPhone`/`showDesktop` allow responsive hiding of heavy mockups on small screens.
 
 ### Contact (`sections/Contact.tsx`)
 
-`#contact`. A `.contact-card` (with a `.blob`), eyebrow "Contact · Available 2026", big "Don't be **shy.**", two CTAs — "Start a conversation" (`mailto:`) and "Download CV" (→ `/recruiter`) — and a `.c-meta` block (email/phone/located).
+`#contact`. A `.contact-card` (with a `.blob`), eyebrow "Contact · Available 2026", big "Don't be **shy.**", two CTAs ("Start a conversation" via `mailto:` and "Download CV" to `/recruiter`) and a `.c-meta` block (email/phone/located).
 
 ### Footer (`sections/Footer.tsx`)
 
@@ -364,7 +364,7 @@ Big wordmark, subtitle, a links bar (Email/Phone/Work), a "Go up" button (`scrol
 
 ---
 
-## 14. The Services stacking calculation (StackScaleEffect) — full algorithm
+## 14. The Services stacking calculation (StackScaleEffect): full algorithm
 
 This is the site's signature interaction and the source of a long jitter saga; the final architecture is deliberately simple and **jitter-proof by construction**.
 
@@ -375,13 +375,12 @@ This is the site's signature interaction and the source of a long jitter saga; t
   position: sticky;
   top: calc(80px + var(--i, 0) * 48px);
   transform-origin: top center;
-  /* …visual styling… */
 }
 ```
 
-Position is handled **entirely by native CSS `position: sticky`** — the browser pins each card on the compositor thread at a per-index offset (`--i` set inline). Because the compositor owns pinning, a card **can never lag the scroll** — that lag was the historical jitter.
+Position is handled **entirely by native CSS `position: sticky`**: the browser pins each card on the compositor thread at a per-index offset (`--i` set inline). Because the compositor owns pinning, a card **can never lag the scroll**. That lag was the historical jitter.
 
-**JS side (`primitives/StackScaleEffect.tsx`)** — writes **only `scale()`**, never position. Constants:
+**JS side (`primitives/StackScaleEffect.tsx`)**: writes **only `scale()`**, never position. Constants:
 
 ```
 BASE_TOP = 80    STEP = 48    SCALE_PER_LAYER = 0.05    SCALE_RANGE = 320
@@ -391,7 +390,7 @@ Algorithm:
 
 1. `cards = [...document.querySelectorAll(".svc-card")]`; bail if `< 2`.
 2. `absTop(el)` = document-absolute layout top: sum `offsetTop` up the `offsetParent` chain. (Uses layout position, **unaffected by sticky pinning**, so dock points stay valid even while pinned.)
-3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)` — the exact `window.scrollY` at which card _i_ reaches its sticky top.
+3. `measure()`: `dock[i] = absTop(cards[i]) − (BASE_TOP + i*STEP)`, the exact `window.scrollY` at which card _i_ reaches its sticky top.
 4. `apply()`: let `y = window.scrollY`. For each card _i_, accumulate a `reduction` over **later** cards _j > i_:
    - `remaining = dock[j] − y`.
    - if `remaining ≤ 0` (card _j_ has fully docked): `reduction += 0.05`.
@@ -400,11 +399,11 @@ Algorithm:
      Net effect: as later cards dock on top, each earlier card shrinks ~5% per layer, producing a stacked-depth cue (≈ 0.9 / 0.95 / 1.0 scales).
 5. Scroll handling is `requestAnimationFrame`-coalesced (one pending frame max). `resize` re-runs `measure()` + `apply()` (heights are vh-based). Cleanup cancels rAF, unbinds, and clears transforms.
 
-**Why it can't jitter:** `scale()` is anchored at `transform-origin: top center`, so even a scale value a frame behind the scroll keeps the pinned **top edge** fixed — position and scale are fully decoupled. All previous jitter came from JS _positioning_ cards against a scroll value that diverged from the browser's real scroll (especially on mobile, where Lenis leaves touch scrolling native). The fix was to stop positioning in JS at all.
+**Why it can't jitter:** `scale()` is anchored at `transform-origin: top center`, so even a scale value a frame behind the scroll keeps the pinned **top edge** fixed: position and scale are fully decoupled. All previous jitter came from JS _positioning_ cards against a scroll value that diverged from the browser's real scroll (especially on mobile, where Lenis leaves touch scrolling native). The fix was to stop positioning in JS at all.
 
 ---
 
-## 15. TransContinental — the map projection & journey math
+## 15. TransContinental: the map projection & journey math
 
 **Canvas:** SVG `viewBox="0 0 800 500"` (`VB_W=800, VB_H=500`). A rectangular equirectangular-ish projection over a hand-tuned bounding box:
 
@@ -419,11 +418,11 @@ project(lat, lng):
 
 **Locations** (`LOCATIONS`, chronological `order`), each `{lat, lng, offsetX?, offsetY?, labelAnchor?}`; the pixel `offset*` nudges resolve the Gauteng cluster so pins don't overlap:
 
-1. Pretoria (IST, Junior Software Developer, Jan 2021–Dec 2022) — lat −25.73, lng 28.19, offset (+70, −110), label start.
-2. Bryanston (Nybble, Frontend Engineer, Dec 2022–Jun 2023) — −26.05, 28.03, offset (−90, −30), label end.
-3. Dar es Salaam (Nybble · NMB Bank, e-Teller, Dec 2022–Jun 2023) — −6.79, 39.21, offset (−30, 0), label end.
-4. Roodepoort (MTN Group, Software Engineer · Tech Lead, Mar 2024–Present) — −26.17, 27.87, offset (−90, +70), label end.
-5. Waterfall (Accenture, Product & Platform Engineer, Mar 2024–Present) — −25.99, 28.13, offset (+70, +30), label start.
+1. Pretoria (IST, Junior Software Developer, Jan 2021–Dec 2022): lat −25.73, lng 28.19, offset (+70, −110), label start.
+2. Bryanston (Nybble, Frontend Engineer, Dec 2022–Jun 2023): −26.05, 28.03, offset (−90, −30), label end.
+3. Dar es Salaam (Nybble · NMB Bank, e-Teller, Dec 2022–Jun 2023): −6.79, 39.21, offset (−30, 0), label end.
+4. Roodepoort (MTN Group, Software Engineer · Tech Lead, Mar 2024–Present): −26.17, 27.87, offset (−90, +70), label end.
+5. Waterfall (Accenture, Product & Platform Engineer, Mar 2024–Present): −25.99, 28.13, offset (+70, +30), label start.
 
 **Rendered point:** `{ x: project(lat,lng).x + (offsetX??0), y: project(lat,lng).y + (offsetY??0) }`.
 
@@ -431,7 +430,7 @@ project(lat, lng):
 
 **Journey arc:** `ordered = [...points].sort(order)`. The path is built as: `M x0 y0`, then for each subsequent point a quadratic `Q cx cy x y` where `cx = (prev.x + p.x)/2` and `cy = min(prev.y, p.y) − 50` (control point lifted 50 px above the higher endpoint → each hop arcs upward). Stroke is candy.
 
-**Draw-on reveal:** `pathRef.getTotalLength()` (guarded — JSDOM lacks it) sets `pathLen`; the path renders with `strokeDasharray = pathLen`, `strokeDashoffset = pathLen`, and an inline style animating `strokeDashoffset` to `0` over `1.8s ease 0.3s` — the line draws itself once on mount.
+**Draw-on reveal:** `pathRef.getTotalLength()` (guarded, since JSDOM lacks it) sets `pathLen`; the path renders with `strokeDasharray = pathLen`, `strokeDashoffset = pathLen`, and an inline style animating `strokeDashoffset` to `0` over `1.8s ease 0.3s`, so the line draws itself once on mount.
 
 **Pins & interaction:** each location is a `<g transform="translate(x,y)">` with `.trans-pin` (halo circle r22 using `#trans-glow`, ring r10, dot r5, and a `<text>` label anchored per `labelAnchor`). `role="button"`, `tabIndex=0`, `aria-pressed`, click and Enter/Space set `activeId`. Below the map, a `.trans-chips` list mirrors the pins as buttons. An `aside.trans-panel` (`aria-live="polite"`) shows the active location's city/country/org/role/dates.
 
@@ -439,7 +438,7 @@ project(lat, lng):
 
 ---
 
-## 16. WorkVisual — the four abstract card illustrations
+## 16. WorkVisual: the four abstract card illustrations
 
 `sections/WorkVisual.tsx` maps a `slot` string to one of four hand-built abstract SVG scenes (600×412, `preserveAspectRatio="xMidYMid slice"`, `.work-visual`, `aria-hidden`). Shared palette constants: `BG_LIGHT = var(--card-soft,#2f3236)`, `BG_DARK = #0c1316`, `FG_TINT/FG_LINE/FG_TEXT` (white at low alpha), `ACCENT = var(--candy,#b2d5e5)`. The four scenes:
 
@@ -453,7 +452,7 @@ project(lat, lng):
 
 ## 17. Recruiter auth system
 
-The most substantial subsystem: a passwordless, email-OTP recruiter access flow with a separate admin allowlist, backed by BetterAuth + Prisma + Neon + Resend. **Design philosophy:** no failure crashes the page — every non-200 becomes a toast (`lib/api.ts`), and the UI degrades gracefully.
+The most substantial subsystem: a passwordless, email-OTP recruiter access flow with a separate admin allowlist, backed by BetterAuth + Prisma + Neon + Resend. **Design philosophy:** no failure crashes the page: every non-200 becomes a toast (`lib/api.ts`), and the UI degrades gracefully.
 
 ### 17.1 Server auth config (`lib/auth/server.ts`)
 
@@ -462,7 +461,7 @@ The most substantial subsystem: a passwordless, email-OTP recruiter access flow 
 - `appName: "Mzwakhe Mokhatla, Recruiter Access"`, `baseURL: BETTER_AUTH_URL ?? http://localhost:3000`, `secret` (env or insecure dev default).
 - `database: prismaAdapter(db, { provider: "postgresql" })`.
 - `emailAndPassword: { enabled: false }` (OTP only).
-- `user.additionalFields.name`: `{ type:"string", required:false, input:false }` — **required:false + input:false is deliberate**: making `name` required broke OTP sign-in (the schema default is `""`, filled later from the signup form/whitelist).
+- `user.additionalFields.name` is `{ type:"string", required:false, input:false }`. **required:false + input:false is deliberate**: making `name` required broke OTP sign-in (the schema default is `""`, filled later from the signup form/whitelist).
 - `session`: `expiresIn: 14 days`, `updateAge: 1 day`, `cookieCache: { enabled:true, maxAge: 5 min }`.
 - `plugins`: `emailOTP({ otpLength:6, expiresIn: 5 min, allowedAttempts:5, overrideDefaultEmailVerification:true, sendVerificationOTP → sendOtpEmail(email, otp) })`, then `nextCookies()`.
 - The Next handler: `app/api/auth/[...all]/route.ts` = `toNextJsHandler(auth.handler)` (exports GET/POST).
@@ -495,7 +494,7 @@ Flow:
 - `acceptedTerms === true` **and** `acceptedPrivacy === true` (else `field:"consent"`).
 - On success returns a normalized payload (email lower-cased/trimmed).
 
-`lib/recruiter.ts` holds a parallel client-side copy (`FREE` set, `emailRe`, `domainOf`, `isFree`, `genCode`, localStorage helpers `LS_ACCOUNTS`/`LS_SESSION` + `loadAccounts`/`saveAccounts`) — a lightweight client mirror used by the recruiter form components; the **server** validation is the source of truth.
+`lib/recruiter.ts` holds a parallel client-side copy (`FREE` set, `emailRe`, `domainOf`, `isFree`, `genCode`, localStorage helpers `LS_ACCOUNTS`/`LS_SESSION` + `loadAccounts`/`saveAccounts`): a lightweight client mirror used by the recruiter form components; the **server** validation is the source of truth.
 
 ### 17.4 API routes (all under `app/api/recruiter/`)
 
@@ -506,8 +505,8 @@ Flow:
 - **`screen` (POST)**: requires session (`getSessionContext`); if a `recruiterProfile` exists, set `decision:"approve"`, `reason` = admin → "Admin allowlist." else "Verified via work email and domain.", `verifiedAt:now`; return `{ account }`.
 - **`session` (GET)**: `getSessionContext()`; `{ account: null }` if none, else `{ account: fetchAccount(userId) }`.
 - **`signout` (POST)**: `auth.api.signOut({ headers })` → `{ok:true}`.
-- **`account` (DELETE)** — DSAR erasure: requires session; **admins are refused** (must be removed from the whitelist first, 403); otherwise `signOut` then `db.user.delete` (cascades sessions/accounts/profile/consent logs) → `{ok:true}`.
-- **`data` (GET)** — DSAR export: requires session; builds a JSON `snapshot` (`exportedAt`, `policyVersions`, `identity`, `consent` incl. the full `consentLogs`, `profile`, `sessions`) and returns it as a **downloadable attachment** (`Content-Disposition: attachment; filename="my-data-<id>.json"`, `Cache-Control:no-store`).
+- **`account` (DELETE)**: DSAR erasure. Requires session; **admins are refused** (must be removed from the whitelist first, 403); otherwise `signOut` then `db.user.delete` (cascades sessions/accounts/profile/consent logs) → `{ok:true}`.
+- **`data` (GET)**: DSAR export. Requires session; builds a JSON `snapshot` (`exportedAt`, `policyVersions`, `identity`, `consent` incl. the full `consentLogs`, `profile`, `sessions`) and returns it as a **downloadable attachment** (`Content-Disposition: attachment; filename="my-data-<id>.json"`, `Cache-Control:no-store`).
 
 ### 17.5 Admin whitelist (`app/api/admin/whitelist/route.ts`, `lib/auth/admin.ts`)
 
@@ -538,11 +537,11 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 
 **Cookie inventory (`lib/privacy/cookies.ts`)**: `CookieCategory = "necessary" | "functional" | "analytics"`. `COOKIE_INVENTORY` documents each real cookie/storage item: `better-auth.session_token` (necessary, 14d), `better-auth.session_data` (necessary, 5min), `consent` (necessary, 12mo), `studio-theme` (functional, localStorage). `CATEGORY_META` gives label/description/`alwaysOn` per category (necessary alwaysOn); `CATEGORY_ORDER`; `inventoryByCategory()`.
 
-**Consent record (`lib/privacy/consent.ts`)**: the `consent` cookie stores `{ v, ts, choices:{necessary:true, functional, analytics} }`, URI-encoded JSON, `Max-Age = 1 year`. `parseConsent` returns `null` if the version doesn't match the current policy (so a policy bump re-prompts everyone). `serializeConsent` stamps the current version + `Date.now()`. `DEFAULT_REJECTED` (only necessary) / `ACCEPT_ALL`. `isGranted(record, category)` — necessary always true.
+**Consent record (`lib/privacy/consent.ts`)**: the `consent` cookie stores `{ v, ts, choices:{necessary:true, functional, analytics} }`, URI-encoded JSON, `Max-Age = 1 year`. `parseConsent` returns `null` if the version doesn't match the current policy (so a policy bump re-prompts everyone). `serializeConsent` stamps the current version + `Date.now()`. `DEFAULT_REJECTED` (only necessary) / `ACCEPT_ALL`. `isGranted(record, category)`: necessary always true.
 
 **ConsentProvider (`components/privacy/ConsentProvider.tsx`)**: React context. On mount reads + parses the cookie; `resolved` is true only if a valid record exists (else the banner shows). `save(choices, action)` writes the cookie (`SameSite=Lax`, `Secure` on https), updates state, closes the banner, and **fires `POST /api/privacy/consent`** to audit-log the choice. `reopen()/close()` control the "Cookie preferences" re-open path. A `NOOP_CONSENT` fallback keeps `useConsent()` safe outside the provider.
 
-**ConsentBanner (`components/privacy/ConsentBanner.tsx`)**: a `motion.aside role="dialog"` that slides up when `!resolved || open`. Two views: the **summary** (three actions — "Reject non-essential" → `save(DEFAULT_REJECTED,"withdraw")`, "Customise", "Accept all" → `save(ACCEPT_ALL,"grant")`) and the **customise** panel (per-category toggles from `CATEGORY_ORDER`, necessary disabled/always-on, each with an expandable `<details>` listing the actual cookies; "Save preferences" → `save(draft,"update")`). Links to `/legal/cookies` and `/legal/privacy`.
+**ConsentBanner (`components/privacy/ConsentBanner.tsx`)**: a `motion.aside role="dialog"` that slides up when `!resolved || open`. Two views: the **summary** (three actions: "Reject non-essential" → `save(DEFAULT_REJECTED,"withdraw")`, "Customise", "Accept all" → `save(ACCEPT_ALL,"grant")`) and the **customise** panel (per-category toggles from `CATEGORY_ORDER`, necessary disabled/always-on, each with an expandable `<details>` listing the actual cookies; "Save preferences" → `save(draft,"update")`). Links to `/legal/cookies` and `/legal/privacy`.
 
 **Consent audit log (`lib/privacy/log.ts`)**: `logConsent({ userId?, action, payload })` writes a `ConsentLog` row with the request IP (`x-forwarded-for` first hop, else `x-real-ip`) and user-agent. For anonymous consent it stores a **SHA-256 hash of `ip|ua` as `clientId`** (pseudonymous, no raw PII tied to the record); for signed-in users it stores `userId` and null clientId. `action ∈ {grant, withdraw, update, accept_terms, accept_privacy}`; `policyVer` stamped.
 
@@ -567,20 +566,20 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 
 ## 20. Error handling & resilience
 
-- **`app/error.tsx`** — a client error boundary: toasts "Something went wrong…", logs the error, and offers a "Try again" (`reset()`).
-- **`lib/api.ts` `apiFetch<T>(url, init)`** — the single client fetch wrapper. Returns a discriminated `ApiResult<T>` (`{ok:true,data}` | `{ok:false,error}`), never throws. It JSON-parses safely, and on non-2xx picks a human message (`body.message`/`body.error`, else status-specific copy for 401/403/404/429/5xx) and **`toast.error`s it unless `silent`**. Network failures become a toast too. This is why "no failure crashes the site": UI code just checks `res.ok`.
-- **`Toaster`** — react-hot-toast, top-center, dark toasts (`#0a0a0a`/`#fafafa`, hardcoded — using `var(--card)/var(--fg)` previously made text invisible), success/error icon themes, 4.5 s (6 s for errors).
-- **Lazy Prisma proxy** (Section 17.8) — importing `db` never crashes without env; it only constructs on first use.
+- **`app/error.tsx`**: a client error boundary that toasts "Something went wrong…", logs the error, and offers a "Try again" (`reset()`).
+- **`lib/api.ts` `apiFetch<T>(url, init)`**: the single client fetch wrapper. Returns a discriminated `ApiResult<T>` (`{ok:true,data}` | `{ok:false,error}`), never throws. It JSON-parses safely, and on non-2xx picks a human message (`body.message`/`body.error`, else status-specific copy for 401/403/404/429/5xx) and **`toast.error`s it unless `silent`**. Network failures become a toast too. This is why "no failure crashes the site": UI code just checks `res.ok`.
+- **`Toaster`**: react-hot-toast, top-center, dark toasts (`#0a0a0a`/`#fafafa`, hardcoded because `var(--card)/var(--fg)` previously made text invisible), success/error icon themes, 4.5 s (6 s for errors).
+- **Lazy Prisma proxy** (Section 17.8): importing `db` never crashes without env; it only constructs on first use.
 - **Graceful degradations**: reduced-motion disables Lenis; `useInView` has a failsafe reveal; `getTotalLength` is JSDOM-guarded; the recruiter page shows a busy placeholder until session-resume resolves.
 
 ---
 
 ## 21. Testing
 
-- **`jest.config.ts`** via `next/jest`: `testEnvironment: jsdom`, `coverageProvider: v8`, `setupFilesAfterEach: jest.setup.ts`, `moduleNameMapper @/ → src/`. Coverage is **collected from `src/lib/**`and`src/hooks/**`** with **gates: lib & hooks ≥ 80% lines/statements/functions, ≥ 70% branches** (global thresholds 0 — the point is to gate the pure logic, not the presentational components).
+- **`jest.config.ts`** via `next/jest`: `testEnvironment: jsdom`, `coverageProvider: v8`, `setupFilesAfterEach: jest.setup.ts`, `moduleNameMapper @/ → src/`. Coverage is **collected from `src/lib/**`and`src/hooks/**`** with **gates: lib & hooks ≥ 80% lines/statements/functions, ≥ 70% branches** (global thresholds 0: the point is to gate the pure logic, not the presentational components).
 - **`jest.setup.ts`**: imports `@testing-library/jest-dom` and shims `matchMedia`, `IntersectionObserver`, `ResizeObserver` for jsdom.
 - **`__mocks__/framer-motion.tsx`**: replaces `motion.*` with plain elements (strips animation props) so components render deterministically; `__mocks__/lenis.ts`: no-op.
-- **22 suites / 102 tests** mirror `src/` under `src/__tests__/…` — covering `lib` (colors, constants, recruiter validation), `hooks` (useInView, useTheme), components (Loader, ThemeScript, Nav/Menu, the recruiter components incl. Otp/SignUp/Screening/Approved/Gate/Field/Dots, and the section peak behavior in `AISection.peak.test.tsx`), and app (layout, page, recruiter-page). All 102 pass on the current tree.
+- **22 suites / 102 tests** mirror `src/` under `src/__tests__/…`, covering `lib` (colors, constants, recruiter validation), `hooks` (useInView, useTheme), components (Loader, ThemeScript, Nav/Menu, the recruiter components incl. Otp/SignUp/Screening/Approved/Gate/Field/Dots, and the section peak behavior in `AISection.peak.test.tsx`), and app (layout, page, recruiter-page). All 102 pass on the current tree.
 
 ---
 
@@ -589,7 +588,7 @@ Enterprise-grade consent + data-subject rights, tuned for GDPR / CCPA / POPIA.
 - **TypeScript strict**, no `any` (narrow `unknown`), **named exports** (no default exports except Next's required page/layout/route defaults), explicit return types on public functions, `Readonly<>`/`as const` for data.
 - **Prettier** (printWidth 100, double quotes, trailing commas, semicolons) is the canonical formatter (`npm run format`).
 - **No comments, anywhere**: every tracked file is comment-free, tool directives included (JSX, JSDoc, line and block comments, CSS, YAML, SQL, Prisma and Markdown HTML comments). `src/__tests__/repo/no-comments.node.test.ts` fails CI if one appears. The knowledge lives in commit messages, PR descriptions and this blueprint instead.
-- **Content/data** is centralised in `lib/constants.ts` (site copy) and the various `lib/**` modules — components stay presentational.
+- **Content/data** is centralised in `lib/constants.ts` (site copy) and the various `lib/**` modules; components stay presentational.
 
 ---
 
@@ -601,21 +600,21 @@ On push/PR to `main`: a single `ci` job (Ubuntu, Node 22, npm cache, 10-min time
 
 ## 24. Deployment (Vercel)
 
-- **Build**: `prisma generate && next build`; **postinstall**: `prisma generate` (both required so `@prisma/client` exists on Vercel — a Prisma 7 gotcha).
+- **Build**: `prisma generate && next build`; **postinstall**: `prisma generate` (both required so `@prisma/client` exists on Vercel; a Prisma 7 gotcha).
 - **Env vars** on Vercel: `DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (= the deployed origin), `RESEND_API_KEY`, `RESEND_FROM`, and optionally `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_AUTH_URL`.
 - **DB provisioning**: `npx prisma db push` (first time) or `migrate deploy`, then `npx prisma db seed` (seeds the founding admin).
-- **Custom domain (v1 launch)** — from `README.md`: buy + add the domain in Vercel → Domains; add the DNS records; set `NEXT_PUBLIC_SITE_URL` (+ matching `BETTER_AUTH_URL`) in Vercel env; update `RESEND_FROM` to a verified-domain sender; redeploy; verify `/sitemap.xml` and `/robots.txt` reference the new domain.
+- **Custom domain (v1 launch)**, from `README.md`: buy + add the domain in Vercel → Domains; add the DNS records; set `NEXT_PUBLIC_SITE_URL` (+ matching `BETTER_AUTH_URL`) in Vercel env; update `RESEND_FROM` to a verified-domain sender; redeploy; verify `/sitemap.xml` and `/robots.txt` reference the new domain.
 
 ---
 
 ## 25. Local development
 
 ```bash
-cp .env.example .env.local        # fill DATABASE_URL, DIRECT_URL, BETTER_AUTH_SECRET, RESEND_*
-npm install                       # runs postinstall: prisma generate
-npx prisma db push                # apply schema to Neon
-npx prisma db seed                # seed founding admin (mokhatla.mzwakhe@gmail.com)
-npm run dev                       # http://localhost:3000
+cp .env.example .env.local
+npm install
+npx prisma db push
+npx prisma db seed
+npm run dev
 ```
 
 Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run lint`, `npm run format`, `npm run build`. Without `RESEND_API_KEY`, request an OTP and read it from the dev server console.
@@ -626,10 +625,10 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 
 - **Prisma 7 breaking changes**: no `url` in `schema.prisma`; a driver adapter (`@prisma/adapter-neon`) is mandatory; `prisma.config.ts` supplies the CLI datasource + seed; `postinstall`/`build` must `prisma generate`.
 - **Next 16 / React 19**: App Router conventions differ from earlier majors; consult the bundled Next docs in `node_modules/next/dist/docs/` before writing framework code.
-- **Hydration**: `suppressHydrationWarning` on `<html>` is required by the theme script (Section 11) — removing it reintroduces the `insertBefore` crash.
-- **Portrait filename** is `Potrait.png` (misspelled); referenced consistently as `SITE.portrait`. On case-insensitive macOS this hid a case mismatch that 404'd on Vercel — keep the exact casing.
+- **Hydration**: `suppressHydrationWarning` on `<html>` is required by the theme script (Section 11); removing it reintroduces the `insertBefore` crash.
+- **Portrait filename** is `Potrait.png` (misspelled); referenced consistently as `SITE.portrait`. On case-insensitive macOS this hid a case mismatch that 404'd on Vercel: keep the exact casing.
 - **Reduced motion** disables Lenis entirely (no smooth scroll for those users, by design).
-- One commit message references "the real Anthropic call per §13" — that is legitimate product content about an Anthropic API integration path, not build noise.
+- One commit message references "the real Anthropic call per §13". That is legitimate product content about an Anthropic API integration path, not build noise.
 
 ---
 
@@ -650,29 +649,29 @@ Useful: `npm run typecheck`, `npm run test`, `npm run test:coverage`, `npm run l
 
 ## 28. File-by-file quick index (what each source file is)
 
-- `src/lib/site-url.ts` — canonical origin resolver.
-- `src/lib/constants.ts` — all site copy/data (SITE, NAVLINKS, SERVICES, WORK, XP, AIITEMS, ASSISTANT_NAME, PEAK_COLOR).
-- `src/lib/colors.ts` — hex→rgb, relative luminance, rgb/rgba string helpers.
-- `src/lib/db.ts` — lazy Prisma+Neon singleton Proxy.
-- `src/lib/api.ts` — `apiFetch` + toast error mapping.
-- `src/lib/recruiter.ts` — client-side email/domain helpers + localStorage account cache.
-- `src/lib/lenis-bus.ts` — scroll pub/sub.
-- `src/lib/auth/{server,client,admin,email,profile,validation}.ts` — BetterAuth server/client, admin/session gating, Resend OTP, account projection, signup validation.
-- `src/lib/privacy/{policy,cookies,consent,log}.ts` — versions, cookie inventory, consent (de)serialization, audit logging.
-- `src/hooks/{useInView,useTheme}.ts` — scroll-reveal, theme state.
-- `src/components/primitives/*` — Reveal (+EASE), SmoothScroll (Lenis), StackScaleEffect (Services scale), Progress, Toaster, icons (SVG set).
-- `src/components/nav/*` — Nav (toggle + pills), Menu (overlay), NavMenu (state).
-- `src/components/sections/*` — the home-page sections + WorkVisual/LogoBar.
-- `src/components/devices/*` — Laptop/Phone/Tablet/Watch SVG mockups for the AI showcase.
-- `src/components/privacy/*` — ConsentProvider + ConsentBanner.
-- `src/components/recruiter/*` — Gate, SignUp, SignIn, Otp, Screening, Approved, Field, Dots, Howto, TopBar.
-- `src/components/legal/LegalLayout.tsx` — shared legal-page shell.
-- `src/components/{Loader,ThemeScript}.tsx` — loader lifecycle, anti-flash theme script.
-- `src/app/*` — layout, page, error, robots, sitemap, globals.css, legal/_, recruiter/_, api/\*\*.
+- `src/lib/site-url.ts`: canonical origin resolver.
+- `src/lib/constants.ts`: all site copy/data (SITE, NAVLINKS, SERVICES, WORK, XP, AIITEMS, ASSISTANT_NAME, PEAK_COLOR).
+- `src/lib/colors.ts`: hex→rgb, relative luminance, rgb/rgba string helpers.
+- `src/lib/db.ts`: lazy Prisma+Neon singleton Proxy.
+- `src/lib/api.ts`: `apiFetch` + toast error mapping.
+- `src/lib/recruiter.ts`: client-side email/domain helpers + localStorage account cache.
+- `src/lib/lenis-bus.ts`: scroll pub/sub.
+- `src/lib/auth/{server,client,admin,email,profile,validation}.ts`: BetterAuth server/client, admin/session gating, Resend OTP, account projection, signup validation.
+- `src/lib/privacy/{policy,cookies,consent,log}.ts`: versions, cookie inventory, consent (de)serialization, audit logging.
+- `src/hooks/{useInView,useTheme}.ts`: scroll-reveal, theme state.
+- `src/components/primitives/*`: Reveal (+EASE), SmoothScroll (Lenis), StackScaleEffect (Services scale), Progress, Toaster, icons (SVG set).
+- `src/components/nav/*`: Nav (toggle + pills), Menu (overlay), NavMenu (state).
+- `src/components/sections/*`: the home-page sections + WorkVisual/LogoBar.
+- `src/components/devices/*`: Laptop/Phone/Tablet/Watch SVG mockups for the AI showcase.
+- `src/components/privacy/*`: ConsentProvider + ConsentBanner.
+- `src/components/recruiter/*`: Gate, SignUp, SignIn, Otp, Screening, Approved, Field, Dots, Howto, TopBar.
+- `src/components/legal/LegalLayout.tsx`: shared legal-page shell.
+- `src/components/{Loader,ThemeScript}.tsx`: loader lifecycle, anti-flash theme script.
+- `src/app/*`: layout, page, error, robots, sitemap, globals.css, legal/_, recruiter/_, api/\*\*.
 
 ---
 
-# 29. APPENDIX — Complete verbatim source
+# 29. APPENDIX: Complete verbatim source
 
 > Every text file in the repository, byte-exact, follows below (excluding `package-lock.json` and binary assets). This is the authoritative source; the Narrative above explains it. Generated directly from disk.
 
@@ -918,9 +917,6 @@ if (typeof window !== "undefined") {
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
 import "./.next/dev/types/routes.d.ts";
-
-// NOTE: This file should not be edited
-// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
 ```
 
 ### `prisma.config.ts`
@@ -1071,7 +1067,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Custom domain (v1 launch)
 
 The canonical URL used by `sitemap.xml`, `robots.txt`, OG metadata, and the
-JSON-LD Person schema reads from a single source — `src/lib/site-url.ts`.
+JSON-LD Person schema reads from a single source: `src/lib/site-url.ts`.
 Priority order:
 
 1. `NEXT_PUBLIC_SITE_URL` (set this in Vercel once a custom domain is
@@ -1089,7 +1085,7 @@ Priority order:
    - `NEXT_PUBLIC_SITE_URL` = `https://your-domain` (all environments).
    - `BETTER_AUTH_URL` = the same value (production only).
 4. Update `RESEND_FROM` to a sender on your verified domain.
-5. Redeploy. Visit `/sitemap.xml` and `/robots.txt` — they should now
+5. Redeploy. Visit `/sitemap.xml` and `/robots.txt`: they should now
    reference the custom domain.
 
 ## Recruiter auth setup
@@ -1097,9 +1093,9 @@ Priority order:
 The `/recruiter` flow is wired to BetterAuth + Prisma + Neon Postgres + Resend.
 
 1. Copy `.env.example` to `.env.local` and fill in:
-   - **DATABASE_URL** / **DIRECT_URL** — Neon pooled + direct connection strings.
-   - **BETTER_AUTH_SECRET** — `openssl rand -base64 32`.
-   - **RESEND_API_KEY** + **RESEND_FROM** — verified sender from your Resend domain.
+   - **DATABASE_URL** / **DIRECT_URL**: Neon pooled + direct connection strings.
+   - **BETTER_AUTH_SECRET**: `openssl rand -base64 32`.
+   - **RESEND_API_KEY** + **RESEND_FROM**: verified sender from your Resend domain.
 2. Apply the schema and seed the admin whitelist:
    ```bash
    npx prisma migrate deploy   # or `npx prisma db push` for a first-time setup
@@ -8784,8 +8780,7 @@ export default function CookiePage(): React.ReactElement {
       <p>
         Click <strong>&ldquo;Cookie preferences&rdquo;</strong> in the footer at any time to reopen
         the consent banner. Withdrawing consent does not retroactively erase data we already had
-        your permission to process &mdash; see the <a href="/legal/privacy">Privacy Policy</a> for
-        that.
+        your permission to process. See the <a href="/legal/privacy">Privacy Policy</a> for that.
       </p>
     </LegalLayout>
   );
@@ -11368,8 +11363,8 @@ describe("loadAccounts / saveAccounts", () => {
 
 These cannot be reproduced from text; supply your own equivalents (see Section 5 for purpose/dimensions).
 
-- `public/img/Potrait.png` — hero portrait (~3.06 MB). Rendered `object-fit: cover` in a rounded frame; also used as the OpenGraph/Twitter image (target ≥1200×630 usable) and apple-touch icon. Filename spelling (`Potrait`) is intentional — referenced as `SITE.portrait`.
-- `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf` — the downloadable CV (~117 KB) offered at the end of the recruiter flow / "Download CV" links.
-- `src/app/favicon.ico` — site favicon (~25.9 KB).
-- `public/cv/.gitkeep`, `public/img/.gitkeep` — empty placeholders that keep the otherwise-empty asset directories under version control.
-- `package-lock.json` — omitted (regenerate with `npm install`); exact dependency versions are pinned in `package.json` above.
+- `public/img/Potrait.png`: hero portrait (~3.06 MB). Rendered `object-fit: cover` in a rounded frame; also used as the OpenGraph/Twitter image (target ≥1200×630 usable) and apple-touch icon. Filename spelling (`Potrait`) is intentional; it is referenced as `SITE.portrait`.
+- `public/cv/Mzwakhe_Sifiso_Mokhatla_CV.pdf`: the downloadable CV (~117 KB) offered at the end of the recruiter flow / "Download CV" links.
+- `src/app/favicon.ico`: site favicon (~25.9 KB).
+- `public/cv/.gitkeep`, `public/img/.gitkeep`: empty placeholders that keep the otherwise-empty asset directories under version control.
+- `package-lock.json`: omitted (regenerate with `npm install`); exact dependency versions are pinned in `package.json` above.
